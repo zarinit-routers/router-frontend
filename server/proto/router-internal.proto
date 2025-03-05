@@ -1,0 +1,15 @@
+syntax = "proto3";
+option go_package = "ras/proto";
+
+service NetworkInfo {
+    rpc GetDevices(DevicesRequest) returns (DevicesResponse){}
+}
+
+message Device {
+    string iface = 1;
+}
+
+message DevicesRequest {}
+message DevicesResponse {
+    repeated Device interfaces = 1;
+}
