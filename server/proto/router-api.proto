@@ -1,0 +1,11 @@
+syntax = "proto3";
+option go_package = "ras/gen/protobuf/api";
+
+service PingService {
+    rpc Ping(ServerStatusRequest) returns (ServerStatusResponse){}
+}
+
+message ServerStatusRequest {}
+message ServerStatusResponse {
+    string uptime = 1;
+}

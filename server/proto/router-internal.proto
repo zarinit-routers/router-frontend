@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "ras/proto";
+option go_package = "ras/gen/protobuf/router-internal";
 
 service NetworkInfo {
     rpc GetDevices(DevicesRequest) returns (DevicesResponse){}
