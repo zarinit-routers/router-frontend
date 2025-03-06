@@ -15,8 +15,9 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  font-size: 13px;
+  color: white;
+  text-decoration: underline;
 }
 
 a:hover {
@@ -71,9 +72,7 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
-  a:hover {
-    color: #747bff;
-  }
+ 
   button {
     background-color: #f9f9f9;
   }
@@ -107,9 +106,7 @@ hr {
     border: 1px solid #2D2B32;
     margin: 5px 0px;
 }
-a{
-    font-size: 13px;
-}
+
 p {
     margin: 0;
     margin: 12px 0px 9px 0px;
@@ -136,8 +133,12 @@ p {
     cursor: pointer;
     padding-top: 11px;
     padding-bottom: 11px;
+    margin: 20px 0px;
     color: var(--fg);
     background-color: #470ABF;
+    color: white;
+font-size: 14px;
+box-sizing: border-box;
 
     &:hover {
         background-image: none;
@@ -191,6 +192,9 @@ input {
     line-height: 17.07px;
     letter-spacing: 0%;
     color: white;
+
+box-sizing: border-box;
+padding-left: 10px;
     
 }
 option{

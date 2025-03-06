@@ -9,15 +9,31 @@
              <input type="password" name="password" autocomplete="current-password" required="" id="id_password"
                  class="input">
              <br>
-             <button class="btn" type="submit" id="sub"> Войти</button>
+             <button class="btn" @click="" type="submit" id="sub"> Войти</button>
              <br>
              <h3><a href="">Восстановить</a></h3>
          </form>
 </template>
 
 <style scoped>
+
+h1{
+ margin: 50px;
+ font-size: 20px;
+}
+button,
+input{
+ width: 430px;
+ padding: 0;
+}
+p{
+ display: flex;
+}
+
 </style>
 
 <script setup>
 import logo from '../assets/logo.svg'
+
+
 </script>
