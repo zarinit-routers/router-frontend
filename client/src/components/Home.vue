@@ -52,7 +52,7 @@ const getSignalImage = (signal) => {
 };
 </script>
 
-<template >
+<template>
   <div class="Monitor">
     <h1>Монитор</h1>
 
@@ -90,83 +90,8 @@ const getSignalImage = (signal) => {
             <p>Модем</p>
             <form method="get">
               <select id="select_graf" name="range" class="time">
-
-                <option value="5m" selected>Последние 5 минут</option>
-
-                <option value="5m" selected>Последние 5 минут</option>
-
-                <option value="5m">Последние 5 минут</option>
-
-
-                <option value="15m" selected>Последние 15 минут</option>
-
-                <option value="15m">Последние 15 минут</option>
-
-                <option value="30m" selected>Последние 30 минут</option>
-
-                <option value="30m">Последние 30 минут</option>
-
-                <option value="1h" selected>Последний час</option>
-
-                <option value="1h">Последний час</option>
-
-                <option value="3h" selected>Последние 3 часа</option>
-
-                <option value="3h">Последние 3 часа</option>
-
-                <option value="6h" selected>Последние 6 часа</option>
-
-                <option value="6h">Последние 6 часа</option>
-
-                <option value="12h" selected>Последние 12 часа</option>
-
-                <option value="12h">Последние 12 часа</option>
-
-
-                <option value="24h" selected>Последние 24 часа</option>
-
-                <option value="24h">Последние 24 часа</option>
-
-
-                <option value="2d" selected>Последние 2 дня</option>
-
-                <option value="2d">Последние 2 дня</option>
-
-
-                <option value="7d" selected>Последние 7 дней</option>
-
-                <option value="7d">Последние 7 дней</option>
-
-
-                <option value="30d" selected>Последние 30 дней</option>
-
-                <option value="30d">Последние 30 дней</option>
-
-
-                <option value="90d" selected>Последние 90 дней</option>
-
-                <option value="90d">Последние 90 дней</option>
-
-
-                <option value="6M" selected>Последние 6 месяцев</option>
-
-                <option value="6M">Последние 6 месяцев</option>
-
-
-                <option value="1y" selected>Последний год</option>
-
-                <option value="1y">Последний год</option>
-
-
-                <option value="2y" selected>Последний 2 года</option>
-
-                <option value="2y">Последний 2 года</option>
-
-
-                <option value="5y" selected>Последние 5 лет</option>
-
-                <option value="5y">Последние 5 лет</option>
-
+                <option v-for="option in ranges" :value="option.value" :selected="option.selected">{{ option.label }}
+                </option>
               </select>
             </form>
           </td>
@@ -175,87 +100,8 @@ const getSignalImage = (signal) => {
             <p>Параметр</p>
             <form method="get">
               <select id="select_graf" name="range" class="time">
-
-                <option value="5m" selected>Последние 5 минут</option>
-
-                <option value="5m" selected>Последние 5 минут</option>
-
-                <option value="5m">Последние 5 минут</option>
-
-
-                <option value="15m" selected>Последние 15 минут</option>
-
-                <option value="15m">Последние 15 минут</option>
-
-                <option value="30m" selected>Последние 30 минут</option>
-
-                <option value="30m">Последние 30 минут</option>
-
-
-                <option value="1h" selected>Последний час</option>
-
-                <option value="1h">Последний час</option>
-
-
-                <option value="3h" selected>Последние 3 часа</option>
-
-                <option value="3h">Последние 3 часа</option>
-
-
-                <option value="6h" selected>Последние 6 часа</option>
-
-                <option value="6h">Последние 6 часа</option>
-
-
-                <option value="12h" selected>Последние 12 часа</option>
-
-                <option value="12h">Последние 12 часа</option>
-
-
-                <option value="24h" selected>Последние 24 часа</option>
-
-                <option value="24h">Последние 24 часа</option>
-
-
-                <option value="2d" selected>Последние 2 дня</option>
-
-                <option value="2d">Последние 2 дня</option>
-
-
-                <option value="7d" selected>Последние 7 дней</option>
-
-                <option value="7d">Последние 7 дней</option>
-
-
-                <option value="30d" selected>Последние 30 дней</option>
-
-                <option value="30d">Последние 30 дней</option>
-
-
-                <option value="90d" selected>Последние 90 дней</option>
-
-                <option value="90d">Последние 90 дней</option>
-
-
-                <option value="6M" selected>Последние 6 месяцев</option>
-
-                <option value="6M">Последние 6 месяцев</option>
-
-
-                <option value="1y" selected>Последний год</option>
-
-                <option value="1y">Последний год</option>
-
-
-                <option value="2y" selected>Последний 2 года</option>
-
-                <option value="2y">Последний 2 года</option>
-
-
-                <option value="5y" selected>Последние 5 лет</option>
-
-                <option value="5y">Последние 5 лет</option>
-
+                <option v-for="option in ranges" :value="option.value" :selected="option.selected">{{ option.label }}
+                </option>
               </select>
             </form>
           </td>
@@ -266,88 +112,8 @@ const getSignalImage = (signal) => {
             <p id="time_graf" class="time">Показать</p>
             <form method="get">
               <select id="select_graf" name="range" class="time">
-
-                <option value="5m" selected>Последние 5 минут</option>
-
-                <option value="5m" selected>Последние 5 минут</option>
-
-                <option value="5m">Последние 5 минут</option>
-
-
-                <option value="15m" selected>Последние 15 минут</option>
-
-                <option value="15m">Последние 15 минут</option>
-
-
-                <option value="30m" selected>Последние 30 минут</option>
-
-                <option value="30m">Последние 30 минут</option>
-
-
-                <option value="1h" selected>Последний час</option>
-
-                <option value="1h">Последний час</option>
-
-
-                <option value="3h" selected>Последние 3 часа</option>
-
-                <option value="3h">Последние 3 часа</option>
-
-
-                <option value="6h" selected>Последние 6 часа</option>
-
-                <option value="6h">Последние 6 часа</option>
-
-
-                <option value="12h" selected>Последние 12 часа</option>
-
-                <option value="12h">Последние 12 часа</option>
-
-
-                <option value="24h" selected>Последние 24 часа</option>
-
-                <option value="24h">Последние 24 часа</option>
-
-
-                <option value="2d" selected>Последние 2 дня</option>
-
-                <option value="2d">Последние 2 дня</option>
-
-
-                <option value="7d" selected>Последние 7 дней</option>
-
-                <option value="7d">Последние 7 дней</option>
-
-
-                <option value="30d" selected>Последние 30 дней</option>
-
-                <option value="30d">Последние 30 дней</option>
-
-
-                <option value="90d" selected>Последние 90 дней</option>
-
-                <option value="90d">Последние 90 дней</option>
-
-
-                <option value="6M" selected>Последние 6 месяцев</option>
-
-                <option value="6M">Последние 6 месяцев</option>
-
-
-                <option value="1y" selected>Последний год</option>
-
-                <option value="1y">Последний год</option>
-
-
-                <option value="2y" selected>Последний 2 года</option>
-
-                <option value="2y">Последний 2 года</option>
-
-
-                <option value="5y" selected>Последние 5 лет</option>
-
-                <option value="5y">Последние 5 лет</option>
-
+                <option v-for="option in ranges" :value="option.value" :selected="option.selected">{{ option.label }}
+                </option>
               </select>
             </form>
           </td>
@@ -355,87 +121,8 @@ const getSignalImage = (signal) => {
             <p id="time_graf" class="time">Шаг обновления</p>
             <form method="GET">
               <select id="select_graf" name="range" class="time">
-
-                <option value="5m" selected>Последние 5 минут</option>
-                <option value="5m" selected>Последние 5 минут</option>
-
-                <option value="5m">Последние 5 минут</option>
-
-
-                <option value="15m" selected>Последние 15 минут</option>
-
-                <option value="15m">Последние 15 минут</option>
-
-
-                <option value="30m" selected>Последние 30 минут</option>
-
-                <option value="30m">Последние 30 минут</option>
-
-
-                <option value="1h" selected>Последний час</option>
-
-                <option value="1h">Последний час</option>
-
-
-                <option value="3h" selected>Последние 3 часа</option>
-
-                <option value="3h">Последние 3 часа</option>
-
-
-                <option value="6h" selected>Последние 6 часа</option>
-
-                <option value="6h">Последние 6 часа</option>
-
-
-                <option value="12h" selected>Последние 12 часа</option>
-
-                <option value="12h">Последние 12 часа</option>
-
-
-                <option value="24h" selected>Последние 24 часа</option>
-
-                <option value="24h">Последние 24 часа</option>
-
-
-                <option value="2d" selected>Последние 2 дня</option>
-
-                <option value="2d">Последние 2 дня</option>
-
-
-                <option value="7d" selected>Последние 7 дней</option>
-
-                <option value="7d">Последние 7 дней</option>
-
-
-                <option value="30d" selected>Последние 30 дней</option>
-
-                <option value="30d">Последние 30 дней</option>
-
-
-                <option value="90d" selected>Последние 90 дней</option>
-
-                <option value="90d">Последние 90 дней</option>
-
-
-                <option value="6M" selected>Последние 6 месяцев</option>
-
-                <option value="6M">Последние 6 месяцев</option>
-
-
-                <option value="1y" selected>Последний год</option>
-
-                <option value="1y">Последний год</option>
-
-
-                <option value="2y" selected>Последний 2 года</option>
-
-                <option value="2y">Последний 2 года</option>
-
-
-                <option value="5y" selected>Последние 5 лет</option>
-
-                <option value="5y">Последние 5 лет</option>
-
+                <option v-for="option in ranges" :value="option.value" :selected="option.selected">{{ option.label }}
+                </option>
               </select>
 
             </form>
@@ -627,13 +314,8 @@ const getSignalImage = (signal) => {
 
 <style scoped>
 
-h1 {
-  margin-bottom: 15px;
-}
 
-h2 {
-  margin-top: 15px;
-}
+
 
 h4 {
   padding: 0px;
@@ -681,9 +363,7 @@ h4 {
   margin-left: -2px;
 }
 
-#button_test {
-  float: right;
-}
+
 
 #table_speed {
   width: 300px;
@@ -731,10 +411,7 @@ h4 {
   border: #37343D;
 }
 
-#map {
-  width: 100px;
-  height: 450px;
-}
+
 
 .simcard {
   display: flex;

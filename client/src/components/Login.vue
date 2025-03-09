@@ -10,7 +10,7 @@
       
       <br>
       
-      <router-link to="/home" class="btn" type="submit">Войти</router-link>
+      <router-link  to="/home" class="btn button_authorize" type="submit">Войти</router-link>
       <br>
       <h3><a href="#">Восстановить</a></h3>
     </form>
@@ -25,8 +25,10 @@ button,
 input{
     width: 430px;
 }
-p{
-    display: flex;
+.button_authorize{
+  display: block;
+  width: 430px;
+  height: 40px;
 }
 
 </style>
