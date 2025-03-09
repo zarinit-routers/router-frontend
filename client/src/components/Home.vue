@@ -626,9 +626,7 @@ const getSignalImage = (signal) => {
 </template>
 
 <style scoped>
-.Monitor{
-  margin-top: 90px;
-}
+
 h1 {
   margin-bottom: 15px;
 }

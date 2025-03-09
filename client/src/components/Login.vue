@@ -10,7 +10,7 @@
       
       <br>
       
-      <button class="btn" type="submit">Войти</button>
+      <router-link to="/home" class="btn" type="submit">Войти</router-link>
       <br>
       <h3><a href="#">Восстановить</a></h3>
     </form>

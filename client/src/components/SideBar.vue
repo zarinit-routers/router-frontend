@@ -5,7 +5,7 @@
         </div>
         <p class="p_setting">Настройки</p>
         <div class="side_bar_p">
-            <Router-link class="side_bar_settings" href="{system}">Система</Router-link>
+            <Router-link class="side_bar_settings" to="/system">Система</Router-link>
             <Router-link class="side_bar_settings" href="{mobiles}">Мобильная связь</Router-link>
             <Router-link class="side_bar_settings" href="{wifi}">Wi-Fi сеть</Router-link>
             <Router-link class="side_bar_settings" to="/system">Локальная сеть</Router-link>
@@ -25,7 +25,7 @@
 #side_bar {
   position: absolute;
   /* Абсолютное позиционирование */
-  margin-top: 90px;
+ 
   width: 200px;
   /* Ширина сайдбара */
   height: 100vh;

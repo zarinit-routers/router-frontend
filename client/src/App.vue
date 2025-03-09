@@ -19,15 +19,21 @@ const login = () => {
 
 <template>
 <Headerr></Headerr>
-<SideBar></SideBar>
+<div class="app_card" >
+  <SideBar></SideBar>
   
   <!-- <HelloWorld v-if="authMode === 'router'" msg="Vite + Vue" /> -->
   <router-view style="margin-left: 210px;"/>
+</div>
+
 </template>
 
 <style>
 
-
+.app_card{
+  margin-top: 90px;
+  display: flex;
+}
 body {
   padding-left: 20%;
   padding-right: 20%;
