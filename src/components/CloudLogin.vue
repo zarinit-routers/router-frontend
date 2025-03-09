@@ -15,20 +15,7 @@
          </form>
 </template>
 
-<style scoped>
-
-h1{
- margin: 50px;
- font-size: 20px;
-}
-button,
-input{
- width: 430px;
- padding: 0;
-}
-p{
- display: flex;
-}
+<style>
 
 </style>
 

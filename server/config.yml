@@ -1,3 +1,0 @@
-grpc:
-  port: 8084
-  timeout: 50000 # in nanoseconds

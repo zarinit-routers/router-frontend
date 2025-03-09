@@ -1,3 +1,0 @@
-# Cloud
-
-Cloud application cmd
