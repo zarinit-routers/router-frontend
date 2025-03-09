@@ -1,16 +1,54 @@
-<div class="" id="side_bar">
-    <div class="side_bar_p">
-      <a href="monitor">Монитор</a>
-    </div>
-<p class="p_setting">Настройки</p>
-<div class="side_bar_p">
-      <a class="side_bar_settings" href="{system}">Система</a>
-      <a class="side_bar_settings" href="{mobiles}">Мобильная связь</a>
-      <a class="side_bar_settings" href="{wifi}">Wi-Fi сеть</a>
-      <a class="side_bar_settings" to="{'system'}">Локальная сеть</a>
-      <a class="side_bar_settings" href="{firewall' %}">Брандмауэр</a>
-      <a class="side_bar_settings" href="{% url 'systemjournal' %}">Системный журнал</a>
-      <a class="side_bar_settings" href="{% url 'map' %}">Карта</a>
-    </div>
+<template>
+    <div class="" id="side_bar">
+        <div class="side_bar_p">
+            <Router-link class="side_bar_settings" to="/home" >Монитор</Router-link>
+        </div>
+        <p class="p_setting">Настройки</p>
+        <div class="side_bar_p">
+            <Router-link class="side_bar_settings" href="{system}">Система</Router-link>
+            <Router-link class="side_bar_settings" href="{mobiles}">Мобильная связь</Router-link>
+            <Router-link class="side_bar_settings" href="{wifi}">Wi-Fi сеть</Router-link>
+            <Router-link class="side_bar_settings" to="/system">Локальная сеть</Router-link>
+            <Router-link class="side_bar_settings" href="{firewall' %}">Брандмауэр</Router-link>
+            <Router-link class="side_bar_settings" href="{% url 'systemjournal' %}">Системный журнал</Router-link>
+            <Router-link class="side_bar_settings" href="{% url 'map' %}">Карта</Router-link>
+        </div>
 
-</div>
+    </div>
+</template>
+
+<script>
+</script>
+
+<style scoped>
+
+#side_bar {
+  position: absolute;
+  /* Абсолютное позиционирование */
+  margin-top: 90px;
+  width: 200px;
+  /* Ширина сайдбара */
+  height: 100vh;
+  /* Высота на весь экран */
+
+}
+
+.side_bar_settings{
+    display: flex;
+}
+
+.side_bar_p {
+  width: 182px;
+  padding: 12px 0px 12px 18px;
+  background: #222228;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+  font-size: 13px;
+}
+</style>

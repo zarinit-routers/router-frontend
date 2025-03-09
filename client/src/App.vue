@@ -5,6 +5,7 @@ const authMode = import.meta.env.VITE_AUTH_MODE;
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import Headerr from './components/Headerr.vue';
+import SideBar from './components/SideBar.vue';
 
 const route = useRoute();
 const isLoginPage = route.path === '/';
@@ -18,9 +19,10 @@ const login = () => {
 
 <template>
 <Headerr></Headerr>
+<SideBar></SideBar>
   
   <!-- <HelloWorld v-if="authMode === 'router'" msg="Vite + Vue" /> -->
-  <router-view />
+  <router-view style="margin-left: 210px;"/>
 </template>
 
 <style>

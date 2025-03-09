@@ -123,31 +123,7 @@ select {
 margin-left: 10px;
 }
 
-#side_bar {
-  position: absolute;
-  /* Абсолютное позиционирование */
 
-  width: 200px;
-  /* Ширина сайдбара */
-  height: 100vh;
-  /* Высота на весь экран */
-
-}
-
-.side_bar_p {
-  width: 182px;
-  padding: 12px 0px 12px 18px;
-  background: #222228;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-a {
-  text-decoration: none;
-  color: white;
-  font-size: 13px;
-}
 
 #header {
 
