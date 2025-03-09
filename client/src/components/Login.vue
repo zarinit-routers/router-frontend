@@ -9,6 +9,7 @@
       <input type="password" v-model="password" required class="input">
       
       <br>
+      
       <button class="btn" type="submit">Войти</button>
       <br>
       <h3><a href="#">Восстановить</a></h3>

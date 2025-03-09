@@ -1,29 +1,78 @@
-<script setup>
+<template>
+  <header>
 
 
+    <div class="logotip">
+      <img src="../assets/logo.svg" alt="">
+    </div>
+    <div id="button" class="h_card">
+      <select class="language_select button_hover" name="language" id="">
+        <option value="English" selected>English</option>
+        <option value="Russian" selected>Russian</option>
+      </select>
+      <form class="h_button button_hover" action="" method="POST">
+        <button class="h_but button_hover" style="padding-left: 10px;" type="submit">Перезагрузка <img
+            style="padding-right: 10px;" src=" ../assets/header_buttons/refresh.svg" alt=""></button>
+      </form>
+      <form class="h_button button_hover" action="login" @submit.prevent="login" method="POST">
+        
+        <router-link class="nav_but " to="/" stype="submit"><img src="../assets/header_buttons/exit.svg" alt=""></router-link>
+      </form>
+    </div>
+
+
+  </header>
+  
+</template>
+
+<script>
 const authMode = import.meta.env.VITE_AUTH_MODE;
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
-import Headerr from './components/Headerr.vue';
 
 const route = useRoute();
-const isLoginPage = route.path === '/';
 
 
 const router = useRouter();
 const login = () => {
-    router.push('/'); // Переход на главную страницу
-  };
+  router.push('/'); // Переход на главную страницу
+};
 </script>
 
-<template>
-<Headerr></Headerr>
-  
-  <!-- <HelloWorld v-if="authMode === 'router'" msg="Vite + Vue" /> -->
-  <router-view />
-</template>
-
 <style>
+.h_card {
+  display: flex;
+  margin-right: 10px;
+}
+
+header {
+  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  z-index: 1000;
+  padding: 0;
+  padding-top: 30px;
+  margin-bottom: 300px;
+
+  justify-content: space-between;
+
+  align-items: center;
+  background-color: #1B1B1F;
+}
+
+.header_nav {
+  background-color: white;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+:root {
+  --accent-color: #2B2D60;
+}
+
 
 
 body {
@@ -69,10 +118,9 @@ select {
   padding-left: 18px;
 }
 
-#logo {
-  width: 189px;
-  height: 64px;
-
+.logotip {
+ 
+margin-left: 10px;
 }
 
 #side_bar {
@@ -152,13 +200,13 @@ a {
   align-items: center;
 }
 
-.but {
+.nav_but {
   background: #222228;
   height: 39px;
   width: 60px;
   border: none;
   border-radius: 10px;
-  padding: 10px;
+  padding: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -186,4 +234,6 @@ li.journal-item {
 .side_bar_settings {
   margin: 6px 0px;
 }
+
+
 </style>
