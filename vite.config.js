@@ -9,12 +9,5 @@ export default defineConfig({
     vue(),
     tailwindcss(),
   ],
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8080',  // Адрес Go-сервера
-        secure: false,  // Если сервер не использует HTTPS
-      },
-    },
-  },
+  server: { proxy: { "/api": { target: "http://localhost:8080" } } },
 })
