@@ -1,11 +1,11 @@
 <template>
-  <header>
+  <header class="flex justify-between">
 
 
     <div class="logotip">
       <img src="../assets/logo.svg" alt="">
     </div>
-    <div id="button" class="h_card">
+    <div id="button" class="h_card flex align-center">
       <select class="language_select button_hover" name="language" id="">
         <option value="English" selected>English</option>
         <option value="Russian" selected>Russian</option>
