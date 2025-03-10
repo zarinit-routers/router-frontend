@@ -14,10 +14,9 @@
         <button class="h_but button_hover" style="padding-left: 10px;" type="submit">Перезагрузка <img
             style="padding-right: 10px;" src="../assets/header_buttons/refresh.svg" alt=""></button>
       </form>
-      <form class="h_button button_hover" action="login" @submit.prevent="login" method="POST">
-
-        <router-link class="nav_but " to="/" stype="submit"><img src="../assets/header_buttons/exit.svg" alt=""></router-link>
-      </form>
+      <button @click="logout">
+        <img src="../assets/header_buttons/exit.svg" alt="">
+      </button>
     </div>
 
 
@@ -25,18 +24,16 @@
 
 </template>
 
-<script>
+<script setup>
 const authMode = import.meta.env.VITE_AUTH_MODE;
-import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 
-const route = useRoute();
-
-
 const router = useRouter();
-const login = () => {
-  router.push('/'); // Переход на главную страницу
-};
+
+const logout = () => {
+  localStorage.removeItem('authToken');
+  router.push('/login');
+}
 </script>
 
 <style>
