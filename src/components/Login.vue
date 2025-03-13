@@ -38,20 +38,20 @@ const onSubmit = async (e) => {
 </script>
 
 <template>
-  <div class="container mx-auto py-25 flex align-center flex-col px-100 text-center">
+  <div class="container mx-auto py-25 flex align-center  items-center flex-col px-100 text-center">
     <div class="h-18 flex justify-center">
       <img :src="logo" alt="logo" />
     </div>
     <p class="text-lg pt-16 pb-14">Добро пожаловать!</p>
-    <form @submit.prevent="onSubmit">
-      <div class="form__fields">
-        <div class="form__field flex flex-col text-left">
+    <form @submit.prevent="onSubmit" class="w-md">
+      <div class="">
+        <div class="flex flex-col text-left w-md">
           <Input v-model="email" label="Email" classLabel="text-xs text-[#54505B] pb-2 pt-3"
-            classInput="p-4 rounded-lg w-full bg-[#37343D]" type="email" placeholder="" />
+            classInput="p-4 rounded-lg  bg-[#37343D]" type="email" placeholder="" />
         </div>
-        <div class="form__field flex flex-col text-left">
+        <div class="form__field flex flex-col w-md text-left">
           <Input v-model="password" label="Пароль" classLabel="text-xs text-[#54505B] pb-2 pt-3"
-            classInput="p-4 rounded-lg w-full bg-[#37343D]" type="password" placeholder="" />
+            classInput="p-4 rounded-lg  bg-[#37343D]" type="password" placeholder="" />
         </div>
       </div>
       <div class="form__controls pt-8">

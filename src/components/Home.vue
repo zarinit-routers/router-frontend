@@ -2,6 +2,9 @@
 import { ref, reactive } from 'vue';
 import SideBar from "./SideBar.vue";
 import Header from "./Header.vue"; // Добавляем импорт 'reactive' и 'ref'
+import OsInfo from './OsInfo.vue';
+import Timezone from './Timezone.vue';
+import NtpServers from './NtpServers.vue';
 
 
 const modem = reactive({
@@ -59,11 +62,15 @@ const getSignalImage = (signal) => {
   <SideBar></SideBar>
   <div class="Monitor container mx-auto">
     <h1>Монитор</h1>
+    <hr class="my-3">
+    <OsInfo />
+    <Timezone />
+    <NtpServers />
 
-    <div class="simcard">
-      <div v-if="!modem.operator" class="w" id="none">
-        <img class="oper oper_none" src="../assets/oper/no_sim.svg" alt="">
-        <p class="p_none">Вставьте в слот сим-карту</p>
+    <div class="simcard mb-[30px]">
+      <div v-if="!modem.operator" class="w-[130px] h-[125px] bg-[#37343D] flex items-center justify-between rounded-xl" id="none">
+        <img class="w-[30px] mx-[12px]" src="../assets/oper/no_sim.svg" alt="">
+        <p class="text-xs">Вставьте в слот сим-карту</p>
       </div>
 
       <div v-else :id="modem.operator" class="simcard_row">

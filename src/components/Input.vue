@@ -1,6 +1,6 @@
 <template>
   <label :for="id" :class="classLabel">{{ label }}</label>
-  <input
+  <input class=""
       :class="classInput"
       :id="id"
       :type="type"

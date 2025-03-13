@@ -1,7 +1,7 @@
 <template>
     <div class="container mx-auto " id="side_bar">
         <div class="side_bar_p w-[200px] bg-[#222228] rounded-[10px] p-[20px]">
-            <Router-link class="" to="/home" >Монитор</Router-link>
+            <Router-link class="" to="/" >Монитор</Router-link>
         </div>
         <p class="w-[200px] p-[20px] ">Настройки</p>
         <div class="flex flex-col w-[200px] bg-[#222228] rounded-[10px] p-[20px]">
