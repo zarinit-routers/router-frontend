@@ -1,20 +1,21 @@
 <template>
-  <header class="flex justify-between">
+  <header class="flex justify-between my-12 container mx-auto">
 
 
     <div class="logotip">
       <img src="../assets/logo.svg" alt="">
     </div>
-    <div id="button" class="h_card flex align-center">
-      <select class="language_select button_hover" name="language" id="">
+    <div id="button" class="flex items-center ">
+      <select class=" bg-[#222228] w-[130px] h-[39px] rounded-xl" name="language" id="">
         <option value="English" selected>English</option>
         <option value="Russian" selected>Russian</option>
       </select>
-      <form class="h_button button_hover" action="" method="POST">
-        <button class="h_but button_hover" style="padding-left: 10px;" type="submit">Перезагрузка <img
-            style="padding-right: 10px;" src="../assets/header_buttons/refresh.svg" alt=""></button>
-      </form>
-      <button @click="logout">
+      <div class="flex items-center justify-between bg-[#222228] px-[12px] rounded-xl w-[200px] h-[39px] mx-[10px]" action="" type="submit" >
+        <button class="flex "  >Перезагрузка </button>
+          <img class="h-[21px]" src="../assets/header_buttons/refresh.svg" alt="">
+      </div>
+      
+      <button class="w-[60px] h-[39px] flex items-center bg-[#222228] justify-center rounded-xl" @click="logout">
         <img src="../assets/header_buttons/exit.svg" alt="">
       </button>
     </div>

@@ -57,11 +57,11 @@ const getSignalImage = (signal) => {
 <template>
   <Header v-if="$route.path !== './components/Login'"></Header>
   <SideBar></SideBar>
-  <div class="Monitor">
+  <div class="Monitor container mx-auto">
     <h1>Монитор</h1>
 
     <div class="simcard">
-      <div v-if="!modem.operator" class="simcard_row simcard_none" id="none">
+      <div v-if="!modem.operator" class="w" id="none">
         <img class="oper oper_none" src="../assets/oper/no_sim.svg" alt="">
         <p class="p_none">Вставьте в слот сим-карту</p>
       </div>
