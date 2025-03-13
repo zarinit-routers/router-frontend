@@ -91,7 +91,42 @@ onMounted(fetchModems);
     <OsInfo />
     <Timezone />
     <NtpServers />
+    <div class="simcard mb-[30px]">
+      <div v-if="!modem.operator" class="w-[130px] h-[125px] bg-[#37343D] flex items-center justify-between rounded-xl" id="none">
+        <img class="w-[30px] mx-[12px]" src="../assets/oper/no_sim.svg" alt="">
+        <p class="text-xs">Вставьте в слот сим-карту</p>
+      </div>
+            <div v-else :id="modem.operator" class="simcard_row">
+                <img :id="open_logo" :src="getOperatorLogo(modem.operator)" />
+                <div id="Open_name_h">
+                    <p id="Open_name">{{ modem.operator }}</p>
+                </div>
 
+                <img :id="signal" :src="getSignalImage(modem.signal)" />
+                <p id="status_connect">{{ modem.mode }}</p>
+
+                <p id="updown">
+                    <img id="rows_speed" src="../assets/rows/up.png" />
+                    <span id="modem_0_rx">{{ modem.rxSpeed }}</span> Мб/сек
+                    <img id="rows_speed" src="../assets/rows/down.png" />
+                    <span id="modem_0_tx">{{ modem.txSpeed }}</span> Мб/сек
+                </p>
+            </div>
+        </div>
+
+        <section>
+            <h2>График</h2>
+
+            <table>
+                <tr class="graf">
+                    <td class="graf_card">
+                        <p>Модем</p>
+                        <form method="get">
+                            <select id="select_graf" name="range" class="time">
+                                <option v-for="option in ranges" :value="option.value" :selected="option.selected">{{ option.label }}</option>
+                            </select>
+                        </form>
+                    </td>
     <div class="simcard mb-[30px]">
       <h2>Список модемов</h2>
     <div v-if="loading">Загрузка...</div>

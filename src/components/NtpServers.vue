@@ -45,9 +45,4 @@
   };
   
   onMounted(fetchNtpServers);
-  </script>
-  
-  <style scoped>
-  /* Добавьте стили по мере необходимости */
-  </style>
-  
+</script>
