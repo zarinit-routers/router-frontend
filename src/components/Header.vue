@@ -23,6 +23,9 @@
       </button>
     </div>
 
+            <button class="w-[60px] h-[39px] flex items-center bg-[#222228] justify-center rounded-xl" @click="logout">
+                <img src="../assets/header_buttons/exit.svg" alt="" />
+            </button>
 
   </header>
 

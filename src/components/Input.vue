@@ -1,15 +1,6 @@
 <template>
-    <div class="flex flex-col gap-2">
-        <label class="text-base text-[#54505B] text-start">{{ label }}</label>
-        <input
-            class="p-5 text-white bg-[#37343D] rounded-lg outline-none invalid:text-[#B99209]"
-            :type="type"
-            :placeholder="placeholder"
-            :value="modelValue"
-            :disabled="disabled"
-            @input="$emit('update:modelValue', $event.target.value)"
-            :autocomplete="autocomplete" />
-    </div>
+    <label :for="id" :class="classLabel">{{ label }}</label>
+    <input :class="classInput" :id="id" :type="type" :name="name" :placeholder="placeholder" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" />
 </template>
 
 <script setup>
