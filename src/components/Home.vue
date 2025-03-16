@@ -1,14 +1,14 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import SideBar from "./SideBar.vue";
-import Header from "./Header.vue"; // Добавляем импорт 'reactive' и 'ref'
+import Header from "./Header.vue";
 import OsInfo from './OsInfo.vue';
 import Timezone from './Timezone.vue';
 import NtpServers from './NtpServers.vue';
-
+import Select from '../components/Select.vue';
 
 const modem = reactive({
-  operator: null, // или "MTS", "MegaFon", "Beeline", "Tele2"
+  operator: null,
   signal: 0,
   mode: 'online',
   rxSpeed: 0,
@@ -55,6 +55,31 @@ const getSignalImage = (signal) => {
   if (signal <= 80) return "../assets/signal/signal_4.svg";
   return "../assets/signal/signal_5.svg";
 };
+
+
+
+import { onMounted } from 'vue';
+import serverUrl from '../../config/serverUrl';
+
+const modems = ref([]);
+const loading = ref(true);
+const error = ref(null);
+
+// Функция для загрузки списка модемов
+const fetchModems = async () => {
+  try {
+    const response = await fetch(`${serverUrl}/api/modems`);
+    if (!response.ok) throw new Error('Ошибка загрузки модемов');
+    const data = await response.json();
+    modems.value = data.modems;
+  } catch (err) {
+    error.value = err.message;
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(fetchModems);
 </script>
 
 <template>
@@ -68,27 +93,18 @@ const getSignalImage = (signal) => {
     <NtpServers />
 
     <div class="simcard mb-[30px]">
-      <div v-if="!modem.operator" class="w-[130px] h-[125px] bg-[#37343D] flex items-center justify-between rounded-xl" id="none">
-        <img class="w-[30px] mx-[12px]" src="../assets/oper/no_sim.svg" alt="">
-        <p class="text-xs">Вставьте в слот сим-карту</p>
-      </div>
-
-      <div v-else :id="modem.operator" class="simcard_row">
-        <img :id="open_logo" :src="getOperatorLogo(modem.operator)" />
-        <div id="Open_name_h">
-          <p id="Open_name">{{ modem.operator }}</p>
-        </div>
-
-        <img :id="signal" :src="getSignalImage(modem.signal)" />
-        <p id="status_connect">{{ modem.mode }}</p>
-
-        <p id="updown">
-          <img id='rows_speed' src="../assets/rows/up.png" />
-          <span id="modem_0_rx">{{ modem.rxSpeed }}</span> Мб/сек
-          <img id='rows_speed' src="../assets/rows/down.png" />
-          <span id="modem_0_tx">{{ modem.txSpeed }}</span> Мб/сек
-        </p>
-      </div>
+      <h2>Список модемов</h2>
+    <div v-if="loading">Загрузка...</div>
+    <div v-else-if="error">{{ error }}</div>
+    <div v-else class="simcard mb-[30px]">
+      <ul>
+        <li v-for="(modem, index) in modems" :key="index">
+          <strong>Модем:</strong> {{ modem.name }}
+          <div><strong>Модель:</strong> {{ modem.model }}</div>
+          <div><strong>Статус:</strong> {{ modem.status }}</div>
+        </li>
+      </ul>
+    </div>
     </div>
 
     <section>
@@ -96,50 +112,49 @@ const getSignalImage = (signal) => {
 
       <table>
         <tr class="graf">
-
-          <td class="graf_card">
-            <p>Модем</p>
-            <form method="get">
-              <select id="select_graf" name="range" class="time">
-                <option v-for="option in ranges" :value="option.value" :selected="option.selected">{{ option.label }}
-                </option>
-              </select>
-            </form>
+          <td class="flex flex-col">
+            
+            <Select 
+              v-model="selectedRange"
+              label="Модем"
+              classLabel=""
+              classSelect="bg-black"
+              :options="ranges"
+            />
           </td>
 
-          <td class="graf_card">
-            <p>Параметр</p>
-            <form method="get">
-              <select id="select_graf" name="range" class="time">
-                <option v-for="option in ranges" :value="option.value" :selected="option.selected">{{ option.label }}
-                </option>
-              </select>
-            </form>
+          <td class="flex flex-col">
+            
+            <Select 
+              v-model="selectedRange"
+              label="Параметр"
+              classSelect=""
+              :options="ranges"
+            />
           </td>
         </tr>
 
         <tr class="graf">
-          <td class="graf_card">
-            <p id="time_graf" class="time">Показать</p>
-            <form method="get">
-              <select id="select_graf" name="range" class="time">
-                <option v-for="option in ranges" :value="option.value" :selected="option.selected">{{ option.label }}
-                </option>
-              </select>
-            </form>
+          <td class="flex flex-col">
+            <Select 
+              v-model="selectedRange"
+              label="Показать"
+              classSelect="time"
+              :options="ranges"
+            />
           </td>
-          <td class="graf_card">
-            <p id="time_graf" class="time">Шаг обновления</p>
-            <form method="GET">
-              <select id="select_graf" name="range" class="time">
-                <option v-for="option in ranges" :value="option.value" :selected="option.selected">{{ option.label }}
-                </option>
-              </select>
 
-            </form>
+          <td class="flex flex-col">
+            <Select 
+              v-model="selectedRange"
+              label="Шаг обновления"
+              classSelect="time"
+              :options="ranges"
+            />
           </td>
         </tr>
       </table>
+
       <iframe src="" width="100%" height="450px" frameborder="0"></iframe>
     </section>
 
@@ -147,182 +162,44 @@ const getSignalImage = (signal) => {
       <table class="table_wifi">
         <tr class="test_cards">
           <td class="test_card">
-            <!-- <div class="test_h">
-              <div class="test test_error"></div>
-              <h2 class="test">Wi-Fi 2.4 Mhz</h2>
-            </div>
-            <p>Имя сети</p>-->
             <div class="test_h">
               <div class="test test_succes"></div>
               <h2 class="test">Wi-Fi 2.4 Mhz</h2>
             </div>
             <p>Имя сети</p>
-            <select id="select_graf" name="range" class="time"></select>
+            <Select 
+              v-model="selectedRange"
+              label=""
+              classSelect="time"
+              :options="ranges"
+            />
           </td>
+
           <td class="test_card">
             <div class="test_h">
               <div class="test test_error"></div>
               <h2 class="test">Wi-Fi 5 Mhz</h2>
             </div>
             <p>Имя сети</p>
-            <!--  <div class="test_h">
-              <div class="test test_succes"></div>
-              <h2 class="test">Wi-Fi 5 Mhz</h2>
-            </div>
-            <p>Имя сети</p>-->
-            <select id="select_graf" name="range" class="time"></select>
+            <Select 
+              v-model="selectedRange"
+              label=""
+              classSelect="time"
+              :options="ranges"
+            />
           </td>
         </tr>
       </table>
     </div>
+
     <section>
-      <h2>Локальная сеть</h2>
-
-      <div class="Local_network">
-        <div class="Local_network_card">
-          <h2>1</h2>
-          <img class="Local_network_img" src="../assets/free-icon-ethernet-1176956.png ">
-        </div>
-        <div class="Local_network_card">
-          <h2>2</h2>
-          <img class="Local_network_img" src="../assets/free-icon-ethernet-1176956.png ">
-        </div>
-        <div class="Local_network_card">
-          <h2>3</h2>
-          <img class="Local_network_img" src="../assets/free-icon-ethernet-1176956.png  ">
-        </div>
-        <div class="Local_network_card">
-          <h2>4</h2>
-          <img class="Local_network_img" src="../assets/free-icon-ethernet-1176956.png ">
-        </div>
-      </div>
-    </section>
-    <section style="margin-bottom: 75px;">
       <h2>Подключенные устройства</h2>
-      <select id="select_device" name="range">
-        <option value="" disabled selected>Все типы подключения</option>
-      </select>
-
-      <div class="devices">
-        <div class="device">
-          <div>
-            <div class="device_title">
-              <img class="device_icon" src="../assets/device/icon_WiFi.svg" alt="">
-              <p class="device_name">IPhone 14 Pro Max</p>
-            </div>
-            <div>
-              <p class="device_IP">00:26:57:00:1f:02</p>
-            </div>
-          </div>
-          <div>
-            <div class="device_speed download">
-              <img class="device_icon" src="../assets/device/icon_download.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-            <div class="device_speed distribution">
-              <img class="device_icon" src="../assets/device/icon_distribution.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="device">
-          <div>
-            <div class="device_title">
-              <img class="device_icon" src="../assets/device/icon_WiFi.svg" alt="">
-              <p class="device_name">IPhone 14 Pro Max</p>
-            </div>
-            <div>
-              <p class="device_IP">00:26:57:00:1f:02</p>
-            </div>
-          </div>
-          <div>
-            <div class="device_speed download">
-              <img class="device_icon" src="../assets/device/icon_download.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-            <div class="device_speed distribution">
-              <img class="device_icon" src="../assets/device/icon_distribution.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="device">
-          <div>
-            <div class="device_title">
-              <img class="device_icon" src="../assets/device/icon_WiFi.svg" alt="">
-              <p class="device_name">IPhone 14 Pro Max</p>
-            </div>
-            <div>
-              <p class="device_IP">00:26:57:00:1f:02</p>
-            </div>
-          </div>
-          <div>
-            <div class="device_speed download">
-              <img class="device_icon" src="../assets/device/icon_download.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-            <div class="device_speed distribution">
-              <img class="device_icon" src="../assets/device/icon_distribution.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="device">
-          <div>
-            <div class="device_title">
-              <img class="device_icon" src="../assets/device/icon_WiFi.svg" alt="">
-              <p class="device_name">IPhone 14 Pro Max</p>
-            </div>
-            <div>
-              <p class="device_IP">00:26:57:00:1f:02</p>
-            </div>
-          </div>
-          <div>
-            <div class="device_speed download">
-              <img class="device_icon" src="../assets/device/icon_download.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-            <div class="device_speed distribution">
-              <img class="device_icon" src="../assets/device/icon_distribution.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="device">
-          <div>
-            <div class="device_title">
-              <img class="device_icon" src="../assets/device/icon_WiFi.svg" alt="">
-              <p class="device_name">IPhone 14 Pro Max</p>
-            </div>
-            <div>
-              <p class="device_IP">00:26:57:00:1f:02</p>
-            </div>
-          </div>
-          <div>
-            <div class="device_speed download">
-              <img class="device_icon" src="../assets/device/icon_download.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-            <div class="device_speed distribution">
-              <img class="device_icon" src="../assets/device/icon_distribution.svg" alt="">
-              <p class="device_IP">150 Мбит/с</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <Select 
+        v-model="selectedRange"
+        label=""
+        classSelect="time"
+        :options="[{ value: '', label: 'Все типы подключения', disabled: true }, ...ranges]"
+      />
     </section>
   </div>
 </template>
-
-<style scoped>
-
-</style>
