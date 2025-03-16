@@ -149,7 +149,6 @@ onMounted(fetchModems);
                             </select>
                         </form>
                     </td>
-                </tr>
 
       <table>
         <tr class="graf">
