@@ -17,16 +17,25 @@
           v-for="net in osInfo.NetworkStats"
           class="bg-[#37343D] rounded-lg p-1 px-4 flex flex-col gap-1"
         >
-          {{ net.Name }}
+          <div>{{ net.Name }}</div>
+          <div>
+            <i class="fas fa-upload"></i>
+            {{ (net.TxBytes / 1024 / 1024) | 0 }} kb
+          </div>
+          <div>
+            <i class="fas fa-download"></i>
+            {{ (net.RxBytes / 1024 / 1024) | 0 }} kb
+          </div>
         </div>
       </div>
       <div>
         <p class="font-bold">Диски</p>
-        <div class="grid grid-cols-3 gap-1">
+        <div class="grid grid-cols-2 gap-1">
           <div
             class="bg-[#37343D] rounded-lg p-1 px-4 text-sm"
             v-for="disk in osInfo.DiskStats"
           >
+            <i class="fas fa-hard-drive pe-2"></i>
             {{ disk.Name }}
           </div>
         </div>
