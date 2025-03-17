@@ -2,7 +2,7 @@
   <div>
     <div v-if="loading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
-    <div v-else>
+    <div v-else class="flex flex-col gap-2">
       <Select
         label="Часовой пояс"
         v-model="selectedTimezone"
@@ -12,7 +12,7 @@
           {{ timezone }}
         </option> -->
 
-      <button class="button" @click="changeTimezone">
+      <button class="button form-item" @click="changeTimezone">
         Сменить часовой пояс
       </button>
     </div>

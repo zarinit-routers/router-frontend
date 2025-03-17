@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-2">
     <h2>Информация о системе</h2>
     <div v-if="loading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
@@ -11,10 +11,26 @@
         КБайт использовано
       </p>
       <p><strong>Процессор:</strong> {{ osInfo.CpuStats.CPUCount }} ядер</p>
-      <p>
-        <strong>Сетевой интерфейс:</strong> {{ osInfo.NetworkStats[0].Name }}
-      </p>
-      <p><strong>Диск:</strong> {{ osInfo.DiskStats[0].Name }}</p>
+      <p class="font-bold">Сетевые интерфейсы</p>
+      <div class="grid grid-cols-1 gap-1">
+        <div
+          v-for="net in osInfo.NetworkStats"
+          class="bg-[#37343D] rounded-lg p-1 px-4 flex flex-col gap-1"
+        >
+          {{ net.Name }}
+        </div>
+      </div>
+      <div>
+        <p class="font-bold">Диски</p>
+        <div class="grid grid-cols-3 gap-1">
+          <div
+            class="bg-[#37343D] rounded-lg p-1 px-4 text-sm"
+            v-for="disk in osInfo.DiskStats"
+          >
+            {{ disk.Name }}
+          </div>
+        </div>
+      </div>
       <p>
         <strong>Нагрузка:</strong> {{ osInfo.LoadAverage.Loadavg1 }} (1 минута)
         <!-- <strong>Нагрузка:</strong> {{ osInfo.LoadAverage.Loadavg5 }} (1 минута)
@@ -36,7 +52,7 @@ const fetchOsInfo = async () => {
     const response = await fetch(`/api/os-info`);
     if (!response.ok) throw new Error("Ошибка загрузки данных");
     osInfo.value = await response.json();
-    console.log(osInfo.value.LoadAverage); // Логируем данные, полученные с сервера
+    console.log(osInfo.value.NetworkStats[0]); // Логируем данные, полученные с сервера
   } catch (err) {
     error.value = err.message;
   } finally {
