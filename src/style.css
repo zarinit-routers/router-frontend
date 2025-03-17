@@ -16,3 +16,11 @@
 .button.pill {
 	@apply rounded-3xl
 }
+
+.form-item {
+	@apply p-5 outline-none bg-[#37343D] rounded-lg w-full
+}
+
+.form-label {
+	@apply text-base text-[#54505B] text-start
+}
