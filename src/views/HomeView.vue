@@ -83,7 +83,7 @@ onMounted(fetchModems);
 <template>
   <div class="container mx-auto">
     <div class="grid grid-cols-1 xl:grid-cols-4">
-      <OsInfo />
+      <OsInfo class="row-span-2" />
       <Timezone />
       <NtpServers />
       <ModemList />
