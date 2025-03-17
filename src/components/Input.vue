@@ -5,13 +5,12 @@
 
 <script setup>
 defineProps({
-    id: String,
     label: { type: String, required: true },
+    autocomplete: String,
     modelValue: String,
-    classLabel: String,
-    classInput: String,
     type: String,
     placeholder: String,
+    disabled: Boolean,
 });
 
 defineEmits(["update:modelValue"]);

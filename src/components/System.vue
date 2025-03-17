@@ -1,94 +1,101 @@
 <template>
-  <div>
-    <h1>Система</h1>
-    <hr />
-
-    <div class="form-list">
-      <!--  <div id="inb">-->
-      <div>
-        <p>Производитель</p>
-        <input class="unchange" disabled value="{{Manufacturer}}" type="text" />
-      </div>
-      <div>
-        <p>Серийный номер</p>
-        <input class="unchange" disabled value="{{sn}}" type="text" />
-      </div>
-    </div>
-    <div class="form-list">
-      <div>
-        <p>Модель</p>
-        <input class="unchange" disabled value="{{Model}}" type="text" />
-      </div>
-      <div>
-        <p>Версия модели</p>
-        <input
-          class="unchange"
-          disabled
-          value="{{Model_version}}"
-          type="text"
-        />
-      </div>
-    </div>
     <div>
-      <div>
-        <p>Версия прошивки</p>
-        <input
-          class="unchange"
-          disabled
-          value="{{Firmware_version}}"
-          type="text"
-        />
+      <h1>Система</h1>
+      <hr />
+  
+      <div class="form-list">
+        <div>
+          <Input class="unchange" label="Производитель"  :model-value="Manufacturer" disabled />
+        </div>
+        <div>
+          <Input class="unchange" label="Серийный номер" :model-value="sn" disabled />
+        </div>
       </div>
+  
+      <div class="form-list">
+        <div>
+          <Input class="unchange" label="Модель"  :model-value="Model" disabled />
+        </div>
+        <div>
+          <Input class="unchange"  label="Версия модели" :model-value="Model_version" disabled />
+        </div>
+      </div>
+  
       <div>
-        <p>Время работы</p>
-        <input class="unchange" disabled value="{{uptime}}" type="text" />
+        <div>
+          <Input class="unchange" label="Версия прошивки"  :model-value="Firmware_version" disabled />
+        </div>
+        <div>
+          <Input class="unchange" label="Время работы"  :model-value="uptime" disabled />
+        </div>
+      </div>
+  
+      <div class="form-list">
+        <div>
+          <Input class="unchange" label="Загрузка ЦП, %" :model-value="procload" disabled />
+        </div>
+        <div>
+          <Input class="unchange" label="Загрузка памяти, %" :model-value="mem" disabled />
+        </div>
+      </div>
+  
+      <div>
+        <Input class="unchange" label="Дата и время" :model-value="date" disabled />
+      </div>
+  
+      <div class="form-list">
+        <div>
+          <Input label="IP-сервера" v-model="serverIp" />
+        </div>
+        <div>
+          <Input label="Ключ сервера" v-model="serverKey" />
+        </div>
+      </div>
+  
+      <div class="form-list">
+        <div>
+          <Input label="Логин" v-model="login" />
+        </div>
+        <div>
+          <Input label="Пароль" v-model="password" type="password" />
+        </div>
+      </div>
+  
+      <div class="local_button">
+        <Button customClass="btn" @click="applySettings">Применить</Button>
+        <Button customClass="btn btn_cancel" @click="cancelSettings">Отменить</Button>
       </div>
     </div>
-
-    <div class="form-list">
-      <div>
-        <p>Загрузка ЦП, %</p>
-        <input class="unchange" disabled value="{{procload}}" type="text" />
-      </div>
-      <div>
-        <p>Загрузка памяти, %</p>
-        <input class="unchange" disabled value="{{mem}}" type="text" />
-      </div>
-    </div>
-
-    <div>
-      <p>Дата и время</p>
-      <input class="unchange" disabled value="{{date}}" type="text" />
-    </div>
-
-    <div class="form-list">
-      <div>
-        <p>IP-сервера</p>
-        <input class="" value="" type="text" />
-      </div>
-      <div>
-        <p>Ключ сервера</p>
-        <input class="" value="" type="text" />
-      </div>
-    </div>
-    <div class="form-list">
-      <div>
-        <p>Логин</p>
-        <input class="" value="root" type="text" />
-      </div>
-      <div>
-        <p>Пароль</p>
-        <input class="" value="afwawf" type="password" />
-      </div>
-    </div>
-
-    <div class="local_button">
-      <button class="btn" onclick="">Применить</button>
-      <button class="btn btn_cancel" onclick="">Отменить</button>
-    </div>
-  </div>
-</template>
-
-<script></script>
-
-<style></style>
+  </template>
+  
+  <script setup>
+  import { ref } from 'vue';
+  import Input from '../components/Input.vue';
+  import Button from '../components/Button.vue';
+  
+  const Manufacturer = ref('');
+  const sn = ref('');
+  const Model = ref('');
+  const Model_version = ref('');
+  const Firmware_version = ref('');
+  const uptime = ref('');
+  const procload = ref('');
+  const mem = ref('');
+  const date = ref('');
+  const serverIp = ref('');
+  const serverKey = ref('');
+  const login = ref('root');
+  const password = ref('afwawf');
+  
+  const applySettings = () => {
+    console.log('Применить настройки');
+  };
+  
+  const cancelSettings = () => {
+    console.log('Отменить изменения');
+  };
+  </script>
+  
+  <style scoped>
+  /* Оставил пустым, так как у вас не было стилей */
+  </style>
