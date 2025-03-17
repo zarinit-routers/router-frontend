@@ -3,3 +3,16 @@
 
 
 
+
+.button {
+	@apply cursor-pointer transition-all duration-300 p-5 w-full rounded-lg
+}
+
+.button.primary {
+	@apply bg-gradient-to-br from-[#452587]/70 to-[#470ABF]/70 text-white hover:from-[#452587] hover:to-[#470ABF];
+
+}
+
+.button.pill {
+	@apply rounded-3xl
+}
