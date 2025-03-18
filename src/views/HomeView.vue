@@ -7,6 +7,7 @@ import Timezone from "../components/Timezone.vue";
 import NtpServers from "../components/NtpServers.vue";
 import Select from "../components/Select.vue";
 import ModemList from "../components/ModemList.vue";
+import FirewallSelect from "../components/FirewallSelect.vue";
 
 const modem = reactive({
   operator: null,
@@ -82,11 +83,12 @@ onMounted(fetchModems);
 
 <template>
   <div class="container mx-auto">
-    <div class="grid grid-cols-1 xl:grid-cols-4">
+    <div class="grid grid-cols-1 xl:grid-cols-5">
       <OsInfo class="row-span-2" />
       <Timezone />
       <NtpServers />
       <ModemList />
+      <FirewallSelect />
     </div>
   </div>
 </template>
