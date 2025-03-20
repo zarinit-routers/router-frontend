@@ -10,11 +10,18 @@
 
 .button.primary {
 	@apply bg-gradient-to-br from-[#452587]/70 to-[#470ABF]/70 text-white hover:from-[#452587] hover:to-[#470ABF];
+}
 
+.button.default {
+	@apply bg-[#37343D] text-white hover:bg-[#37343D]/80 active:bg-[#37343D]/70;
 }
 
 .button.pill {
 	@apply rounded-3xl
+}
+
+.button.button-sm {
+	@apply p-2
 }
 
 .form-item {
