@@ -6,7 +6,7 @@
     <ul v-if="modems">
       <li v-for="(modem, index) in modems" :key="index" class="bg-red">
         <div>
-          <div>{{ modem.generic.model }}</div>
+          <!-- <div>{{ modem.generic.model }}</div> -->
           <div v-if="modemOperator(modem).name">
             <strong>Оператор:</strong>
             {{ modemOperator(modem).name }}
@@ -14,9 +14,19 @@
               {{ modemOperator(modem).code }}
             </span>
           </div>
+          <div v-if="modem['3gpp'].eps['initial-bearer'].settings.apn">
+            APN:
+            {{ modem["3gpp"].eps["initial-bearer"].settings.apn }}
+          </div>
           <div>
             <span v-if="modemEnabled(modem)">Включён</span>
             <span v-else class="text-[#B99209]">Выключен</span>
+          </div>
+          <div>Bands:</div>
+          <div class="flex flex-wrap gap-2">
+            <div v-for="band in modem.generic['current-bands']" class="text-xs">
+              {{ band }}
+            </div>
           </div>
           <SimInfo :name="modem.generic.sim" />
           <div

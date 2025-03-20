@@ -87,7 +87,7 @@ onMounted(fetchModems);
       <OsInfo class="row-span-2" />
       <Timezone />
       <NtpServers />
-      <ModemList />
+      <ModemList class="row-span-2" />
       <FirewallSelect />
     </div>
   </div>
