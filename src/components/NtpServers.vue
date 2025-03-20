@@ -1,16 +1,12 @@
 <template>
-  <div class="p-2">
+  <div class="p-5 bg-[#222228] mx-1">
     <div v-if="loading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else>
       <div v-if="ntpData.active">
         <p class="text-green-500 text-lg pb-2">Синхронизация времени активна</p>
         <ul v-if="ntpData.servers" class="flex flex-col gap-1">
-          <li
-            v-for="(server, index) in ntpData.servers"
-            :key="index"
-            class="p-1 px-3 rounded-lg bg-[#37343D]"
-          >
+          <li v-for="(server, index) in ntpData.servers" :key="index" class="p-1 px-3 rounded-lg bg-[#37343D]">
             {{ server.address }}
             <div class="font-mono text-[#54505B]">
               {{ server.options.join(", ") }}
@@ -18,9 +14,6 @@
           </li>
         </ul>
         <p v-else>Нет серверов NTP.</p>
-        <div v-else>
-          <p>Ошибка при получении списка серверов.</p>
-        </div>
       </div>
       <div v-else>
         <p class="text-red-500">NTP не активно</p>

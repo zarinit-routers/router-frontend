@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2">
+  <div class="p-5 bg-[#222228] mx-1 rounded-sm">
     <div v-if="loading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
 

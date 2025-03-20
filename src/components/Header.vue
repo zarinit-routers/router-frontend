@@ -1,22 +1,21 @@
 <template>
-  <header class="flex justify-between my-12 container mx-auto">
+  <header class=" container flex justify-between mb-12  max-w-full bg-linear-to-br from-[#452587] to-[#470ABF] px-3">
 
 
-    <div class="logotip">
+    <div class="logotip flex items-center">
       <img src="../assets/logo.svg" alt="">
+      <p class="ml-5">
+        Zarinit MA4.16 | 00000001
+      </p>
     </div>
+
     <div id="button" class="flex items-center ">
-      <Select v-model="selectedLanguage" classLabel="text-xs text-[#54505B] pb-2 pt-3"
-        classSelect="p-3 rounded-lg bg-[#37343D] w-full" :options="[
-          { value: 'en', label: 'English' },
-          { value: 'ru', label: 'Русский' }
-        ]" class=" bg-[#222228] w-[130px] h-[39px] rounded-xl" name="language" id="">
-      </Select>
-      <div class="flex items-center  justify-between bg-[#222228] px-[12px] rounded-xl w-[200px] h-[39px] "
-        action="" type="submit">
-        <Button class="flex justify-start  ">Перезагрузка </Button>
-        <img class="h-[21px]" src="../assets/header_buttons/refresh.svg" alt="">
-      </div>
+      <a class="mr-3" href="">
+        <img src="../assets/Search.svg" alt="">
+      </a>
+      <a href="">
+        <img src="../assets/Settings.svg" alt="">
+      </a>
 
       <button class="w-[60px] h-[39px] flex items-center bg-[#222228] justify-center rounded-xl" @click="logout">
         <img src="../assets/header_buttons/exit.svg" alt="">
@@ -24,29 +23,6 @@
     </div>
 
 
-    <div class="logotip">
-      <img src="../assets/logo.svg" alt="">
-    </div>
-    <div id="button" class="flex items-center ">
-      <Select v-model="selectedLanguage" classLabel="text-xs text-[#54505B] pb-2 pt-3"
-        classSelect="p-3 rounded-lg bg-[#37343D] w-full" :options="[
-          { value: 'en', label: 'English' },
-          { value: 'ru', label: 'Русский' }
-        ]" class=" bg-[#222228] w-[130px] h-[39px] rounded-xl" name="language" id="">
-      </Select>
-      <div class="flex items-center  justify-between bg-[#222228] px-[12px] rounded-xl w-[200px] h-[39px] "
-        action="" type="submit">
-        <Button class="flex justify-start  ">Перезагрузка </Button>
-        <img class="h-[21px]" src="../assets/header_buttons/refresh.svg" alt="">
-      </div>
-
-      <button class="w-[60px] h-[39px] flex items-center bg-[#222228] justify-center rounded-xl" @click="logout">
-        <img src="../assets/header_buttons/exit.svg" alt="">
-      </button>
-    </div>
-            <button class="w-[60px] h-[39px] flex items-center bg-[#222228] justify-center rounded-xl" @click="logout">
-                <img src="../assets/header_buttons/exit.svg" alt="" />
-            </button>
   </header>
 </template>
 

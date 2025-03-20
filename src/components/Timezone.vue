@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-5 bg-[#222228] mx-1">
     <div v-if="loading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else class="flex flex-col gap-2">
@@ -8,10 +8,6 @@
         v-model="selectedTimezone"
         :options="timezones"
       />
-      <!-- <option v-for="timezone in timezones" :key="timezone" :value="timezone">
-          {{ timezone }}
-        </option> -->
-
       <button class="button form-item" @click="changeTimezone">
         Сменить часовой пояс
       </button>
@@ -20,6 +16,7 @@
 </template>
 
 <script setup>
+
 import { ref, onMounted } from "vue";
 import moment from "moment-timezone";
 import Select from "./Select.vue";
@@ -53,6 +50,9 @@ const changeTimezone = async () => {
   }
 
   try {
+    // Логируем данные, которые отправляются в запросе
+    console.log("Отправляется запрос с данными:", { timezone: selectedTimezone.value });
+
     const response = await fetch(`/api/timezone/set`, {
       method: "POST",
       headers: {
