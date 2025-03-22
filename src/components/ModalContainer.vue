@@ -1,8 +1,9 @@
 <template>
   <div
+    role="dialog"
     v-if="show"
     @click.self="close"
-    class="z-50 w-full h-full fixed top-0 left-0 right-0 flex justify-end bg-black/50 p-8 container"
+    class="z-50 h-full fixed inset-0 w-screen flex items-end sm:items-center justify-center bg-black/50 p-8 backdrop-blur-md"
   >
     <slot class="" />
   </div>
