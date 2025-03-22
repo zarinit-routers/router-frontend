@@ -1,7 +1,7 @@
 <template>
-  <div class="firewall-control">
-    <div class="toggle-wrapper">
-      <label class="switch">
+  <div class="bg-[#37343d] p-5 rounded-xl">
+    <div class="flex justify-between items-center pb-2">
+      <div class="switch">
         <input
           type="checkbox"
           :checked="isEnabled"
@@ -9,13 +9,13 @@
           :disabled="isPending"
         />
         <span class="slider"></span>
-      </label>
-      <span class="status-label">
+      </div>
+      <span class="text-[#e0e0e0]">
         <span v-if="isEnabled">Включён</span>
         <span v-else class="text-[#B99209]">Выключен</span>
       </span>
     </div>
-    <div v-if="lastUpdate" class="update-info">
+    <div v-if="lastUpdate" class="text-[#777] text-sm">
       Last updated: {{ lastUpdate }}
     </div>
   </div>
@@ -76,21 +76,6 @@ const handleToggle = async () => {
 </script>
 
 <style>
-.firewall-control {
-  padding: 20px;
-  background: #37343d;
-  border-radius: 10px;
-  max-width: 300px;
-  text-align: center;
-}
-
-.toggle-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
 .switch {
   position: relative;
   width: 60px;
@@ -133,18 +118,5 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(26px);
-}
-
-.status-label {
-  color: #e0e0e0;
-  font-size: 16px;
-  font-weight: 500;
-  margin-left: 15px;
-}
-
-.update-info {
-  color: #777;
-  font-size: 12px;
-  margin-top: 8px;
 }
 </style>
