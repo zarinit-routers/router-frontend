@@ -1,20 +1,23 @@
 <template>
   <div
-    class="cursor-pointer bg-neutral-800 hover:bg-neutral-700 rounded-xl p-2 px-3"
+    class="cursor-pointer bg-neutral-800 hover:bg-neutral-700 rounded-xl p-2 px-3 flex flex-col gap-2"
     @click="toggleModal"
   >
     <div class="flex gap-2">
-      <span v-if="modem.generic.state == 'enabled'" class="text-green-300"
+      <span v-if="modemEnabled(modem)" class="text-green-300"
         ><i class="fa-solid fa-circle-check"></i>
       </span>
       <span v-else class="text-[#B99209]"
         ><i class="fa-solid fa-circle-xmark"></i
       ></span>
-      <span class="font-mono">
-        {{ modem["dbus-path"] }}
+      <span class="">
+        {{ modem.generic.model }}
       </span>
     </div>
-    <div v-if="modem.generic.state == 'enabled'">Включён</div>
+    <div class="text-sm font-mono">
+      {{ modem["dbus-path"] }}
+    </div>
+    <div v-if="modemEnabled(modem)">Включён</div>
     <div v-else class="text-[#B99209]">Выключен</div>
   </div>
   <ModalContainer :show="showModal" :close="toggleModal">
@@ -37,7 +40,7 @@
         ></span>
         <input
           type="checkbox"
-          :checked="modem.generic.state == 'enabled'"
+          :checked="modemEnabled(modem)"
           @change.prevent="toggleModemState(modem)"
         />
       </div>
@@ -77,7 +80,7 @@
       <div class="flex flex-col gap-2">
         <h3 class="text-lg font-semibold">Состояние:</h3>
         <div>
-          {{ modem.generic.state == "enabled" ? "Включён" : "Выключен" }}
+          {{ modemEnabled(modem) ? "Включён" : "Выключен" }}
         </div>
       </div>
       <button class="button primary button-sm" @click="toggleModal">
@@ -98,14 +101,18 @@ import { ref } from "vue";
 import ModalContainer from "./ModalContainer.vue";
 import axios from "axios";
 const showModal = ref(false);
+
+const modemEnabled = (modem) => {
+  return modem.generic.state !== "disabled";
+};
+
 const toggleModal = () => {
   console.log("toggleModal");
   showModal.value = !showModal.value;
 };
 
 const toggleModemState = (modem) => {
-  let modemEnabled = modem.generic.state === "enabled";
-  const postAction = modemEnabled ? "disable" : "enable";
+  const postAction = modemEnabled(modem) ? "disable" : "enable";
   console.log(postAction);
   const param = encodeURIComponent(modem["dbus-path"].split("/").pop());
 
