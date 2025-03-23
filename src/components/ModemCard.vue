@@ -89,6 +89,25 @@
           </div>
         </div>
 
+        <div>
+          <h3>Signal:</h3>
+          <div>Refresh rate {{ signal?.refresh?.rate }} seconds</div>
+          <div>
+            <h4>LTE</h4>
+            <div>RSRP: {{ signal.lte.rsrp }} dBm</div>
+            <div>RSRQ: {{ signal.lte.rsrq }} dBm</div>
+            <div>RSSI: {{ signal.lte.rssi }} dBm</div>
+            <div>S/N: {{ signal.lte.snr }} dB</div>
+          </div>
+          <div>
+            <h4>UMTS</h4>
+            <div>RSCP: {{ signal.umts.rscp }} dBm</div>
+            <div>ECIO: {{ signal.umts.ecio }} dB</div>
+            <div>RSSI: {{ signal.umts.rssi }} dBm</div>
+          </div>
+          <!-- TODO: Implement other parameters -->
+        </div>
+
         <div v-if="modem.generic.sim">
           <SimInfo :simName="modem.generic.sim" />
         </div>
@@ -103,17 +122,18 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   modem: {
     type: Object,
     required: true,
   },
 });
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import ModalContainer from "./ModalContainer.vue";
 import axios from "axios";
 import SimInfo from "./SimInfo.vue";
 const showModal = ref(false);
+const signal = ref({ refresh: { rate: 0 } });
 
 const modemEnabled = (modem) => {
   return modem.generic.state !== "disabled";
@@ -134,4 +154,14 @@ const toggleModemState = (modem) => {
     modem.generic.state = response.data.enabled ? "enabled" : "disabled";
   });
 };
+onMounted(() => {
+  axios
+    .get(`/api/modems/signal/${props.modem["dbus-path"].split("/").pop()}`)
+    .then((response) => {
+      console.log(response.data);
+
+      signal.value = response.data;
+      console.log(signal.value);
+    });
+});
 </script>
