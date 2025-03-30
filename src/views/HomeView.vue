@@ -14,7 +14,8 @@ import FirewallSelect from "../components/FirewallSelect.vue";
       <OsInfo class="row-span-2" />
       <Timezone />
       <NtpServers />
-      <ModemList class="row-span-2" />
+      <ModemList />
+      <Journals journalType="system" />
       <FirewallSelect />
     </div>
   </div>
