@@ -7,12 +7,15 @@ import FirewallSelect from "../components/FirewallSelect.vue";
 </script>
 
 <template>
-  <div class="container mx-auto">
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5">
+  <Header></Header>
+  <div class="mx-auto flex">
+    <SideBar />
+    <div class="grid grid-cols-1 xl:grid-cols-4">
       <OsInfo class="row-span-2" />
       <Timezone />
       <NtpServers />
-      <ModemList class="row-span-2" />
+      <ModemList />
+      <Journals journalType="system" />
       <FirewallSelect />
     </div>
   </div>
