@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#37343d] p-5 rounded-xl">
+  <div v-if="canManage" class="bg-[#37343d] p-5 rounded-xl">
     <div class="flex justify-between items-center pb-2">
       <div class="switch">
         <input
@@ -16,7 +16,7 @@
       </span>
     </div>
     <div v-if="lastUpdate" class="text-[#777] text-sm">
-      Last updated: {{ lastUpdate }}
+      Последнее обновление: {{ lastUpdate }}
     </div>
   </div>
 </template>
@@ -27,26 +27,43 @@ import { ref, onMounted } from "vue";
 const isEnabled = ref(false);
 const isPending = ref(false);
 const lastUpdate = ref("");
+const canManage = ref(false);
 
 onMounted(async () => {
-  await refreshStatus();
+  await checkPermission();
+  if (canManage.value) {
+    await refreshStatus();
+  }
 });
+
 const updateDate = () => {
   lastUpdate.value = new Date().toLocaleTimeString();
 };
+
+const checkPermission = async () => {
+  try {
+    const response = await fetch("/api/firewall/can-manage");
+    if (!response.ok) throw new Error(`Ошибка HTTP ${response.status}`);
+    const data = await response.json();
+    canManage.value = data.canManage;
+  } catch (error) {
+    console.error("Ошибка проверки прав управления файрволом:", error);
+  }
+};
+
 const refreshStatus = async () => {
   try {
     const response = await fetch("/api/firewall/status");
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+    if (!response.ok) throw new Error(`Ошибка HTTP ${response.status}`);
     const data = await response.json();
     isEnabled.value = data.active;
-    console.log(data.active);
     updateDate();
   } catch (error) {
-    console.error("Status check failed:", error);
-    lastUpdate.value = "Update failed";
+    console.error("Ошибка получения статуса файрвола:", error);
+    lastUpdate.value = "Ошибка обновления";
   }
 };
+
 const handleToggle = async () => {
   isPending.value = true;
   const action = isEnabled.value ? "disable" : "enable";
@@ -56,67 +73,21 @@ const handleToggle = async () => {
       method: "POST",
     });
 
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+    if (!response.ok) throw new Error(`Ошибка HTTP ${response.status}`);
 
     const data = await response.json();
     isEnabled.value = data.active;
     updateDate();
   } catch (error) {
-    isEnabled.value = false;
-    isPending.value = true;
-    console.error(`Failed to ${action} firewall:`, error);
+    console.error(`Ошибка ${action} файрвола:`, error);
     await refreshStatus();
     alert(
-      `Failed to ${action} firewall. Current status: ${isEnabled.value ? "Enabled" : "Disabled"}`,
+      `Ошибка ${action} файрвола. Текущий статус: ${
+        isEnabled.value ? "Включён" : "Выключен"
+      }`
     );
   } finally {
     isPending.value = false;
   }
 };
 </script>
-
-<style>
-.switch {
-  position: relative;
-  width: 60px;
-  height: 34px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #4caf50;
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-</style>

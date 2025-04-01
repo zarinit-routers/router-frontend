@@ -4,6 +4,8 @@ import Timezone from "../components/Timezone.vue";
 import NtpServers from "../components/NtpServers.vue";
 import ModemList from "../components/ModemList.vue";
 import FirewallSelect from "../components/FirewallSelect.vue";
+import Journals from "../components/Journals.vue"
+import Header from "../components/Header.vue";
 </script>
 
 <template>
@@ -15,7 +17,7 @@ import FirewallSelect from "../components/FirewallSelect.vue";
       <Timezone />
       <NtpServers />
       <ModemList />
-      <Journals journalType="system" />
+      <Journals class="col-span-2" journalType="system" />
       <FirewallSelect />
     </div>
   </div>
