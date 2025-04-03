@@ -23,71 +23,30 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import axios from "axios";
 
 const isEnabled = ref(false);
-const isPending = ref(false);
 const lastUpdate = ref("");
-const canManage = ref(false);
-
-onMounted(async () => {
-  await checkPermission();
-  if (canManage.value) {
-    await refreshStatus();
-  }
-});
 
 const updateDate = () => {
   lastUpdate.value = new Date().toLocaleTimeString();
 };
 
-const checkPermission = async () => {
-  try {
-    const response = await fetch("/api/firewall/can-manage");
-    if (!response.ok) throw new Error(`Ошибка HTTP ${response.status}`);
-    const data = await response.json();
-    canManage.value = data.canManage;
-  } catch (error) {
-    console.error("Ошибка проверки прав управления файрволом:", error);
-  }
-};
-
-const refreshStatus = async () => {
-  try {
-    const response = await fetch("/api/firewall/status");
-    if (!response.ok) throw new Error(`Ошибка HTTP ${response.status}`);
-    const data = await response.json();
-    isEnabled.value = data.active;
+const refreshStatus = () =>
+  axios.get("/api/firewall/status").then((response) => {
+    isEnabled.value = response.data.active;
     updateDate();
-  } catch (error) {
-    console.error("Ошибка получения статуса файрвола:", error);
-    lastUpdate.value = "Ошибка обновления";
-  }
+  });
+
+const handleToggle = () => {
+  axios
+    .post(`/api/firewall/${isEnabled.value ? "disable" : "enable"}`)
+    .then((response) => {
+      isEnabled.value = response.data.active;
+      updateDate();
+    })
+    .catch(() => refreshStatus()); // Если ошибка — обновляем статус заново
 };
 
-const handleToggle = async () => {
-  isPending.value = true;
-  const action = isEnabled.value ? "disable" : "enable";
-
-  try {
-    const response = await fetch(`/api/firewall/${action}`, {
-      method: "POST",
-    });
-
-    if (!response.ok) throw new Error(`Ошибка HTTP ${response.status}`);
-
-    const data = await response.json();
-    isEnabled.value = data.active;
-    updateDate();
-  } catch (error) {
-    console.error(`Ошибка ${action} файрвола:`, error);
-    await refreshStatus();
-    alert(
-      `Ошибка ${action} файрвола. Текущий статус: ${
-        isEnabled.value ? "Включён" : "Выключен"
-      }`
-    );
-  } finally {
-    isPending.value = false;
-  }
-};
+onMounted(refreshStatus);
 </script>
