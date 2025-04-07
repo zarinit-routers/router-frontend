@@ -10,12 +10,11 @@
     </div>
 
     <div id="button" class="flex items-center ">
-      <a class="mr-3" href="">
-        <img src="../assets/Search.svg" alt="">
-      </a>
-      <a href="">
-        <img src="../assets/Settings.svg" alt="">
-      </a>
+      <button class="mr-3 flex" @click="reboot" href="">
+        Перезагрузка
+        <img class="ml-1" src="../assets/header_buttons/refresh.svg" alt="">
+      </button>
+     
 
       <button class="w-[60px] h-[39px] flex items-center bg-[#222228] justify-center rounded-xl" @click="logout">
         <img src="../assets/header_buttons/exit.svg" alt="">
@@ -32,6 +31,13 @@ import { useRouter } from 'vue-router';
 import Select from './Select.vue';
 import { ref } from 'vue';
 import Button from './Button.vue';
+import axios from "axios";
+
+const reboot = () => {
+  axios.post("/api/reboot")
+    .then(() => alert("Устройство перезагружается..."))
+    .catch(err => alert("Ошибка перезагрузки: " + err.message));
+};
 
 const router = useRouter();
 
