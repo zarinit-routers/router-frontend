@@ -6,8 +6,8 @@
     <div v-else>
       <p>
         <strong>Память:</strong>
-        {{ (osInfo.Memory.Used / 1024 / 1024) | 2 }}<strong>/</strong
-        >{{ (osInfo.Memory.Total / 1024 / 1024) | 2 }}
+        {{ (osInfo.Memory.Used / 1024 / 1024).toFixed(2) }}<strong>/</strong>
+        {{ (osInfo.Memory.Total / 1024 / 1024).toFixed(2) }}
         КБайт использовано
       </p>
       <p><strong>Процессор:</strong> {{ osInfo.CpuStats.CPUCount }} ядер</p>
@@ -15,17 +15,19 @@
       <div class="grid grid-cols-1 gap-1">
         <div
           v-for="net in osInfo.NetworkStats"
+          :key="net.Name"
           class="bg-[#37343D] rounded-lg p-1 px-4 flex flex-col gap-1"
         >
           <div>{{ net.Name }}</div>
           <div>
             <i class="fas fa-upload"></i>
-            {{ (net.TxBytes / 1024 / 1024) | 0 }} kb
+            {{ (net.TxBytes / 1024 / 1024).toFixed(0) }} kb
           </div>
           <div>
             <i class="fas fa-download"></i>
-            {{ (net.RxBytes / 1024 / 1024) | 0 }} kb
+            {{ (net.RxBytes / 1024 / 1024).toFixed(0) }} kb
           </div>
+          <div><strong>MAC-адрес:</strong> {{ net.MAC }}</div>
         </div>
       </div>
       <div>
@@ -34,6 +36,7 @@
           <div
             class="bg-[#37343D] rounded-lg p-1 px-4 text-sm"
             v-for="disk in osInfo.DiskStats"
+            :key="disk.Name"
           >
             <i class="fas fa-hard-drive pe-2"></i>
             {{ disk.Name }}
@@ -42,8 +45,6 @@
       </div>
       <p>
         <strong>Нагрузка:</strong> {{ osInfo.LoadAverage.Loadavg1 }} (1 минута)
-        <!-- <strong>Нагрузка:</strong> {{ osInfo.LoadAverage.Loadavg5 }} (1 минута)
-        <strong>Нагрузка:</strong> {{ osInfo.LoadAverage.Loadavg15 }} (1 минута) -->
       </p>
     </div>
   </div>
@@ -61,7 +62,7 @@ const fetchOsInfo = async () => {
     const response = await fetch(`/api/os-info`);
     if (!response.ok) throw new Error("Ошибка загрузки данных");
     osInfo.value = await response.json();
-    console.log(osInfo.value.NetworkStats[0]); // Логируем данные, полученные с сервера
+    console.log(osInfo.value.NetworkStats); // Логируем данные, полученные с сервера
   } catch (err) {
     error.value = err.message;
   } finally {
