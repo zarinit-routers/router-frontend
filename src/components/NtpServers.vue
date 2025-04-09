@@ -1,7 +1,6 @@
 <template>
   <div class="p-5 bg-[#222228] mx-1">
-    <div v-if="loading">Загрузка...</div>
-    <div v-else-if="error" class="text-red-400 mb-3">{{ error }}</div>
+    <div v-if="error" class="text-red-400 mb-3">{{ error }}</div>
     <div v-else>
       <div v-if="ntpData.active">
         <p class="text-green-500 text-lg pb-2">Синхронизация времени активна</p>
@@ -15,7 +14,7 @@
             <div>
               <div>{{ server.address }}</div>
               <div class="font-mono text-[#7b7b7b] text-sm">
-                {{ server.options.join(", ") }}
+                {{ Array.isArray(server.options) ? server.options.join(", ") : "" }}
               </div>
             </div>
             <button @click="removeServer(server)" class="text-red-400 hover:text-red-600">
@@ -52,8 +51,9 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import axios from "axios";
 
-const ntpData = ref({ active: false, servers: null });
+const ntpData = ref({ active: false, servers: [] });
 const loading = ref(true);
 const error = ref(null);
 const newServer = ref("");
@@ -61,18 +61,16 @@ const validationError = ref(false);
 
 const fetchNtpServers = async () => {
   try {
-    const response = await fetch("/api/ntp");
-    if (!response.ok) throw new Error("Ошибка загрузки NTP серверов");
-    ntpData.value = await response.json();
+    const response = await axios.get("/api/ntp");
+    ntpData.value = response.data;
   } catch (err) {
-    error.value = err.message;
+    error.value = err.response?.data?.message || err.message || "Ошибка загрузки данных";
   } finally {
     loading.value = false;
   }
 };
 
 const isValidHost = (host) => {
-  // Простая валидация IP-адреса или домена
   const ipRegex =
     /^(25[0-5]|2[0-4]\d|1\d\d|\d\d|\d)(\.(25[0-5]|2[0-4]\d|1\d\d|\d\d|\d)){3}$/;
   const domainRegex =
@@ -89,37 +87,24 @@ const addServer = async () => {
   }
 
   try {
-    const response = await fetch("/api/ntp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        address: newServer.value,
-        options: [],
-      }),
+    await axios.post("/api/ntp/add", {
+      address: newServer.value,
+      options: []
     });
-
-    if (!response.ok) throw new Error("Ошибка при добавлении сервера");
 
     newServer.value = "";
     await fetchNtpServers();
   } catch (err) {
-    error.value = err.message;
+    error.value = err.response?.data?.message || err.message || "Ошибка при добавлении";
   }
 };
 
 const removeServer = async (server) => {
   try {
-    const response = await fetch("/api/ntp", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(server),
-    });
-
-    if (!response.ok) throw new Error("Ошибка при удалении сервера");
-
+    await axios.delete("/api/ntp/remove", { data: server });
     await fetchNtpServers();
   } catch (err) {
-    error.value = err.message;
+    error.value = err.response?.data?.message || err.message || "Ошибка при удалении";
   }
 };
 
