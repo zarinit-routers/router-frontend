@@ -6,8 +6,7 @@ import ModemList from "../components/ModemList.vue";
 import FirewallSelect from "../components/FirewallSelect.vue";
 import Journals from "../components/Journals.vue"
 import Header from "../components/Header.vue";
-import DhcpStatusToggle from "../components/DHCP/DhcpStatusToggle.vue";
-import DhcpLeases from "../components/DHCP/DhcpLeases.vue";
+import DHCP from "../components/DHCP/DHCP.vue";
 </script>
 
 <template>
@@ -21,8 +20,7 @@ import DhcpLeases from "../components/DHCP/DhcpLeases.vue";
       <ModemList />
       <Journals class="col-span-2" journalType="system" />
       <FirewallSelect />
-      <DhcpStatusToggle />
-      <DhcpLeases />
+     <DHCP />
     </div>
   </div>
 </template>

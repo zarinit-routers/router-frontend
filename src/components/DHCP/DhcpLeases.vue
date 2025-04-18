@@ -1,6 +1,6 @@
 <template>
-    <div class="bg-gray-900 p-4 rounded-xl shadow space-y-4">
-      <h2 class="text-lg text-white font-semibold">Текущие DHCP аренды</h2>
+    <div class="p-4 rounded-xl shadow space-y-4">
+      <h2 class="text-lg text-white ">Текущие DHCP аренды</h2>
   
       <div v-if="loading" class="text-gray-400">Загрузка...</div>
       <div v-else-if="leases.length === 0" class="text-gray-400">Нет активных аренд.</div>

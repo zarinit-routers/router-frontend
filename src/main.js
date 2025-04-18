@@ -3,13 +3,18 @@ import "./style.css";
 import App from "./App.vue";
 import router from "./router/index.js";
 import axios from "axios";
+import { createPinia } from "pinia";
 
 const app = createApp(App);
 
-// Настройка глобального экземпляра axios
+// Настройка глобального axios
 app.config.globalProperties.$axios = axios;
+axios.defaults.baseURL = "http://localhost:8080"; // или другой URL
 
-// Настройка базового URL (если необходимо)
-axios.defaults.baseURL = "http://localhost:8080"; // замените на ваш серверный URL
+// Установка Pinia и роутера
+const pinia = createPinia();
+app.use(pinia);
+app.use(router);
 
-app.use(router).mount("#app");
+// Монтирование
+app.mount("#app");
