@@ -7,6 +7,7 @@ import FirewallSelect from "../components/FirewallSelect.vue";
 import Journals from "../components/Journals.vue"
 import Header from "../components/Header.vue";
 import DHCP from "../components/DHCP/DHCP.vue";
+import LAN from "../components/LAN.vue";
 </script>
 
 <template>
@@ -21,6 +22,7 @@ import DHCP from "../components/DHCP/DHCP.vue";
       <Journals class="col-span-2" journalType="system" />
       <FirewallSelect />
      <DHCP />
+     <LAN />
     </div>
   </div>
 </template>
