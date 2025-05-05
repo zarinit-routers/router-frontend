@@ -1,20 +1,34 @@
 <template>
   <div class="p-5 bg-[#222228] mx-1">
     <h2>Информация о системе</h2>
+    
+    <!-- Загрузка данных -->
     <div v-if="loading">Загрузка...</div>
+    
+    <!-- Ошибка загрузки данных -->
     <div v-else-if="error">{{ error }}</div>
+    
+    <!-- Данные системы -->
     <div v-else>
+      <!-- Память -->
       <p>
         <strong>Память:</strong>
-        {{ (osInfo.Memory.Used / 1024 / 1024).toFixed(2) }}<strong>/</strong>
-        {{ (osInfo.Memory.Total / 1024 / 1024).toFixed(2) }}
-        КБайт использовано
+        {{ (osInfo.Memory?.Used / 1024 / 1024).toFixed(2) }}<strong>/</strong>
+        {{ (osInfo.Memory?.Total / 1024 / 1024).toFixed(2) }} МБайт использовано
       </p>
-      <p><strong>Процессор:</strong> {{ osInfo.CpuStats.CPUCount }} ядер</p>
+      <RamUsage :used="osInfo.Memory?.Used" :total="osInfo.Memory?.Total" />
+
+      <!-- Процессор -->
+      <p><strong>Процессор:</strong> {{ osInfo.CpuStats?.CPUCount }} ядер</p>
+
+      <CPUsage :stats="osInfo.CpuStats" />
+
+      <!-- Сетевые интерфейсы -->
       <p class="font-bold">Сетевые интерфейсы</p>
+      
       <div class="grid grid-cols-1 gap-1">
         <div
-          v-for="net in osInfo.NetworkStats"
+          v-for="net in osInfo.NetworkStats || []"
           :key="net.Name"
           class="bg-[#37343D] rounded-lg p-1 px-4 flex flex-col gap-1"
         >
@@ -30,21 +44,27 @@
           <div><strong>MAC-адрес:</strong> {{ net.MAC }}</div>
         </div>
       </div>
+
+      <!-- Диски -->
       <div>
         <p class="font-bold">Диски</p>
         <div class="grid grid-cols-2 gap-1">
           <div
             class="bg-[#37343D] rounded-lg p-1 px-4 text-sm"
-            v-for="disk in osInfo.DiskStats"
+            v-for="disk in osInfo.DiskStats || []"
             :key="disk.Name"
           >
             <i class="fas fa-hard-drive pe-2"></i>
             {{ disk.Name }}
           </div>
         </div>
+        <DiskUsage
+          />
       </div>
+
+      <!-- Нагрузка -->
       <p>
-        <strong>Нагрузка:</strong> {{ osInfo.LoadAverage.Loadavg1 }} (1 минута)
+        <strong>Нагрузка:</strong> {{ osInfo.LoadAverage?.Loadavg1 }} (1 минута)
       </p>
     </div>
   </div>
@@ -52,11 +72,15 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import RamUsage from "./OS/RamUsage.vue";
+import CPUsage from "./OS/CPUsage.vue";
+import DiskUsage from "./OS/DiskUsage.vue";
 
 const osInfo = ref({});
 const loading = ref(true);
 const error = ref(null);
 
+// Функция для получения данных о системе
 const fetchOsInfo = async () => {
   try {
     const response = await fetch(`/api/os-info`);
@@ -70,5 +94,6 @@ const fetchOsInfo = async () => {
   }
 };
 
+// Загружаем данные при монтировании компонента
 onMounted(fetchOsInfo);
 </script>
