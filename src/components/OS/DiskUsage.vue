@@ -1,59 +1,72 @@
 <template>
-    <div class="p-5 bg-[#222228] mx-1">
-      <h2>Загрузка дисков</h2>
-      <div v-if="loading">Загрузка...</div>
-      <div v-else-if="error">{{ error }}</div>
-      <div v-else>
-        <div v-for="(disk, index) in filteredDisks" :key="index" class="my-4">
-          <p v-if="disk.ReadsCompleted && disk.WritesCompleted">
-            <strong>{{ disk.Name }}:</strong> 
-            {{ (calculateDiskLoad(disk.ReadsCompleted, disk.WritesCompleted)).toFixed(2) }}%
-          </p>
-          <div v-if="disk.ReadsCompleted && disk.WritesCompleted" class="w-full bg-gray-700 rounded-full h-2">
-            <div
-              :style="{ width: calculateDiskLoad(disk.ReadsCompleted, disk.WritesCompleted) + '%'}"
-              class="bg-blue-500 h-2 rounded-full"
-            ></div>
-          </div>
-          <p v-if="disk.ReadsCompleted && disk.WritesCompleted" class="text-sm text-white mt-2">
-            {{ disk.ReadsCompleted }} чтений / {{ disk.WritesCompleted }} записей
-          </p>
-          <p v-else class="text-red-500">Ошибка в данных о диске</p>
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div
+      v-for="disk in disks"
+      :key="disk.name"
+      class="bg-[#2e2c35] p-4 rounded-lg flex flex-col items-center"
+    >
+      <svg width="100" height="100" viewBox="0 0 100 100">
+        <path
+          d="M10,90 A40,40 0 0,1 90,90"
+          fill="none"
+          stroke="#444"
+          stroke-width="10"
+          stroke-linecap="round"
+        />
+        <path
+          :d="getArcPath(getPercent(disk))"
+          fill="none"
+          stroke="#0066FF"
+          stroke-width="10"
+          stroke-linecap="round"
+        />
+        <text x="50" y="80" text-anchor="middle" font-size="16" fill="#fff">
+          {{ getPercent(disk).toFixed(0) }}%
+        </text>
+      </svg>
+      <div class="text-sm text-white text-center mt-2">
+        <div><strong>{{ disk.name }}</strong></div>
+        <div>
+          Использовано
+          {{ formatMb(disk.used) }} из
+          {{ formatMb(disk.size) }} МБ
         </div>
+        <div>Точка монтирования: {{ disk.mountPoint }}</div>
       </div>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref, onMounted } from "vue";
-  import { computed } from 'vue';
+  </div>
+</template>
 
-  
-  const osInfo = ref({});
-  const loading = ref(true);
-  const error = ref(null);
-  const filteredDisks = computed(() =>
-  osInfo.value.DiskStats?.filter(disk => !disk.Name.startsWith("loop")) || []
-);
+<script setup>
+import { computed } from 'vue';
 
-  const calculateDiskLoad = (reads, writes) => {
-    // Простой расчет, основанный на количестве операций чтения и записи
-    return ((reads + writes) % 100); // Просто для демонстрации
-  };
-  
-  const fetchOsInfo = async () => {
-    try {
-      const response = await fetch(`/api/os-info`);
-      if (!response.ok) throw new Error("Ошибка загрузки данных");
-      osInfo.value = await response.json();
-    } catch (err) {
-      error.value = err.message;
-    } finally {
-      loading.value = false;
-    }
-  };
-  
-  
-  onMounted(fetchOsInfo);
-  </script>
-  
+const props = defineProps({
+  disks: {
+    type: Array,
+    required: true,
+  },
+});
+
+function getPercent(disk) {
+  const used = parseInt(disk.used);
+  const size = parseInt(disk.size);
+  if (!size) return 0;
+  return (used / size) * 100;
+}
+
+function getArcPath(percent) {
+  const angle = (percent / 100) * 180;
+  const r = 40;
+  const cx = 50;
+  const cy = 90;
+  const rad = (Math.PI * angle) / 180;
+  const x = cx + r * Math.cos(Math.PI - rad);
+  const y = cy - r * Math.sin(rad);
+  const largeArcFlag = angle > 180 ? 1 : 0;
+  return `M${cx - r},${cy} A${r},${r} 0 ${largeArcFlag},1 ${x},${y}`;
+}
+
+function formatMb(bytes) {
+  return (parseInt(bytes) / 1024 / 1024).toFixed(0);
+}
+</script>

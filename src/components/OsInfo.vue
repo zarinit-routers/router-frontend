@@ -58,8 +58,8 @@
             {{ disk.Name }}
           </div>
         </div>
-        <DiskUsage
-          />
+        <DiskUsage :disks="osInfo.DiskStats" />
+
       </div>
 
       <!-- Нагрузка -->
