@@ -6,6 +6,7 @@ import ModemList from "../components/ModemList.vue";
 import FirewallSelect from "../components/FirewallSelect.vue";
 import Journals from "../components/Journals.vue"
 import Header from "../components/Header.vue";
+import WIFI from "../components/WIFI.vue";
 import SSH from "../components/SSH.vue";
 import Diagnostics from "../components/Diagnostics.vue";
 </script>
@@ -21,6 +22,7 @@ import Diagnostics from "../components/Diagnostics.vue";
       <ModemList />
       <Journals class="col-span-2" journalType="system" />
       <FirewallSelect />
+      <WIFI />
       <SSH />
       <Diagnostics />
     </div>
