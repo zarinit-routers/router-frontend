@@ -1,20 +1,29 @@
+// main.js
 import { createApp } from "vue";
-import "./style.css";
 import App from "./App.vue";
-import router from "./router/index.js";
-import axios from "axios";
+import router from "./router";
 import { createPinia } from "pinia";
+import axios from "axios";
+import "./style.css";
 
 const app = createApp(App);
 
-// Настройка глобального axios
-app.config.globalProperties.$axios = axios;
-axios.defaults.baseURL = "http://localhost:8080"; // или другой URL
+// Настройка базового URL для axios
+if (import.meta.env.DEV) {
+  // В режиме разработки используем proxy из vite.config.js
+  axios.defaults.baseURL = "/api"; // или "/local-api", если работаешь с роутером напрямую
+} else {
+  // В продакшене указываем реальный адрес сервера
+  axios.defaults.baseURL = "http://localhost:8080"; // заменишь на нужный IP/домен при деплое
+}
 
-// Установка Pinia и роутера
+// Делаем axios доступным глобально
+app.config.globalProperties.$axios = axios;
+
+// Подключаем состояния и маршрутизацию
 const pinia = createPinia();
 app.use(pinia);
 app.use(router);
 
-// Монтирование
+// Монтируем приложение
 app.mount("#app");
