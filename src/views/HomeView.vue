@@ -7,6 +7,7 @@ import FirewallSelect from "../components/FirewallSelect.vue";
 import Journals from "../components/Journals.vue"
 import Header from "../components/Header.vue";
 import SSH from "../components/SSH.vue";
+import Diagnostics from "../components/Diagnostics.vue";
 </script>
 
 <template>
@@ -21,6 +22,7 @@ import SSH from "../components/SSH.vue";
       <Journals class="col-span-2" journalType="system" />
       <FirewallSelect />
       <SSH />
+      <Diagnostics />
     </div>
   </div>
 </template>
