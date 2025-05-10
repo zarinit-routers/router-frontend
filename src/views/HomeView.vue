@@ -6,6 +6,8 @@ import ModemList from "../components/ModemList.vue";
 import FirewallSelect from "../components/FirewallSelect.vue";
 import Journals from "../components/Journals.vue"
 import Header from "../components/Header.vue";
+import DHCP from "../components/DHCP/DHCP.vue";
+import LAN from "../components/LAN.vue";
 import WIFI from "../components/WIFI.vue";
 import SSH from "../components/SSH.vue";
 import Diagnostics from "../components/Diagnostics.vue";
@@ -22,6 +24,8 @@ import Diagnostics from "../components/Diagnostics.vue";
       <ModemList />
       <Journals class="col-span-2" journalType="system" />
       <FirewallSelect />
+     <DHCP />
+     <LAN />
       <WIFI />
       <SSH />
       <Diagnostics />
