@@ -9,8 +9,11 @@ import Header from "../components/Header.vue";
 import DeviceName from "../components/OS/DeviceName.vue"
 import DeviceNetworkSpeed from "../components/OS/DeviceNetworkSpeed.vue"
 import DeviceTraceroute from "../components/OS/DeviceTraceroute.vue"
-
-
+import DHCP from "../components/DHCP/DHCP.vue";
+import LAN from "../components/LAN.vue";
+import WIFI from "../components/WIFI.vue";
+import SSH from "../components/SSH.vue";
+import Diagnostics from "../components/Diagnostics.vue";
 </script>
 
 <template>
@@ -27,6 +30,11 @@ import DeviceTraceroute from "../components/OS/DeviceTraceroute.vue"
       <DeviceName />
       <DeviceNetworkSpeed />
       <DeviceTraceroute />
+     <DHCP />
+     <LAN />
+      <WIFI />
+      <SSH />
+      <Diagnostics />
     </div>
   </div>
 </template>
