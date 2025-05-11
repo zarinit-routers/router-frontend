@@ -1,41 +1,48 @@
 <template>
-  <div class="p-5 bg-[#222228] mx-1 rounded-sm">
-    <div v-if="loading">Загрузка...</div>
-    <div v-else-if="error">{{ error }}</div>
+  <div class="p-6 bg-[#1f1f25] rounded-md space-y-4">
+    <div v-if="loading" class="text-white">Загрузка...</div>
+    <div v-else-if="error" class="text-red-500">{{ error }}</div>
 
-    <ul v-if="modems" class="grid gap-4">
+    <ul v-if="modems.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <li
         v-for="(modem, index) in modems"
         :key="index"
         @click="openModal(modem)"
-        class="cursor-pointer"
+        class="cursor-pointer bg-[#2c2c34] hover:bg-[#3a3a45] text-white rounded-md p-4 transition duration-200"
       >
-        <ModemCard :modem="modem" />
+        <div class="font-semibold text-lg">{{ modem.generic.name }}</div>
+        <div class="text-sm text-gray-400">{{ modem["3gpp"]["operator-name"] || "Нет оператора" }}</div>
       </li>
     </ul>
 
-    <Dialog v-if="selectedModem" :open="isOpen" @close="closeModal" class="fixed inset-0 z-50">
-      <div class="flex items-center justify-center min-h-screen px-4 bg-black/40">
-        <DialogPanel class="bg-[#1f1f20] p-6 rounded-lg w-full max-w-3xl overflow-auto max-h-[90vh]">
-          <DialogTitle class="text-xl font-bold mb-4">
-            {{ selectedModem.generic.model }}
-          </DialogTitle>
+    <TransitionRoot as="template" :show="isOpen">
+      <Dialog as="div" class="relative z-10" @close="isOpen = false">
+        <div class="fixed inset-0 bg-black/50" />
 
-          <!-- Здесь можно отобразить всё, что хочешь -->
-          <pre class="text-sm text-white/80">{{ selectedModem }}</pre>
-
-          <div class="mt-4 text-right">
-            <button class="px-4 py-2 bg-blue-600 rounded" @click="closeModal">Закрыть</button>
+        <div class="fixed inset-0 overflow-y-auto">
+          <div class="flex min-h-full items-center justify-center p-4">
+            <DialogPanel class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+              <DialogTitle class="text-xl font-semibold mb-4">Информация о модеме</DialogTitle>
+              <ModemCard :modem="selectedModem" />
+              <div class="mt-4 flex justify-end">
+                <button
+                  class="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700"
+                  @click="isOpen = false"
+                >
+                  Закрыть
+                </button>
+              </div>
+            </DialogPanel>
           </div>
-        </DialogPanel>
-      </div>
-    </Dialog>
+        </div>
+      </Dialog>
+    </TransitionRoot>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
+import { Dialog, DialogPanel, DialogTitle, TransitionRoot } from "@headlessui/vue";
 import ModemCard from "./ModemCard.vue";
 
 const modems = ref([]);
@@ -50,14 +57,9 @@ const openModal = (modem) => {
   isOpen.value = true;
 };
 
-const closeModal = () => {
-  isOpen.value = false;
-  selectedModem.value = null;
-};
-
 const fetchModems = async () => {
   try {
-    const response = await fetch(`/api/modems/list`);
+    const response = await fetch("/api/modems/list");
     if (!response.ok) throw new Error("Ошибка загрузки модемов");
     const data = await response.json();
     modems.value = data.modems;
