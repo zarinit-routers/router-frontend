@@ -5,20 +5,22 @@
     <div class="logotip flex items-center">
       <img src="../assets/logo.svg" alt="">
       <p class="ml-5">
-        Zarinit MA4.16 | 00000001
+       <strong>
+        {{ info.manufacturer }}
+        {{ info.model }} ||
+        Версия модели: {{ info.modelVersion }}
+       </strong> 
       </p>
     </div>
 
     <div id="button" class="flex items-center ">
-    
-     <RebootButton />
+
+      <RebootButton />
 
       <button class="w-[60px] h-[39px] flex items-center bg-[#222228] justify-center rounded-xl" @click="logout">
         <img src="../assets/header_buttons/exit.svg" alt="">
       </button>
     </div>
-
-
   </header>
 </template>
 
@@ -38,4 +40,14 @@ const logout = () => {
 }
 
 const selectedLanguage = ref('ru')
+import { onMounted } from 'vue'
+import axios from 'axios'
+
+const info = ref({})
+
+onMounted(() => {
+  axios.get('/api/device-info').then(res => {
+    info.value = res.data
+  })
+})
 </script>
