@@ -6,8 +6,10 @@ import ModemList from "../components/ModemList.vue";
 import FirewallSelect from "../components/FirewallSelect.vue";
 import Journals from "../components/Journals.vue"
 import Header from "../components/Header.vue";
-import DeviceName from "../components/DeviceName.vue"
-import DeviceInfo from "../components/DeviceInfo.vue"
+import DeviceName from "../components/OS/DeviceName.vue"
+import DeviceNetworkSpeed from "../components/OS/DeviceNetworkSpeed.vue"
+import DeviceTraceroute from "../components/OS/DeviceTraceroute.vue"
+
 
 </script>
 
@@ -23,7 +25,8 @@ import DeviceInfo from "../components/DeviceInfo.vue"
       <Journals class="col-span-2" journalType="system" />
       <FirewallSelect />
       <DeviceName />
-      <DeviceInfo />
+      <DeviceNetworkSpeed />
+      <DeviceTraceroute />
     </div>
   </div>
 </template>
