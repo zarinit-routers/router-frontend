@@ -1,65 +1,41 @@
+<!-- modemList.vue -->
 <template>
-  <div class="p-6 bg-[#1f1f25] rounded-md space-y-4">
-    <div v-if="loading" class="text-white">Загрузка...</div>
-    <div v-else-if="error" class="text-red-500">{{ error }}</div>
+  <div class="p-5 bg-[#222228] mx-1 rounded-sm">
+    <div v-if="loading">Загрузка...</div>
+    <div v-else-if="error">{{ error }}</div>
 
-    <ul v-if="modems.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <li
-        v-for="(modem, index) in modems"
-        :key="index"
-        @click="openModal(modem)"
-        class="cursor-pointer bg-[#2c2c34] hover:bg-[#3a3a45] text-white rounded-md p-4 transition duration-200"
-      >
-        <div class="font-semibold text-lg">{{ modem.generic.name }}</div>
-        <div class="text-sm text-gray-400">{{ modem["3gpp"]["operator-name"] || "Нет оператора" }}</div>
+    <ul v-if="modems" class="grid gap-4">
+      <li v-for="(modem, index) in modems" :key="index">
+        <button
+          class="w-full bg-gray-700 p-3 rounded-md text-white"
+          @click="openModal(modem)"
+        >
+          Открыть модем
+        </button>
       </li>
     </ul>
 
-    <TransitionRoot as="template" :show="isOpen">
-      <Dialog as="div" class="relative z-10" @close="isOpen = false">
-        <div class="fixed inset-0 bg-black/50" />
-
-        <div class="fixed inset-0 overflow-y-auto">
-          <div class="flex min-h-full items-center justify-center p-4">
-            <DialogPanel class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-              <DialogTitle class="text-xl font-semibold mb-4">Информация о модеме</DialogTitle>
-              <ModemCard :modem="selectedModem" />
-              <div class="mt-4 flex justify-end">
-                <button
-                  class="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700"
-                  @click="isOpen = false"
-                >
-                  Закрыть
-                </button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
-    </TransitionRoot>
+    <ModalContainer :show="isModalOpen" :close="closeModal">
+      <ModemCard :modem="selectedModem" />
+    </ModalContainer>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { Dialog, DialogPanel, DialogTitle, TransitionRoot } from "@headlessui/vue";
+import { ref } from "vue";
+import ModalContainer from "./ModalContainer.vue";
 import ModemCard from "./ModemCard.vue";
 
 const modems = ref([]);
 const loading = ref(true);
 const error = ref(null);
-
-const isOpen = ref(false);
+const isModalOpen = ref(false);
 const selectedModem = ref(null);
 
-const openModal = (modem) => {
-  selectedModem.value = modem;
-  isOpen.value = true;
-};
-
+// Функция для загрузки списка модемов
 const fetchModems = async () => {
   try {
-    const response = await fetch("/api/modems/list");
+    const response = await fetch(`/api/modems/list`);
     if (!response.ok) throw new Error("Ошибка загрузки модемов");
     const data = await response.json();
     modems.value = data.modems;
@@ -71,4 +47,14 @@ const fetchModems = async () => {
 };
 
 onMounted(fetchModems);
+
+const openModal = (modem) => {
+  selectedModem.value = modem;
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+  selectedModem.value = null;
+};
 </script>
