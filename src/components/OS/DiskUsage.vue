@@ -1,11 +1,11 @@
 <template>
-  <div class="flex flex-col flex-wrap gap-2">
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
     <div
       v-for="disk in disks"
       :key="disk.name"
-      class="bg-[#2e2c35] p-4 rounded-lg flex flex-col items-center"
+      class="bg-[#2e2c35] p-1 rounded-lg flex flex-col items-center gap-2"
     >
-      <svg width="100" height="100" viewBox="0 0 100 100">
+      <svg class="w-30 h-30">
         <path
           d="M10,90 A40,40 0 0,1 90,90"
           fill="none"
@@ -24,8 +24,8 @@
           {{ getPercent(disk).toFixed(0) }}%
         </text>
       </svg>
-      <div class="text-sm text-white text-center mt-2">
-        <div class="font-mono">{{ disk.name }} -> {{ disk.mountPoint }}</div>
+      <div class="text-sm text-white text-center">
+        <div class="font-mono">{{ disk.name }}</div>
         <div>
           Использовано
           {{ formatMb(disk.used) }} из {{ formatMb(disk.size) }} МБ

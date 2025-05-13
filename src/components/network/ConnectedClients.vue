@@ -106,7 +106,11 @@ console.error("Connected clients with only dummy data, fix ASAP");
       <div class="flex flex-row items-center gap-2">
         <div
           class="rounded-full h-2 w-2"
-          :class="client.connected ? 'bg-green-400' : 'bg-yellow-300'"
+          :class="
+            client.connected
+              ? 'bg-green-400 shadow-green-600'
+              : 'bg-yellow-300 shadow-yellow-500'
+          "
           :title="client.connected ? 'Connected' : 'Disconnected'"
         ></div>
         <div>{{ client.name }}</div>
