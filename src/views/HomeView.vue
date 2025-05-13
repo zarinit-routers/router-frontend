@@ -5,6 +5,7 @@ import RamUsage from "../components/OS/RamUsage.vue";
 import DiskUsage from "../components/OS/DiskUsage.vue";
 import LAN from "../components/LAN.vue";
 import ConnectedClients from "../components/network/ConnectedClients.vue";
+import ModemList from "../components/ModemList.vue";
 
 const miniStatiusticsComponents = [
   { component: CPUsage, title: "CPU usage" },
@@ -37,6 +38,10 @@ const miniStatiusticsComponents = [
       <div>
         <h3>Connected clients</h3>
         <ConnectedClients />
+      </div>
+      <div>
+        <h3>Modems</h3>
+        <ModemList />
       </div>
     </div>
   </div>
