@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <div class="flex flex-col flex-wrap gap-2">
     <div
       v-for="disk in disks"
       :key="disk.name"
@@ -20,33 +20,32 @@
           stroke-width="10"
           stroke-linecap="round"
         />
-        <text x="50" y="80" text-anchor="middle" font-size="16" fill="#fff">
+        <text x="50" y="90" text-anchor="middle" font-size="16" fill="#fff">
           {{ getPercent(disk).toFixed(0) }}%
         </text>
       </svg>
       <div class="text-sm text-white text-center mt-2">
-        <div><strong>{{ disk.name }}</strong></div>
+        <div class="font-mono">{{ disk.name }} -> {{ disk.mountPoint }}</div>
         <div>
           Использовано
-          {{ formatMb(disk.used) }} из
-          {{ formatMb(disk.size) }} МБ
+          {{ formatMb(disk.used) }} из {{ formatMb(disk.size) }} МБ
         </div>
-        <div>Точка монтирования: {{ disk.mountPoint }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, onMounted } from "vue";
 
-const props = defineProps({
-  disks: {
-    type: Array,
-    required: true,
-  },
-});
+// const props = defineProps({
+//   disks: {
+//     type: Array,
+//     required: true,
+//   },
+// });
 
+const disks = ref([]);
 function getPercent(disk) {
   const used = parseInt(disk.used);
   const size = parseInt(disk.size);
@@ -69,4 +68,18 @@ function getArcPath(percent) {
 function formatMb(bytes) {
   return (parseInt(bytes) / 1024 / 1024).toFixed(0);
 }
+const fetchOsInfo = async () => {
+  try {
+    const response = await fetch(`/api/os-info`);
+    if (!response.ok) throw new Error("Ошибка загрузки данных");
+    const data = await response.json();
+    disks.value = data.DiskStats;
+    console.log(data.DiskStats); // Логируем данные, полученные с сервера
+  } catch (err) {
+  } finally {
+  }
+};
+
+// Загружаем данные при монтировании компонента
+onMounted(fetchOsInfo);
 </script>

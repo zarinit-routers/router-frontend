@@ -1,13 +1,13 @@
 <template>
   <div class="p-5 bg-[#222228] mx-1">
     <h2>Информация о системе</h2>
-    
+
     <!-- Загрузка данных -->
     <div v-if="loading">Загрузка...</div>
-    
+
     <!-- Ошибка загрузки данных -->
     <div v-else-if="error">{{ error }}</div>
-    
+
     <!-- Данные системы -->
     <div v-else>
       <!-- Память -->
@@ -16,16 +16,13 @@
         {{ (osInfo.Memory?.Used / 1024 / 1024).toFixed(2) }}<strong>/</strong>
         {{ (osInfo.Memory?.Total / 1024 / 1024).toFixed(2) }} МБайт использовано
       </p>
-      <RamUsage :used="osInfo.Memory?.Used" :total="osInfo.Memory?.Total" />
+      <RamUsage />
 
-      <!-- Процессор -->
-      <p><strong>Процессор:</strong> {{ osInfo.CpuStats?.CPUCount }} ядер</p>
-
-      <CPUsage :stats="osInfo.CpuStats" />
+      <CPUsage />
 
       <!-- Сетевые интерфейсы -->
       <p class="font-bold">Сетевые интерфейсы</p>
-      
+
       <div class="grid grid-cols-1 gap-1">
         <div
           v-for="net in osInfo.NetworkStats || []"
@@ -59,7 +56,6 @@
           </div>
         </div>
         <DiskUsage :disks="osInfo.DiskStats" />
-
       </div>
 
       <!-- Нагрузка -->
@@ -72,9 +68,9 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import RamUsage from "./OS/RamUsage.vue";
-import CPUsage from "./OS/CPUsage.vue";
-import DiskUsage from "./OS/DiskUsage.vue";
+import RamUsage from "./RamUsage.vue";
+import CPUsage from "./CPUsage.vue";
+import DiskUsage from "./DiskUsage.vue";
 
 const osInfo = ref({});
 const loading = ref(true);
