@@ -5,7 +5,5 @@ import DeviceNetworkSpeedDev from "../components/OS/DeviceNetworkSpeed(dev).vue"
 
 <template>
   <Header></Header>
-  <div class="mx-auto flex">
       <DeviceNetworkSpeedDev />
-  </div>
 </template>
