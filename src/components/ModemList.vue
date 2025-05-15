@@ -9,14 +9,21 @@
         :key="index"
         @click="openModal(modem)"
         :class="[
-          'cursor-pointer rounded-md flex items-center justify-center text-white font-semibold select-none transition duration-200',
+          'cursor-pointer rounded-md flex flex-col justify-between text-white font-semibold select-none transition duration-200',
           operatorBgColor(modem['3gpp']?.['operator-name'])
         ]"
         style="aspect-ratio: 1 / 1; min-width: 150px;"
       >
-        <div class="text-center px-2">
-          <div class="text-lg font-semibold truncate">{{ modem.generic.name }}</div>
-          <div class="text-sm mt-1 truncate">{{ modem['3gpp']?.['operator-name'] || 'Нет оператора' }}</div>
+        <div class="flex items-center justify-between p-4">
+          <div class="truncate text-lg">{{ modem.generic.name }}</div>
+          <div class="w-6 h-6" v-html="getOperatorIcon(modem['3gpp']?.['operator-name'])" />
+        </div>
+        <div class="px-4 pb-4 text-sm text-gray-200 truncate">
+          {{ modem['3gpp']?.['operator-name'] || 'Нет оператора' }}
+          <div class="mt-1 text-xs text-gray-300">
+            ⬇ {{ modem.rxSpeed || 0 }} Кбит/с <br />
+            ⬆ {{ modem.txSpeed || 0 }} Кбит/с
+          </div>
         </div>
       </li>
     </ul>
@@ -73,12 +80,42 @@ const operatorBgColor = (operator) => {
   return 'bg-gray-700 hover:bg-gray-800';
 };
 
+// 👇 иконки в виде SVG
+const operatorIcons = {
+  mts: `<svg fill="white" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>`,
+  megafon: `<svg fill="white" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="8"/></svg>`,
+  beeline: `<svg fill="white" viewBox="0 0 24 24"><path d="M4 12h16M4 16h16M4 8h16" stroke="white" stroke-width="2"/></svg>`,
+  tele2: `<svg fill="white" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>`,
+};
+
+const getOperatorIcon = (name = '') => {
+  const key = name.toLowerCase();
+  if (key.includes('mts')) return operatorIcons.mts;
+  if (key.includes('megafon')) return operatorIcons.megafon;
+  if (key.includes('beeline')) return operatorIcons.beeline;
+  if (key.includes('tele2')) return operatorIcons.tele2;
+  return '';
+};
+
+// Заглушка — замени на реальный вызов /api/netload, если нужно
+const fetchNetLoad = async () => {
+  // Пример: получаем скорость по имени устройства
+  // const response = await fetch('/api/netload')
+  // const data = await response.json()
+  modems.value = modems.value.map((modem) => ({
+    ...modem,
+    rxSpeed: Math.floor(Math.random() * 1000), // загрузка
+    txSpeed: Math.floor(Math.random() * 1000), // выгрузка
+  }));
+};
+
 const fetchModems = async () => {
   try {
     const response = await fetch("/api/modems/list");
     if (!response.ok) throw new Error("Ошибка загрузки модемов");
     const data = await response.json();
     modems.value = data.modems;
+    await fetchNetLoad();
   } catch (err) {
     error.value = err.message;
   } finally {
@@ -88,7 +125,3 @@ const fetchModems = async () => {
 
 onMounted(fetchModems);
 </script>
-
-<style>
-/* Если хотите, добавьте кастомные стили здесь */
-</style>

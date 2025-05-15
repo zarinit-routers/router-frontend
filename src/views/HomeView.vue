@@ -15,9 +15,9 @@ const miniStatisticsComponents = [
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row gap-6">
+  <div class="flex flex-col lg:flex-row gap-2">
     <!-- Левая колонка -->
-    <div class="flex-1 flex flex-col gap-6">
+    <div class="flex-1 flex flex-col gap-2">
       <div class="bg-neutral-800 p-5">
         <h4 class="text-lg font-bold mb-2">ЗАГРУЗКА СЕТИ</h4>
         <DeviceNetworkSpeed />
@@ -31,7 +31,7 @@ const miniStatisticsComponents = [
     </div>
 
     <!-- Правая колонка -->
-    <div class="w-full lg:w-1/3 flex flex-col gap-6">
+    <div class="w-full lg:w-1/3 flex flex-col gap-2">
       <div class="bg-neutral-800 p-5">
         <h4 class="text-lg font-bold mb-2">СИМ-КАРТЫ</h4>
         <ModemList />
