@@ -11,7 +11,9 @@
         class="cursor-pointer bg-[#2c2c34] hover:bg-[#3a3a45] text-white rounded-md p-4 transition duration-200"
       >
         <div class="font-semibold text-lg">{{ modem.generic.name }}</div>
-        <div class="text-sm text-gray-400">{{ modem["3gpp"]["operator-name"] || "Нет оператора" }}</div>
+        <div class="text-sm text-gray-400">
+          {{ modem["3gpp"]?.["operator-name"] || "Нет оператора" }}
+        </div>
       </li>
     </ul>
 
