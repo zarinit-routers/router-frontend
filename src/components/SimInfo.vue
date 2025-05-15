@@ -10,32 +10,37 @@
         <p class="text-sm text-gray-400">IMSI</p>
         <p class="font-mono">{{ simData.imsi }}</p>
       </div>
-      <!-- Добавьте другие поля по необходимости -->
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from 'vue'
 
 const props = defineProps({
   simName: {
     type: String,
     required: true,
   },
-});
+})
 
-const simData = ref(null);
+const simData = ref(null)
 
-onMounted(async () => {
+async function loadSim() {
   try {
-    const param = encodeURIComponent(props.simName.split("/").pop());
-    const response = await fetch(`/api/sim/${param}`);
-    if (!response.ok) throw new Error("Ошибка загрузки SIM данных");
-    const data = await response.json();
-    simData.value = data.properties;
+    const param = encodeURIComponent(props.simName)
+    const res = await fetch(`/api/sim/${param}`)
+    if (!res.ok) throw new Error('Ошибка загрузки SIM данных')
+    const data = await res.json()
+    simData.value = data.properties
   } catch (error) {
-    console.error("Ошибка при загрузке данных SIM:", error);
+    console.error('Ошибка при загрузке данных SIM:', error)
   }
-});
+}
+
+onMounted(loadSim)
+
+watch(() => props.simName, () => {
+  loadSim()
+})
 </script>

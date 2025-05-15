@@ -8,12 +8,16 @@
       <p><strong>IMEI:</strong> {{ modem.imei || '—' }}</p>
       <p><strong>Состояние:</strong> {{ modem.status || '—' }}</p>
       <p><strong>Сигнал:</strong> {{ modem.signal || '—' }}</p>
-      <!-- Добавь любые другие поля, которые есть -->
     </div>
+
+    <!-- Можно вложить компонент с SIM информацией -->
+    <SimInfo :simName="modem.iccid" />
   </div>
 </template>
 
 <script setup>
+import SimInfo from './SimInfo.vue'
+
 const props = defineProps({
   modem: {
     type: Object,
