@@ -81,19 +81,22 @@ const operatorBgColor = (operator) => {
 };
 
 // 👇 иконки в виде SVG
-const operatorIcons = {
-  mts: `<svg fill="white" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>`,
-  megafon: `<svg fill="white" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="8"/></svg>`,
-  beeline: `<svg fill="white" viewBox="0 0 24 24"><path d="M4 12h16M4 16h16M4 8h16" stroke="white" stroke-width="2"/></svg>`,
-  tele2: `<svg fill="white" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>`,
+const getOperatorIconUrl = (name = '') => {
+  const key = name.toLowerCase();
+  if (key.includes('mts')) return new URL('@/assets/oper/mts.svg', import.meta.url).href;
+  if (key.includes('megafon')) return new URL('@/assets/oper/megafon.svg', import.meta.url).href;
+  if (key.includes('beeline')) return new URL('@/assets/oper/beeline.svg', import.meta.url).href;
+  if (key.includes('tele2')) return new URL('@/assets/oper/tele2.svg', import.meta.url).href;
+  return '';
 };
+
 
 const getOperatorIcon = (name = '') => {
   const key = name.toLowerCase();
-  if (key.includes('mts')) return operatorIcons.mts;
-  if (key.includes('megafon')) return operatorIcons.megafon;
-  if (key.includes('beeline')) return operatorIcons.beeline;
-  if (key.includes('tele2')) return operatorIcons.tele2;
+  if (key.includes('mts')) return getOperatorIconUrl.mts;
+  if (key.includes('megafon')) return getOperatorIconUrl.megafon;
+  if (key.includes('beeline')) return getOperatorIconUrl.beeline;
+  if (key.includes('tele2')) return getOperatorIconUrl.tele2;
   return '';
 };
 
