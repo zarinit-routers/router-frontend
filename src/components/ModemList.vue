@@ -22,46 +22,14 @@
 
     <!-- Headless UI Dialog -->
     <TransitionRoot :show="isOpen" as="template" @close="closeModal">
-      <Dialog as="div" class="fixed inset-0 z-50 overflow-y-auto" @close="closeModal">
-        <div class="min-h-screen px-4 text-center bg-black bg-opacity-50 backdrop-blur-md">
-          <TransitionChild
-            enter="ease-out duration-300"
-            enter-from="opacity-0 scale-95"
-            enter-to="opacity-100 scale-100"
-            leave="ease-in duration-200"
-            leave-from="opacity-100 scale-100"
-            leave-to="opacity-0 scale-95"
-            as="template"
-          >
-            <Dialog.Panel
-              class="inline-block w-full max-w-md p-6 my-20 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-gray-900 shadow-xl rounded-2xl"
-            >
-              <Dialog.Title
-                as="h3"
-                class="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-4"
-              >
-                {{ selectedModem.operator }}
-              </Dialog.Title>
-              <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                <p><strong>ICCID:</strong> {{ selectedModem.iccid }}</p>
-                <p><strong>IMEI:</strong> {{ selectedModem.imei || '—' }}</p>
-                <p><strong>Состояние:</strong> {{ selectedModem.status || '—' }}</p>
-                <p><strong>Сигнал:</strong> {{ selectedModem.signal || '—' }}</p>
-              </div>
+      <Dialog v-model="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <Dialog.Panel class="bg-white p-6 rounded max-w-md w-full">
+    <h2 class="text-xl font-bold mb-4">{{ selectedModem.operator }}</h2>
+    <pre>{{ selectedModem }}</pre>
+    <button @click="showModal = false" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Закрыть</button>
+  </Dialog.Panel>
+</Dialog>
 
-              <div class="mt-6 text-right">
-                <button
-                  type="button"
-                  class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                  @click="closeModal"
-                >
-                  Закрыть
-                </button>
-              </div>
-            </Dialog.Panel>
-          </TransitionChild>
-        </div>
-      </Dialog>
     </TransitionRoot>
   </div>
 </template>
