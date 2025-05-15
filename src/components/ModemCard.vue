@@ -1,26 +1,51 @@
 <template>
-  <div
-    class="cursor-pointer bg-neutral-800 hover:bg-neutral-700 rounded-xl p-2 px-3 flex flex-col gap-2"
-    @click="toggleModal"
-  >
-    <div class="flex gap-2">
-      <span v-if="modemEnabled(modem)" class="text-green-300"
-        ><i class="fa-solid fa-circle-check"></i>
-      </span>
-      <span v-else class="text-[#B99209]"
-        ><i class="fa-solid fa-circle-xmark"></i
-      ></span>
-      <span class="">
-        {{ modem.generic.model }}
-      </span>
+  <div class="space-y-3 text-sm text-gray-800">
+    <div>
+      <strong class="block text-gray-600">Имя устройства:</strong>
+      <span class="font-medium text-gray-900">{{ modem.generic.name }}</span>
     </div>
-    <div class="text-sm font-mono">
-      {{ modem["dbus-path"] }}
-    </div>
-    <div v-if="modemEnabled(modem)">Включён</div>
-    <div v-else class="text-[#B99209]">Выключен</div>
-  </div>
 
+    <div>
+      <strong class="block text-gray-600">Оператор:</strong>
+      <span v-if="modem['3gpp']['operator-name'] && modem['3gpp']['operator-name'] !== '--'">
+        {{ modem["3gpp"]["operator-name"] }} ({{ modem["3gpp"]["operator-code"] }})
+      </span>
+      <span v-else class="text-gray-500">Нет информации</span>
+    </div>
+
+    <div>
+      <strong class="block text-gray-600">Состояние:</strong>
+      <span :class="modemEnabled(modem) ? 'text-green-600' : 'text-yellow-500'">
+        {{ modemEnabled(modem) ? "Включён" : "Выключен" }}
+      </span>
+    </div>
+
+    <div>
+      <strong class="block text-gray-600">IMEI:</strong>
+      <span class="font-mono">{{ modem.generic.imei || '—' }}</span>
+    </div>
+
+    <div>
+      <strong class="block text-gray-600">ICCID:</strong>
+      <span class="font-mono">{{ modem.generic.iccid || '—' }}</span>
+    </div>
+
+    <div>
+      <strong class="block text-gray-600">IMSI:</strong>
+      <span class="font-mono">{{ modem.generic.imsi || '—' }}</span>
+    </div>
+
+    <div>
+      <strong class="block text-gray-600">Слот:</strong>
+      <span>{{ modem.generic.slot || '—' }}</span>
+    </div>
+
+    <div>
+      <strong class="block text-gray-600">SIM:</strong>
+      <SimInfo :name="modem.generic.sim" />
+    </div>
+  </div>
+  
   <!-- Модальное окно с использованием Headless UI Dialog -->
   <Dialog as="div" class="relative z-10" v-if="showModal" @close="toggleModal">
     <template #default>
@@ -165,4 +190,5 @@ onMounted(() => {
       signal.value = response.data;
     });
 });
+
 </script>
