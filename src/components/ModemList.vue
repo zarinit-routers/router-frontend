@@ -1,76 +1,62 @@
 <template>
-  <div class="p-6 bg-[#1f1f25] rounded-md space-y-4">
-    <div v-if="loading" class="text-white">Загрузка...</div>
-    <div v-else-if="error" class="text-red-500">{{ error }}</div>
-
-    <ul v-if="modems.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <li
-        v-for="(modem, index) in modems"
-        :key="index"
-        @click="openModal(modem)"
-        class="cursor-pointer bg-[#2c2c34] hover:bg-[#3a3a45] text-white rounded-md p-4 transition duration-200"
+  <div>
+    <div class="grid grid-cols-2 gap-4">
+      <button
+        v-for="modem in modems"
+        :key="modem.id"
+        @click="selectedModem = modem"
+        class="flex flex-col items-start justify-center p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:shadow-md transition"
       >
-        <div class="font-semibold text-lg">{{ modem.generic.name }}</div>
-        <div class="text-sm text-gray-400">
-          {{ modem["3gpp"]?.["operator-name"] || "Нет оператора" }}
-        </div>
-      </li>
-    </ul>
+        <div
+          class="w-10 h-10 rounded-md mb-2"
+          :class="gradientClass(modem.operator)"
+        />
+        <span class="text-sm font-semibold text-gray-800 dark:text-gray-100">
+          {{ modem.operator }}
+        </span>
+        <span class="text-xs text-gray-500 dark:text-gray-400">
+          {{ modem.iccid }}
+        </span>
+      </button>
+    </div>
 
-    <TransitionRoot as="template" :show="isOpen">
-      <Dialog as="div" class="relative z-10" @close="isOpen = false">
-        <div class="fixed inset-0 bg-black/50" />
-
-        <div class="fixed inset-0 overflow-y-auto">
-          <div class="flex min-h-full items-center justify-center p-4">
-            <DialogPanel class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-              <DialogTitle class="text-xl font-semibold mb-4">Информация о модеме</DialogTitle>
-              <ModemCard :modem="selectedModem" />
-              <div class="mt-4 flex justify-end">
-                <button
-                  class="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700"
-                  @click="isOpen = false"
-                >
-                  Закрыть
-                </button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
-    </TransitionRoot>
+    <!-- Модалка с подробной карточкой -->
+    <ModalContainer :open="!!selectedModem" @close="selectedModem = null">
+      <ModemCard v-if="selectedModem" :modem="selectedModem" />
+    </ModalContainer>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { Dialog, DialogPanel, DialogTitle, TransitionRoot } from "@headlessui/vue";
-import ModemCard from "./ModemCard.vue";
+import { ref } from 'vue'
+import ModalContainer from './ModalContainer.vue'
+import ModemCard from './ModemCard.vue'
 
-const modems = ref([]);
-const loading = ref(true);
-const error = ref(null);
+const props = defineProps({
+  modems: {
+    type: Array,
+    required: true,
+  },
+})
 
-const isOpen = ref(false);
-const selectedModem = ref(null);
+const selectedModem = ref(null)
 
-const openModal = (modem) => {
-  selectedModem.value = modem;
-  isOpen.value = true;
-};
-
-const fetchModems = async () => {
-  try {
-    const response = await fetch("/api/modems/list");
-    if (!response.ok) throw new Error("Ошибка загрузки модемов");
-    const data = await response.json();
-    modems.value = data.modems;
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    loading.value = false;
+function gradientClass(operator) {
+  switch (operator?.toLowerCase()) {
+    case 'теле2':
+    case 'tele2':
+      return 'bg-gradient-to-r from-[#001E5A] to-[#99256B]'
+    case 'мтс':
+    case 'mts':
+      return 'bg-gradient-to-r from-[#EF313B] to-[#FF5280]'
+    case 'билайн':
+    case 'beeline':
+      return 'bg-gradient-to-r from-[#E4B600] to-[#FEBB6C]'
+    case 'мегафон':
+    case 'megafon':
+      return 'bg-gradient-to-r from-[#07B755] to-[#23E390]'
+    default:
+      return 'bg-gradient-to-r from-gray-400 to-gray-500'
   }
-};
-
-onMounted(fetchModems);
+}
 </script>
