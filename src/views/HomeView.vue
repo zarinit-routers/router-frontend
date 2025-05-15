@@ -8,47 +8,55 @@ import ConnectedClients from "../components/network/ConnectedClients.vue";
 import ModemList from "../components/ModemList.vue";
 
 const miniStatisticsComponents = [
+  { component: DeviceNetworkSpeed, title: "ЗАГРУЗКА СЕТИ" },
   { component: CPUsage, title: "CPU usage" },
   { component: RamUsage, title: "RAM usage" },
-  { component: DeviceNetworkSpeed, title: "Network speed" },
 ];
 </script>
 
 <template>
-  <div class="flex flex-col gap-8">
-    <div class="grid grid-cols-3 gap-4">
-      <div
-        v-for="c in miniStatisticsComponents"
-        class="bg-neutral-800 flex flex-col h-full p-2"
-      >
-        <h4 class="text-lg font-bold mb-2 text-center">{{ c.title }}</h4>
-        <component :is="c.component" />
+  <div class="flex flex-col lg:flex-row gap-6">
+    <!-- Левая колонка -->
+    <div class="flex-1 flex flex-col gap-6">
+      <div class="bg-neutral-800 p-5">
+        <h4 class="text-lg font-bold mb-2">ЗАГРУЗКА СЕТИ</h4>
+        <DeviceNetworkSpeed />
+      </div>
+      <div class="bg-neutral-800 p-5">
+        <h4 class="text-lg font-bold mb-2">О СИСТЕМЕ</h4>
+        <CPUsage />
+        <RamUsage />
+        <DiskUsage />
       </div>
     </div>
 
-    <div class="flex flex-wrap gap-4">
-      <div>
-        <h3>Диски</h3>
-        <DiskUsage />
+    <!-- Правая колонка -->
+    <div class="w-full lg:w-1/3 flex flex-col gap-6">
+      <div class="bg-neutral-800 p-5">
+        <h4 class="text-lg font-bold mb-2">СИМ-КАРТЫ</h4>
+        <ModemList />
       </div>
-      <div>
-        <h3>LAN ports</h3>
+      <div class="bg-neutral-800 p-5">
+        <h4 class="text-lg font-bold mb-2">WI-FI</h4>
+        <!-- Компонент Wi-Fi (добавишь позже) -->
+      </div>
+      <div class="bg-neutral-800 p-5">
+        <h4 class="text-lg font-bold mb-2">ЛОКАЛЬНАЯ СЕТЬ</h4>
         <LAN />
       </div>
-      <div>
-        <h3>Connected clients</h3>
+      <div class="bg-neutral-800 p-5">
+        <h4 class="text-lg font-bold mb-2">ПОДКЛЮЧЕННЫЕ УСТРОЙСТВА</h4>
         <ConnectedClients />
-      </div>
-      <div>
-        <h3>Modems</h3>
-        <ModemList />
       </div>
     </div>
   </div>
 </template>
 
+
+
 <style>
 @import "../style.css";
+
 h3 {
   @apply text-xl font-bold mb-2;
 }

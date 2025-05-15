@@ -8,12 +8,14 @@
     <!-- Вывод скорости загрузки и скачивания -->
     <div class="mt-4">
       <p>
-        <i class="fas fa-download" title="Скорость загрузки"></i>
-        {{ downloadSpeed }} KB/s
+        <i class="fas fa-download text-[#36A2EB]" title="Скорость скачивания"></i>
+        Скорость скачивания: {{ downloadSpeed }} KB/s
       </p>
-      <p>
-        <i class="fas fa-upload" title="Скорость отправки"></i>
-        {{ uploadSpeed }} KB/s
+      <p >
+        <svg class="w-2 h-2  rounded-full"></svg>
+
+        <i class="fas fa-upload text-[#FF6384]" title="Скорость отправки"></i>
+        Скорость загрузки: {{ uploadSpeed }} KB/s
       </p>
     </div>
   </div>
