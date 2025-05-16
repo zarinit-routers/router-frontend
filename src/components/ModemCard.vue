@@ -36,9 +36,10 @@ const operatorName = computed(() => props.modem["3gpp"]?.["operator-name"] || "Ð
 
 const operatorClass = computed(() => {
   const operator = operatorName.value.toLowerCase();
-  if (operator.includes("mts")) return "bg-red-600";
-  if (operator.includes("megafon")) return "bg-green-600";
-  if (operator.includes("beeline")) return "bg-yellow-600";
+  if (operator.includes("tele2"));
+  if (operator.includes("mts")) ;
+  if (operator.includes("megafon")) ;
+  if (operator.includes("beeline")) ;
   return "bg-gray-700";
 });
 </script>

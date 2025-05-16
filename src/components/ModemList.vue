@@ -43,7 +43,7 @@
         <div class="fixed inset-0 bg-black/50" />
         <div class="fixed inset-0 overflow-y-auto">
           <div class="flex min-h-full items-center justify-center p-4">
-            <DialogPanel class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+            <DialogPanel class="w-full max-w-md rounded-xl bg-[#363E4B] p-6 shadow-xl">
               <DialogTitle class="text-xl font-semibold mb-4">Информация о модеме</DialogTitle>
               <ModemCard :modem="selectedModem" />
               <div class="mt-4 flex justify-end">
