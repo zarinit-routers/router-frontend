@@ -11,8 +11,8 @@
         <div class="flex items-center justify-between p-4">
           <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" class="w-6 h-6 object-contain"
             v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" />
-          <div class="m-auto flex ">
-            <div class="mt-2 mr-2">
+          <div class=" flex ">
+            <div class="mr-2">
               <div class="flex items-end gap-[2px] h-5">
                 <div v-for="i in 4" :key="i" :class="[
                   'w-1 rounded-sm transition-all duration-300',

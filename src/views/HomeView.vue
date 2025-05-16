@@ -31,7 +31,7 @@ const miniStatisticsComponents = [
     </div>
 
     <!-- Правая колонка -->
-    <div class="w-full lg:w-1/3 flex flex-col gap-2  w-auto"><!-- временно w-auto, пока sidebar не добавим и контейнер не снимем -->
+    <div class="w-full lg:w-1/3 flex flex-col gap-2" style="width: auto;"><!-- временно w-auto, пока sidebar не добавим и контейнер не снимем -->
       <div class="bg-neutral-800 p-5">
         <h4 class="text-lg font-bold mb-2">СИМ-КАРТЫ</h4>
         <ModemList />
