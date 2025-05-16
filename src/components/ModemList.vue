@@ -15,16 +15,33 @@
         style="aspect-ratio: 1 / 1; min-width: 150px;"
       >
         <div class="flex items-center justify-between p-4">
-          <div class="truncate text-lg">{{ modem.generic.name }}</div>
+          <div class="truncate text-lg">{{ modem.generic?.name || modem.device }}</div>
           <img
-            v-if="getOperatorIcon(modem['3gpp']?.['operator-name'])"
-            :src="getOperatorIcon(modem['3gpp']?.['operator-name'])"
-            alt="Оператор"
+            :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])"
             class="w-6 h-6 object-contain"
+            v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])"
           />
         </div>
+
         <div class="px-4 pb-4 text-sm text-gray-200 truncate">
           {{ modem['3gpp']?.['operator-name'] || 'Нет оператора' }}
+
+          <!-- Иконка уровня сигнала -->
+          <div class="mt-2">
+            <div class="flex items-end gap-[2px] h-5">
+              <div
+                v-for="i in 4"
+                :key="i"
+                :class="[
+                  'w-1 rounded-sm transition-all duration-300',
+                  i <= getSignalLevel(modem['3gpp']?.signal?.['signal-quality']) ? 'bg-white' : 'bg-gray-500',
+                  `h-${i + 1}`
+                ]"
+              />
+            </div>
+          </div>
+
+          <!-- Скорость -->
           <div class="mt-1 text-xs text-gray-300">
             ⬇ {{ modem.rxSpeed || 0 }} Кбит/с <br />
             ⬆ {{ modem.txSpeed || 0 }} Кбит/с
@@ -33,6 +50,7 @@
       </li>
     </ul>
 
+    <!-- Модалка -->
     <TransitionRoot as="template" :show="isOpen">
       <Dialog as="div" class="relative z-10" @close="isOpen = false">
         <div class="fixed inset-0 bg-black/50" />
@@ -71,6 +89,7 @@ const openModal = (modem) => {
   isOpen.value = true;
 };
 
+// Цвета фона по оператору
 const operatorBgColor = (operator) => {
   if (!operator) return 'bg-gray-700 hover:bg-gray-800';
   const op = operator.toLowerCase();
@@ -81,9 +100,9 @@ const operatorBgColor = (operator) => {
   return 'bg-gray-700 hover:bg-gray-800';
 };
 
-// Получить путь к SVG иконке оператора
+// SVG по оператору
 const getOperatorIconUrl = (name = '') => {
-  const key = name.toLowerCase();
+  const key = name?.toLowerCase?.() || '';
   if (key.includes('mts')) return new URL('../assets/oper/mts.svg', import.meta.url).href;
   if (key.includes('megafon')) return new URL('../assets/oper/megafon.svg', import.meta.url).href;
   if (key.includes('beeline')) return new URL('../assets/oper/beeline.svg', import.meta.url).href;
@@ -91,11 +110,18 @@ const getOperatorIconUrl = (name = '') => {
   return '';
 };
 
-const getOperatorIcon = (name = '') => {
-  return getOperatorIconUrl(name || '');
+// Уровень сигнала (0–4)
+const getSignalLevel = (quality) => {
+  const q = Number(quality);
+  if (isNaN(q)) return 0;
+  if (q > 80) return 4;
+  if (q > 60) return 3;
+  if (q > 40) return 2;
+  if (q > 20) return 1;
+  return 0;
 };
 
-// Получение скорости загрузки/выгрузки
+// Загрузка netload
 const fetchNetLoad = async () => {
   try {
     const response = await fetch("/api/netload");
@@ -117,7 +143,7 @@ const fetchNetLoad = async () => {
   }
 };
 
-// Получение списка модемов
+// Загрузка модемов
 const fetchModems = async () => {
   try {
     const response = await fetch("/api/modems/list");
@@ -132,8 +158,5 @@ const fetchModems = async () => {
   }
 };
 
-onMounted(async () => {
-  await fetchModems();
-  await fetchNetLoad();
-});
+onMounted(fetchModems);
 </script>
