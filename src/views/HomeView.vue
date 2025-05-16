@@ -6,6 +6,7 @@ import DiskUsage from "../components/OS/DiskUsage.vue";
 import LAN from "../components/LAN.vue";
 import ConnectedClients from "../components/network/ConnectedClients.vue";
 import ModemList from "../components/ModemList.vue";
+import OsInfo from "../components/OS/OsInfo.vue"
 
 const miniStatisticsComponents = [
   { component: DeviceNetworkSpeed, title: "ЗАГРУЗКА СЕТИ" },
@@ -23,10 +24,22 @@ const miniStatisticsComponents = [
         <DeviceNetworkSpeed />
       </div>
       <div class="bg-neutral-800 p-5">
-        <h4 class="text-lg font-bold mb-2">О СИСТЕМЕ</h4>
-        <CPUsage />
+        <h2 class="text-lg font-bold mb-2">О СИСТЕМЕ</h2>
+        <div>
+          <h3>
+            Система
+          </h3>
+        </div>
         <RamUsage />
+        <CPUsage />
+        <h3>Сетевые интерфейсы</h3>
+        <div>
+          <OsInfo />
+        </div>
+        <h3>Диски</h3>
+      
         <DiskUsage />
+        
       </div>
     </div>
 

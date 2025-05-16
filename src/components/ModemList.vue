@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 bg-[#1f1f25] rounded-md space-y-4 min-h-screen">
+  <div class="p-6 rounded-md space-y-4">
     <div v-if="loading" class="text-white">Загрузка...</div>
     <div v-else-if="error" class="text-red-500">{{ error }}</div>
 

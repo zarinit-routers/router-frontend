@@ -1,6 +1,13 @@
 <template>
-  <div class="flex flex-col items-center">
-    <svg width="100" height="100" viewBox="0 0 100 100">
+  <div class="flex flex-col">
+    <h4>RAM</h4>
+    <div class="text-sm text-white">
+      Память: 
+      <span class="font-mono">{{ (used / 1024 / 1024).toFixed(0) }}</span> из
+      <span class="font-mono">{{ (total / 1024 / 1024).toFixed(0) }}</span> МБ
+    </div>
+    <div class="p-5 mx-1">
+      <svg width="100" height="100" viewBox="0 0 100 100">
       <path
         d="M10,90 A40,40 0 0,1 90,90"
         fill="none"
@@ -19,12 +26,9 @@
         {{ percent.toFixed(0) }}%
       </text>
     </svg>
-    <div>RAM</div>
-    <div class="text-sm text-white">
-      Использовано
-      <span class="font-mono">{{ (used / 1024 / 1024).toFixed(0) }}</span> из
-      <span class="font-mono">{{ (total / 1024 / 1024).toFixed(0) }}</span> МБ
+   
     </div>
+    
   </div>
 </template>
 

@@ -1,6 +1,5 @@
 <template>
-  <div class="p-5 bg-[#222228] mx-1">
-    <h2>Информация о системе</h2>
+  <div class=" my-5">
 
     <!-- Загрузка данных -->
     <div v-if="loading">Загрузка...</div>
@@ -10,25 +9,11 @@
 
     <!-- Данные системы -->
     <div v-else>
-      <!-- Память -->
-      <p>
-        <strong>Память:</strong>
-        {{ (osInfo.Memory?.Used / 1024 / 1024).toFixed(2) }}<strong>/</strong>
-        {{ (osInfo.Memory?.Total / 1024 / 1024).toFixed(2) }} МБайт использовано
-      </p>
-      <RamUsage />
-
-      <CPUsage />
-
-      <!-- Сетевые интерфейсы -->
-      <p class="font-bold">Сетевые интерфейсы</p>
+    
 
       <div class="grid grid-cols-1 gap-1">
-        <div
-          v-for="net in osInfo.NetworkStats || []"
-          :key="net.Name"
-          class="bg-[#37343D] rounded-lg p-1 px-4 flex flex-col gap-1"
-        >
+        <div v-for="net in osInfo.NetworkStats || []" :key="net.Name"
+          class="bg-[#37343D] rounded-lg p-1 px-4 flex flex-col gap-1 my-1">
           <div>{{ net.Name }}</div>
           <div>
             <i class="fas fa-upload"></i>
@@ -42,26 +27,10 @@
         </div>
       </div>
 
-      <!-- Диски -->
-      <div>
-        <p class="font-bold">Диски</p>
-        <div class="grid grid-cols-2 gap-1">
-          <div
-            class="bg-[#37343D] rounded-lg p-1 px-4 text-sm"
-            v-for="disk in osInfo.DiskStats || []"
-            :key="disk.Name"
-          >
-            <i class="fas fa-hard-drive pe-2"></i>
-            {{ disk.Name }}
-          </div>
-        </div>
-        <DiskUsage :disks="osInfo.DiskStats" />
-      </div>
+     
 
       <!-- Нагрузка -->
-      <p>
-        <strong>Нагрузка:</strong> {{ osInfo.LoadAverage?.Loadavg1 }} (1 минута)
-      </p>
+      
     </div>
   </div>
 </template>
