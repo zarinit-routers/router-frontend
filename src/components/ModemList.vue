@@ -4,45 +4,37 @@
     <div v-else-if="error" class="text-red-500">{{ error }}</div>
 
     <ul v-if="modems.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <li
-        v-for="(modem, index) in modems"
-        :key="index"
-        @click="openModal(modem)"
-        :class="[
-          'cursor-pointer rounded-md flex flex-col justify-between text-white font-semibold select-none transition duration-200',
-          operatorBgColor(modem['3gpp']?.['operator-name'])
-        ]"
-        style="aspect-ratio: 1 / 1; min-width: 150px;"
-      >
+      <li v-for="(modem, index) in modems" :key="index" @click="openModal(modem)" :class="[
+        'cursor-pointer rounded-md flex flex-col justify-between text-white font-semibold select-none transition duration-200',
+        operatorBgColor(modem['3gpp']?.['operator-name'])
+      ]" style="aspect-ratio: 1 / 1; min-width: 150px;">
         <div class="flex items-center justify-between p-4">
           <div class="truncate text-lg">{{ modem.generic.name }}</div>
-          <img
-            :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])"
-            class="w-6 h-6 object-contain"
-            v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])"
-          />
+          <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" class="w-6 h-6 object-contain"
+            v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" />
+          <div class="mt-2">
+            <div class="flex items-end gap-[2px] h-5">
+              <div v-for="i in 4" :key="i" :class="[
+                'w-1 rounded-sm transition-all duration-300',
+                i <= getSignalLevel(modem.generic?.['signal-quality']?.value) ? 'bg-white' : 'bg-gray-500',
+                `h-${i + 1}`
+              ]" />
+            </div>
+            <p class="font-bold">
+
+              {{ modem.generic?.['access-technologies']?.[0] || 'нет данных' }}<br />
+            </p>
+          </div>
         </div>
         <div class="px-4 pb-4 text-sm text-gray-200 truncate">
           {{ modem['3gpp']?.['operator-name'] || 'Нет оператора' }}
           <div class="mt-1 text-xs text-gray-300">
-            Технология: {{ modem.generic?.['access-technologies']?.[0] || 'нет данных' }}<br />
+
             Уровень сигнала: {{ modem.generic?.['signal-quality']?.value || '0' }}<br />
             ⬇ {{ modem.rxSpeed || 0 }} Кбит/с<br />
             ⬆ {{ modem.txSpeed || 0 }} Кбит/с
           </div>
-          <div class="mt-2">
-            <div class="flex items-end gap-[2px] h-5">
-              <div
-                v-for="i in 4"
-                :key="i"
-                :class="[
-                  'w-1 rounded-sm transition-all duration-300',
-                  i <= getSignalLevel(modem.generic?.['signal-quality']?.value) ? 'bg-white' : 'bg-gray-500',
-                  `h-${i + 1}`
-                ]"
-              />
-            </div>
-          </div>
+
         </div>
       </li>
     </ul>
