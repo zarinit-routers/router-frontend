@@ -15,33 +15,34 @@
         style="aspect-ratio: 1 / 1; min-width: 150px;"
       >
         <div class="flex items-center justify-between p-4">
-          <div class="truncate text-lg">{{ modem.generic?.name || modem.device }}</div>
+          <div class="truncate text-lg">{{ modem.generic.name }}</div>
           <img
-            :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])"
-            class="w-6 h-6 object-contain"
             v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])"
+            :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])"
+            alt="operator"
+            class="w-6 h-6"
           />
         </div>
-
         <div class="px-4 pb-4 text-sm text-gray-200 truncate">
           {{ modem['3gpp']?.['operator-name'] || 'Нет оператора' }}
 
-          <!-- Иконка уровня сигнала -->
-          <div class="mt-2">
-            <div class="flex items-end gap-[2px] h-5">
-              <div
-                v-for="i in 4"
-                :key="i"
-                :class="[
-                  'w-1 rounded-sm transition-all duration-300',
-                  i <= getSignalLevel(modem['3gpp']?.signal?.['signal-quality']) ? 'bg-white' : 'bg-gray-500',
-                  `h-${i + 1}`
-                ]"
-              />
-            </div>
+          <div class="mt-1 text-xs text-gray-300">
+            Технология: 
+            <span :class="getTechColor(modem.generic['access-technologies'])">
+              {{ modem.generic['access-technologies']?.join(', ').toUpperCase() || '—' }}
+            </span>
           </div>
 
-          <!-- Скорость -->
+          <div class="mt-1 flex items-center space-x-1">
+            <SignalBars
+              :strength="parseInt(modem.generic['signal-quality']?.value || 0)"
+              :color="operatorSignalColor(modem['3gpp']?.['operator-name'])"
+            />
+            <span class="text-xs ml-2">
+              {{ modem.generic['signal-quality']?.value || 0 }}%
+            </span>
+          </div>
+
           <div class="mt-1 text-xs text-gray-300">
             ⬇ {{ modem.rxSpeed || 0 }} Кбит/с <br />
             ⬆ {{ modem.txSpeed || 0 }} Кбит/с
@@ -50,7 +51,6 @@
       </li>
     </ul>
 
-    <!-- Модалка -->
     <TransitionRoot as="template" :show="isOpen">
       <Dialog as="div" class="relative z-10" @close="isOpen = false">
         <div class="fixed inset-0 bg-black/50" />
@@ -60,7 +60,10 @@
               <DialogTitle class="text-xl font-semibold mb-4">Информация о модеме</DialogTitle>
               <ModemCard :modem="selectedModem" />
               <div class="mt-4 flex justify-end">
-                <button class="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700" @click="isOpen = false">
+                <button
+                  class="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700"
+                  @click="isOpen = false"
+                >
                   Закрыть
                 </button>
               </div>
@@ -89,39 +92,77 @@ const openModal = (modem) => {
   isOpen.value = true;
 };
 
-// Цвета фона по оператору
 const operatorBgColor = (operator) => {
-  if (!operator) return 'bg-gray-700 hover:bg-gray-800';
+  if (!operator) return "bg-gray-700 hover:bg-gray-800";
   const op = operator.toLowerCase();
-  if (op.includes('tele2')) return 'bg-gradient-to-r from-[#001f4d] to-[#99256B] hover:from-[#001b45] hover:to-[#7a1f56]';
-  if (op.includes('mts')) return 'bg-gradient-to-r from-[#EF313B] to-[#FF5280] hover:from-[#d2272f] hover:to-[#e34e76]';
-  if (op.includes('beeline')) return 'bg-gradient-to-r from-[#E4B600] to-[#FEBB6C] hover:from-[#c49c00] hover:to-[#db9f4d]';
-  if (op.includes('megafon')) return 'bg-gradient-to-r from-[#07B755] to-[#23E390] hover:from-[#059c49] hover:to-[#1fd47e]';
-  return 'bg-gray-700 hover:bg-gray-800';
+  if (op.includes("tele2"))
+    return "bg-gradient-to-r from-[#001f4d] to-[#99256B] hover:from-[#001b45] hover:to-[#7a1f56]";
+  if (op.includes("mts"))
+    return "bg-gradient-to-r from-[#EF313B] to-[#FF5280] hover:from-[#d2272f] hover:to-[#e34e76]";
+  if (op.includes("beeline"))
+    return "bg-gradient-to-r from-[#E4B600] to-[#FEBB6C] hover:from-[#c49c00] hover:to-[#db9f4d]";
+  if (op.includes("megafon"))
+    return "bg-gradient-to-r from-[#07B755] to-[#23E390] hover:from-[#059c49] hover:to-[#1fd47e]";
+  return "bg-gray-700 hover:bg-gray-800";
 };
 
-// SVG по оператору
-const getOperatorIconUrl = (name = '') => {
-  const key = name?.toLowerCase?.() || '';
-  if (key.includes('mts')) return new URL('../assets/oper/mts.svg', import.meta.url).href;
-  if (key.includes('megafon')) return new URL('../assets/oper/megafon.svg', import.meta.url).href;
-  if (key.includes('beeline')) return new URL('../assets/oper/beeline.svg', import.meta.url).href;
-  if (key.includes('tele2')) return new URL('../assets/oper/tele2.svg', import.meta.url).href;
-  return '';
+const getOperatorIconUrl = (name = "") => {
+  const key = name.toLowerCase();
+  if (key.includes("mts")) return new URL("../assets/oper/mts.svg", import.meta.url).href;
+  if (key.includes("megafon")) return new URL("../assets/oper/megafon.svg", import.meta.url).href;
+  if (key.includes("beeline")) return new URL("../assets/oper/beeline.svg", import.meta.url).href;
+  if (key.includes("tele2")) return new URL("../assets/oper/tele2.svg", import.meta.url).href;
+  return "";
 };
 
-// Уровень сигнала (0–4)
-const getSignalLevel = (quality) => {
-  const q = Number(quality);
-  if (isNaN(q)) return 0;
-  if (q > 80) return 4;
-  if (q > 60) return 3;
-  if (q > 40) return 2;
-  if (q > 20) return 1;
-  return 0;
+const getTechColor = (tech = []) => {
+  const t = tech.join(",").toLowerCase();
+  if (t.includes("lte")) return "text-green-400";
+  if (t.includes("umts")) return "text-yellow-400";
+  if (t.includes("gsm")) return "text-red-400";
+  return "text-gray-400";
 };
 
-// Загрузка netload
+// цвет сигнала для каждого оператора
+const operatorSignalColor = (operator) => {
+  if (!operator) return "#888888";
+  const op = operator.toLowerCase();
+  if (op.includes("tele2")) return "#99256B";
+  if (op.includes("mts")) return "#EF313B";
+  if (op.includes("beeline")) return "#E4B600";
+  if (op.includes("megafon")) return "#07B755";
+  return "#888888";
+};
+
+// Компонент отрисовки уровня сигнала (палочки)
+const SignalBars = {
+  props: ["strength", "color"],
+  setup(props) {
+    // strength 0-100
+    const barsCount = 5;
+    const activeBars = Math.round((props.strength / 100) * barsCount);
+    return () => (
+      <div class="flex space-x-0.5 items-end" style="height: 14px;">
+        {[...Array(barsCount)].map((_, i) => {
+          const isActive = i < activeBars;
+          const height = 4 + i * 3; // высота палочки от 4 до 16 пикселей
+          return (
+            <span
+              key={i}
+              class="block rounded-sm"
+              style={{
+                width: "4px",
+                height: `${height}px`,
+                backgroundColor: isActive ? props.color : "#444444",
+              }}
+            />
+          );
+        })}
+      </div>
+    );
+  },
+};
+
 const fetchNetLoad = async () => {
   try {
     const response = await fetch("/api/netload");
@@ -143,7 +184,6 @@ const fetchNetLoad = async () => {
   }
 };
 
-// Загрузка модемов
 const fetchModems = async () => {
   try {
     const response = await fetch("/api/modems/list");
@@ -158,5 +198,8 @@ const fetchModems = async () => {
   }
 };
 
-onMounted(fetchModems);
+onMounted(async () => {
+  await fetchModems();
+  await fetchNetLoad();
+});
 </script>
