@@ -4,13 +4,24 @@
     <div v-else-if="error" class="text-red-500">{{ error }}</div>
 
     <ul v-if="modems.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <li v-for="(modem, index) in modems" :key="index" @click="openModal(modem)" :class="[
-        'cursor-pointer rounded-md flex flex-col justify-between text-white font-semibold select-none transition duration-200',
-        operatorBgColor(modem['3gpp']?.['operator-name'])
-      ]" style="aspect-ratio: 1 / 1; min-width: 150px;">
+      <li
+        v-for="(modem, index) in modems"
+        :key="index"
+        @click="openModal(modem)"
+        :class="[
+          'cursor-pointer rounded-md flex flex-col justify-between text-white font-semibold select-none transition duration-200',
+          operatorBgColor(modem['3gpp']?.['operator-name'])
+        ]"
+        style="aspect-ratio: 1 / 1; min-width: 150px;"
+      >
         <div class="flex items-center justify-between p-4">
           <div class="truncate text-lg">{{ modem.generic.name }}</div>
-          <div class="w-6 h-6" v-html="getOperatorIcon(modem['3gpp']?.['operator-name'])" />
+          <img
+            v-if="getOperatorIcon(modem['3gpp']?.['operator-name'])"
+            :src="getOperatorIcon(modem['3gpp']?.['operator-name'])"
+            alt="Оператор"
+            class="w-6 h-6 object-contain"
+          />
         </div>
         <div class="px-4 pb-4 text-sm text-gray-200 truncate">
           {{ modem['3gpp']?.['operator-name'] || 'Нет оператора' }}
@@ -25,7 +36,6 @@
     <TransitionRoot as="template" :show="isOpen">
       <Dialog as="div" class="relative z-10" @close="isOpen = false">
         <div class="fixed inset-0 bg-black/50" />
-
         <div class="fixed inset-0 overflow-y-auto">
           <div class="flex min-h-full items-center justify-center p-4">
             <DialogPanel class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
@@ -71,7 +81,7 @@ const operatorBgColor = (operator) => {
   return 'bg-gray-700 hover:bg-gray-800';
 };
 
-// 👇 иконки в виде SVG
+// Получить путь к SVG иконке оператора
 const getOperatorIconUrl = (name = '') => {
   const key = name.toLowerCase();
   if (key.includes('mts')) return new URL('../assets/oper/mts.svg', import.meta.url).href;
@@ -81,17 +91,11 @@ const getOperatorIconUrl = (name = '') => {
   return '';
 };
 
-
 const getOperatorIcon = (name = '') => {
-  const key = name.toLowerCase();
-  if (key.includes('mts')) return getOperatorIconUrl.mts;
-  if (key.includes('megafon')) return getOperatorIconUrl.megafon;
-  if (key.includes('beeline')) return getOperatorIconUrl.beeline;
-  if (key.includes('tele2')) return getOperatorIconUrl.tele2;
-  return '';
+  return getOperatorIconUrl(name || '');
 };
 
-// экспериментально
+// Получение скорости загрузки/выгрузки
 const fetchNetLoad = async () => {
   try {
     const response = await fetch("/api/netload");
@@ -99,7 +103,6 @@ const fetchNetLoad = async () => {
 
     const netloadData = await response.json();
 
-    // Обновим скорости для каждого модема по его имени
     modems.value = modems.value.map((modem) => {
       const device = modem.generic?.name || modem.device;
       const load = netloadData.find((item) => item.device === device);
@@ -114,7 +117,7 @@ const fetchNetLoad = async () => {
   }
 };
 
-
+// Получение списка модемов
 const fetchModems = async () => {
   try {
     const response = await fetch("/api/modems/list");
@@ -128,9 +131,9 @@ const fetchModems = async () => {
     loading.value = false;
   }
 };
+
 onMounted(async () => {
   await fetchModems();
   await fetchNetLoad();
 });
-
 </script>
