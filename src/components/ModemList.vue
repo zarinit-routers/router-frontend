@@ -19,13 +19,9 @@
                 i <= getSignalLevel(modem.generic?.['signal-quality']?.value) ? 'bg-white' : 'bg-gray-500',
                 ['h-2', 'h-3', 'h-4', 'h-5'][i - 1]
               ]" />
-
             </div>
-            <p class="font-bold">
-
-              {{ modem.generic?.['access-technologies']?.[0] || 'нет данных' }}<br />
-            </p>
           </div>
+          <p class="font-bold">{{ modem.generic?.['access-technologies']?.[0] || 'нет данных' }}<br /></p>
         </div>
         <div class="px-4 pb-4 text-sm text-gray-200 truncate">
           {{ modem['3gpp']?.['operator-name'] || 'Нет оператора' }}
