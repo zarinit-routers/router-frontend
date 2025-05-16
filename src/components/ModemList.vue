@@ -17,8 +17,9 @@
               <div v-for="i in 4" :key="i" :class="[
                 'w-1 rounded-sm transition-all duration-300',
                 i <= getSignalLevel(modem.generic?.['signal-quality']?.value) ? 'bg-white' : 'bg-gray-500',
-                `h-${i + 1}`
+                ['h-2', 'h-3', 'h-4', 'h-5'][i - 1]
               ]" />
+
             </div>
             <p class="font-bold">
 
