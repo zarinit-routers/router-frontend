@@ -4,16 +4,10 @@
     <div v-else-if="error" class="text-red-500">{{ error }}</div>
 
     <ul v-if="modems.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <li
-        v-for="(modem, index) in modems"
-        :key="index"
-        @click="openModal(modem)"
-        :class="[
-          'cursor-pointer rounded-md flex flex-col justify-between text-white font-semibold select-none transition duration-200',
-          operatorBgColor(modem['3gpp']?.['operator-name'])
-        ]"
-        style="aspect-ratio: 1 / 1; min-width: 150px;"
-      >
+      <li v-for="(modem, index) in modems" :key="index" @click="openModal(modem)" :class="[
+        'cursor-pointer rounded-md flex flex-col justify-between text-white font-semibold select-none transition duration-200',
+        operatorBgColor(modem['3gpp']?.['operator-name'])
+      ]" style="aspect-ratio: 1 / 1; min-width: 150px;">
         <div class="flex items-center justify-between p-4">
           <div class="truncate text-lg">{{ modem.generic.name }}</div>
           <div class="w-6 h-6" v-html="getOperatorIcon(modem['3gpp']?.['operator-name'])" />
@@ -38,10 +32,7 @@
               <DialogTitle class="text-xl font-semibold mb-4">Информация о модеме</DialogTitle>
               <ModemCard :modem="selectedModem" />
               <div class="mt-4 flex justify-end">
-                <button
-                  class="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700"
-                  @click="isOpen = false"
-                >
+                <button class="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700" @click="isOpen = false">
                   Закрыть
                 </button>
               </div>
@@ -83,10 +74,10 @@ const operatorBgColor = (operator) => {
 // 👇 иконки в виде SVG
 const getOperatorIconUrl = (name = '') => {
   const key = name.toLowerCase();
-  if (key.includes('mts')) return new URL('@/assets/oper/mts.svg', import.meta.url).href;
-  if (key.includes('megafon')) return new URL('@/assets/oper/megafon.svg', import.meta.url).href;
-  if (key.includes('beeline')) return new URL('@/assets/oper/beeline.svg', import.meta.url).href;
-  if (key.includes('tele2')) return new URL('@/assets/oper/tele2.svg', import.meta.url).href;
+  if (key.includes('mts')) return new URL('../assets/oper/mts.svg', import.meta.url).href;
+  if (key.includes('megafon')) return new URL('../assets/oper/megafon.svg', import.meta.url).href;
+  if (key.includes('beeline')) return new URL('../assets/oper/beeline.svg', import.meta.url).href;
+  if (key.includes('tele2')) return new URL('../assets/oper/tele2.svg', import.meta.url).href;
   return '';
 };
 
@@ -100,17 +91,29 @@ const getOperatorIcon = (name = '') => {
   return '';
 };
 
-// Заглушка — замени на реальный вызов /api/netload, если нужно
+// экспериментально
 const fetchNetLoad = async () => {
-  // Пример: получаем скорость по имени устройства
-  // const response = await fetch('/api/netload')
-  // const data = await response.json()
-  modems.value = modems.value.map((modem) => ({
-    ...modem,
-    rxSpeed: Math.floor(Math.random() * 1000), // загрузка
-    txSpeed: Math.floor(Math.random() * 1000), // выгрузка
-  }));
+  try {
+    const response = await fetch("/api/netload");
+    if (!response.ok) throw new Error("Ошибка при получении netload");
+
+    const netloadData = await response.json();
+
+    // Обновим скорости для каждого модема по его имени
+    modems.value = modems.value.map((modem) => {
+      const device = modem.generic?.name || modem.device;
+      const load = netloadData.find((item) => item.device === device);
+      return {
+        ...modem,
+        rxSpeed: load?.rx ?? 0,
+        txSpeed: load?.tx ?? 0,
+      };
+    });
+  } catch (err) {
+    console.error("Ошибка загрузки netload:", err);
+  }
 };
+
 
 const fetchModems = async () => {
   try {
@@ -125,6 +128,9 @@ const fetchModems = async () => {
     loading.value = false;
   }
 };
+onMounted(async () => {
+  await fetchModems();
+  await fetchNetLoad();
+});
 
-onMounted(fetchModems);
 </script>
