@@ -1,12 +1,16 @@
 <template>
-  <div class="p-5 mx-1">
+  <div >
     <div v-if="loading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else>
-      <!-- <p><strong>Процессор:</strong> {{ osInfo.CpuStats.CPUCount }} ядер</p> -->
-
+      <div>CPU</div>
+      <div class="text-sm text-white">
+        <p><strong>Процессор:</strong> {{ osInfo.CpuStats.CPUCount }} ядер</p>
+          <strong>Загруженность процессора:</strong> {{ Math.round(cpuLoad) }} %
+          
+        </div>
       <!-- Круглый прогресс-бар -->
-      <div class="flex flex-col items-center">
+      <div class="flex flex-col p-5 mx-1">
         <svg width="100" height="100" viewBox="0 0 100 100">
           <path
             d="M10,90 A40,40 0 0,1 90,90"
@@ -26,10 +30,7 @@
             {{ cpuLoad.toFixed(0) }}%
           </text>
         </svg>
-        <div class="text-sm text-white">
-          <!-- <strong>Загруженность процессора:</strong> {{ Math.round(cpuLoad) }} % -->
-          <div>CPU</div>
-        </div>
+       
       </div>
     </div>
   </div>
