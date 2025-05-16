@@ -15,7 +15,7 @@ const miniStatisticsComponents = [
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row gap-2">
+  <div class="flex flex-col lg:flex-row gap-2 w-auto"> <!-- временно w-auto, пока sidebar не добавим и контейнер не снимем -->
     <!-- Левая колонка -->
     <div class="flex-1 flex flex-col gap-2">
       <div class="bg-neutral-800 p-5">
