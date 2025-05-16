@@ -9,19 +9,21 @@
         operatorBgColor(modem['3gpp']?.['operator-name'])
       ]" style="aspect-ratio: 1 / 1; min-width: 150px;">
         <div class="flex items-center justify-between p-4">
-          <div class="truncate text-lg">{{ modem.generic.name }}</div>
           <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" class="w-6 h-6 object-contain"
             v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" />
-          <div class="mt-2">
-            <div class="flex items-end gap-[2px] h-5">
-              <div v-for="i in 4" :key="i" :class="[
-                'w-1 rounded-sm transition-all duration-300',
-                i <= getSignalLevel(modem.generic?.['signal-quality']?.value) ? 'bg-white' : 'bg-gray-500',
-                ['h-2', 'h-3', 'h-4', 'h-5'][i - 1]
-              ]" />
+          <div>
+            <div class="mt-2">
+              <div class="flex items-end gap-[2px] h-5">
+                <div v-for="i in 4" :key="i" :class="[
+                  'w-1 rounded-sm transition-all duration-300',
+                  i <= getSignalLevel(modem.generic?.['signal-quality']?.value) ? 'bg-white' : 'bg-gray-500',
+                  ['h-2', 'h-3', 'h-4', 'h-5'][i - 1]
+                ]" />
+              </div>
             </div>
+            <p class="font-bold">{{ modem.generic?.['access-technologies']?.[0] || 'нет данных' }}<br /></p>
           </div>
-          <p class="font-bold">{{ modem.generic?.['access-technologies']?.[0] || 'нет данных' }}<br /></p>
+
         </div>
         <div class="px-4 pb-4 text-sm text-gray-200 truncate">
           {{ modem['3gpp']?.['operator-name'] || 'Нет оператора' }}
