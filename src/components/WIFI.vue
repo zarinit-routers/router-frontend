@@ -97,14 +97,14 @@ const wifi = ref({
 })
 
 const fetchWifiSettings = () => {
-  axios.get('/wifi')
+  axios.get('/api/wifi')
     .then(res => {
       Object.assign(wifi.value, res.data)
     })
 }
 
 const updateWifi = () => {
-  axios.post('/wifi', wifi.value)
+  axios.post('/api/wifi', wifi.value)
     .then(() => {
       // Можно добавить уведомление об успешном обновлении
     })
