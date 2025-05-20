@@ -48,7 +48,7 @@ const hostname = ref('') // ← новое поле
 const fetchStaticLeases = async () => {
   try {
     const { data } = await axios.get('/api/dhcp/static/list')
-    staticLeases.value = data.leases || []
+    staticLeases.value = data || []
   } catch (e) {
     console.error('Ошибка при загрузке статических аренд:', e)
   }
