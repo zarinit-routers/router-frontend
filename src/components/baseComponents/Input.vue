@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-2">
     <label class="form-label">{{ label }}</label>
     <input
-      class="form-item"
+      class="form-item w-lg"
       :type="type"
       :placeholder="placeholder"
       :value="modelValue"

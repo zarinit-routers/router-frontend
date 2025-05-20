@@ -1,13 +1,13 @@
 <template>
-    <div class="max-w-xl mx-auto p-6 space-y-6">
+    <div class="max-w-xl mx-auto p-6 space-y-6 bg-[#222228]">
       <h2 class="text-xl font-semibold">Диагностика сети</h2>
   
       <div>
         <label class="block font-medium mb-1">Адрес</label>
-        <input
+        <Input
           v-model="address"
           type="text"
-          class="w-full p-2 border rounded"
+          class="w-full p-2  rounded"
           placeholder="Введите адрес (например, 8.8.8.8)"
           @input="validateAddress"
         />
@@ -62,6 +62,8 @@
   import { ref, onMounted } from 'vue'
   import axios from 'axios'
   import Button from './baseComponents/Button.vue'
+  import Input from './baseComponents/Input.vue'
+
   
   const address = ref('')
   const pingResult = ref('')

@@ -1,56 +1,40 @@
 <template>
-  <div class="p-4 rounded-xl shadow bg-gray-800 space-y-4">
-    <h2 class="text-lg text-white">Диапазоны IP-адресов</h2>
+  <div class="p-4 rounded-xl shadow  space-y-4">
+    <div class=" md:flex-row items-start md:items-center gap-2">
+      <div class="flex items-center mb-5">
+        <p class="w-[170px] mr-2">Начальный IP-адрес:</p>
+        <Input v-model="newRangeStart" type="text" placeholder="Начальный IP"
+         />
+      </div>
 
-    <div v-if="range.start_ip && range.end_ip" class="text-gray-300">
-      <p>Текущий диапазон:
-        <span class="font-mono">{{ range.start_ip }} - {{ range.end_ip }}</span>
-      </p>
+      <div class="flex items-center ">
+        <p class="w-[170px] mr-2">
+          Конечный IP-адрес:
+        </p>
+        <Input v-model="newRangeEnd" type="text" placeholder="Конечный IP"/>
+      </div>
+
     </div>
-    <div v-else class="text-gray-400">Диапазон не установлен</div>
-
+<!-- 
     <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
-      <input
-        v-model="newRangeStart"
-        type="text"
-        placeholder="Начальный IP"
-        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-        v-model="newRangeEnd"
-        type="text"
-        placeholder="Конечный IP"
-        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <input v-model="optionsRouters" type="text" placeholder="IP шлюза (router)"
+        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <input v-model="optionsBroadcasts" type="text" placeholder="Broadcast-адрес"
+        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
-
-    <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
-      <input
-        v-model="optionsRouters"
-        type="text"
-        placeholder="IP шлюза (router)"
-        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-        v-model="optionsBroadcasts"
-        type="text"
-        placeholder="Broadcast-адрес"
-        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-
-    <button
-      @click="updateRange"
-      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
-    >
+ -->
+    <Button @click="updateRange" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
       Обновить диапазон
-    </button>
+    </Button>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import Button from '../baseComponents/Button.vue'
+import Input from '../baseComponents/Input.vue'
+
 
 const range = ref({
   subnet: '',
@@ -116,5 +100,4 @@ const updateRange = async () => {
 onMounted(fetchRange)
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
