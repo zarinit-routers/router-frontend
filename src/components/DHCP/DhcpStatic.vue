@@ -19,6 +19,7 @@
     <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
       <input v-model="mac" placeholder="MAC-адрес" class="input" />
       <input v-model="ip" placeholder="IP-адрес" class="input" />
+      <input v-model="hostname" placeholder="Имя хоста" class="input" />
       <button
         @click="addStaticLease"
         class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
@@ -42,6 +43,7 @@ import axios from 'axios'
 const staticLeases = ref([])
 const mac = ref('')
 const ip = ref('')
+const hostname = ref('') // ← новое поле
 
 const fetchStaticLeases = async () => {
   try {
@@ -56,7 +58,11 @@ const addStaticLease = async () => {
   if (!validateInputs()) return
 
   try {
-    await axios.post('/api/dhcp/static/add', { mac: mac.value, ip: ip.value })
+    await axios.post('/api/dhcp/static/add', {
+      mac: mac.value,
+      ip: ip.value,
+      hostname: hostname.value || 'unknown', // ← значение по умолчанию
+    })
     alert('Статическая аренда добавлена')
     await fetchStaticLeases()
   } catch (e) {
@@ -68,7 +74,7 @@ const removeStaticLease = async () => {
   if (!validateInputs()) return
 
   try {
-    await axios.post('/api/dhcp/static/remove', { mac: mac.value, ip: ip.value })
+    await axios.post('/api/dhcp/static/remove', { mac: mac.value })
     alert('Статическая аренда удалена')
     await fetchStaticLeases()
   } catch (e) {
@@ -96,7 +102,3 @@ const validateInputs = () => {
 
 onMounted(fetchStaticLeases)
 </script>
-
-<style scoped>
-
-</style>

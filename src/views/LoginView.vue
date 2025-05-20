@@ -1,7 +1,7 @@
 <script setup>
 import logo from "../assets/logo.svg";
 import { ref } from "vue";
-import Input from "../components/Input.vue";
+import Input from "../components/baseComponents/Input.vue";
 import axios from "axios";
 
 import { login } from "../auth";

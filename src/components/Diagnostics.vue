@@ -61,7 +61,7 @@
   <script setup>
   import { ref, onMounted } from 'vue'
   import axios from 'axios'
-  import Button from './Button.vue'
+  import Button from './baseComponents/Button.vue'
   
   const address = ref('')
   const pingResult = ref('')

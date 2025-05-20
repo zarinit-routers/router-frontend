@@ -16,7 +16,6 @@ const components = [
   LAN,
   WIFI,
   SSH,
-  ModemList,
   Journals,
   Timezone,
   NtpServers,

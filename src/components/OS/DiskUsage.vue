@@ -12,7 +12,7 @@
         <div class="font-mono">{{ disk.name }}</div>
         <div>
           Использовано
-          {{ formatMb(disk.used) }} из {{ formatMb(disk.size) }} МБ
+          {{ formatMb(disk.used) }} из {{ formatMb(disk.size) }} GB
         </div>
       </div>
     </div>

@@ -1,65 +1,81 @@
 <template>
-  <div class="p-5 bg-[#222228] mx-1 flex flex-col gap-4 text-white">
-    <h2 class="text-2xl">Управление Wi-Fi</h2>
+  <div class="max-w-md mx-auto p-4  rounded-lg shadow-md">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-xl font-semibold">{{ ssid }}</h2>
+      <label class="inline-flex relative items-center cursor-pointer">
+        <input type="checkbox" v-model="wifiEnabled" class="sr-only" @change="saveSettings" />
+        <div
+          :class="[
+            'w-11 h-6 bg-gray-300 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300',
+            wifiEnabled ? 'bg-blue-600' : ''
+          ]"
+        ></div>
+        <div
+          :class="[
+            'dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform',
+            wifiEnabled ? 'translate-x-5' : ''
+          ]"
+        ></div>
+      </label>
+    </div>
 
-    <div v-if="loading">Загрузка...</div>
-    <div v-else-if="error">{{ error }}</div>
-    <div v-else class="flex flex-col gap-4">
-      <div class="space-y-1">
-        <p><strong>SSID:</strong> {{ wifiStatus.ssid }}</p>
-        <p><strong>Статус:</strong> {{ wifiStatus.active ? 'Включен' : 'Выключен' }}</p>
-        <p><strong>Скрытый SSID:</strong> {{ wifiStatus.hidden_ssid ? 'Да' : 'Нет' }}</p>
-        <p><strong>Безопасность:</strong>
-          {{
-            wifiStatus.security === '0' ? 'Нет' :
-            wifiStatus.security === '1' ? 'WPA2' :
-            wifiStatus.security === '2' ? 'WPA3' :
-            'Неизвестно'
-          }}
-        </p>
-        <p><strong>Канал:</strong> {{ wifiStatus.channel }}</p>
-
-        <Button class="btn" @click="toggleWiFi">
-          {{ wifiStatus.active ? 'Выключить' : 'Включить' }} Wi-Fi
-        </Button>
+    <div class="mb-4">
+      <label class="block mb-1 font-medium text-white-700">Загруженность канала</label>
+      <div class="w-full bg-gray-200 rounded-full h-4">
+        <div
+          class="bg-blue-600 h-4 rounded-full transition-all"
+          :style="{ width: channelLoad + '%' }"
+        ></div>
       </div>
+      <p class="text-sm text-white-600 mt-1">{{ channelLoad }}%</p>
+    </div>
 
-      <div class="flex flex-col gap-3">
-        <div>
-          <label>SSID:</label>
-          <input class="form-item" v-model="newSSID" type="text" placeholder="Введите SSID" />
-          <Button class="btn" @click="setSSID">Установить SSID</Button>
+    <div class="flex justify-end space-x-3">
+      <button
+        @click="showInfo"
+        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-700 font-medium"
+        type="button"
+      >
+        Информация
+      </button>
+      <button
+        @click="openEditModal"
+        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium"
+        type="button"
+      >
+        Изменить
+      </button>
+    </div>
+
+    <!-- Модалка редактирования -->
+    <div v-if="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-80">
+        <h3 class="text-lg font-semibold mb-4">Редактировать Wi-Fi</h3>
+        <label class="block mb-2 font-medium text-gray-700">SSID</label>
+        <input
+          v-model="editSsid"
+          type="text"
+          class="w-full p-2 border border-gray-300 rounded mb-4"
+        />
+        <div class="flex items-center mb-4">
+          <label class="mr-3 font-medium text-gray-700">Включен</label>
+          <input type="checkbox" v-model="editEnabled" />
         </div>
-
-        <div>
-          <label>Скрыть SSID:</label>
-          <select class="form-item" v-model="hideSSID">
-            <option :value="true">Да</option>
-            <option :value="false">Нет</option>
-          </select>
-          <Button class="btn" @click="setSSIDHidden">Скрыть SSID</Button>
-        </div>
-
-        <div>
-          <label>Пароль:</label>
-          <input class="form-item" v-model="newPassword" type="password" placeholder="Введите новый пароль" />
-          <Button class="btn" @click="setPassword">Установить пароль</Button>
-        </div>
-
-        <div>
-          <label>Тип безопасности:</label>
-          <select class="form-item" v-model="securityType">
-            <option value="0">Нет</option>
-            <option value="1">WPA2</option>
-            <option value="2">WPA3</option>
-          </select>
-          <Button class="btn" @click="setSecurity">Установить тип</Button>
-        </div>
-
-        <div>
-          <label>Канал:</label>
-          <input class="form-item" v-model.number="channel" type="number" min="1" max="13" />
-          <Button class="btn" @click="setChannel">Установить канал</Button>
+        <div class="flex justify-end space-x-3">
+          <button
+            @click="closeEditModal"
+            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-700 font-medium"
+            type="button"
+          >
+            Отмена
+          </button>
+          <button
+            @click="saveEditSettings"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium"
+            type="button"
+          >
+            Сохранить
+          </button>
         </div>
       </div>
     </div>
@@ -67,92 +83,81 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import Button from "./Button.vue";
-import axios from "axios";
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
-const wifiStatus = ref({});
-const newSSID = ref("");
-const hideSSID = ref(false);
-const newPassword = ref("");
-const securityType = ref("1");
-const channel = ref(1);
+const ssid = ref('')
+const wifiEnabled = ref(false)
+const channelLoad = ref(0)
 
-const loading = ref(true);
-const error = ref(null);
+const isEditModalOpen = ref(false)
+const editSsid = ref('')
+const editEnabled = ref(false)
 
-const fetchWiFiStatus = async () => {
+async function fetchWifiSettings() {
   try {
-    const res = await axios.get("/api/wifi/status");
-    wifiStatus.value = res.data;
-
-    // Применяем данные в поля по умолчанию
-    newSSID.value = res.data.ssid || "";
-    hideSSID.value = res.data.hidden_ssid ?? false;
-    newPassword.value = res.data.password || "";
-    securityType.value = String(res.data.security ?? "1");
-    channel.value = res.data.channel ?? 1;
-
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    loading.value = false;
+    const response = await axios.get('/api/wifi')
+    ssid.value = response.data.ssid
+    wifiEnabled.value = response.data.enabled
+    channelLoad.value = response.data.channelLoad
+  } catch (error) {
+    console.error('Ошибка загрузки настроек Wi-Fi', error)
   }
-};
+}
 
-const toggleWiFi = async () => {
+async function saveSettings() {
   try {
-    await axios.post(`/api/wifi/${wifiStatus.value.active ? "disable" : "enable"}`);
-    await fetchWiFiStatus();
-  } catch (err) {
-    error.value = err.message;
+    await axios.post('/api/wifi', {
+      ssid: ssid.value,
+      enabled: wifiEnabled.value,
+    })
+  } catch (error) {
+    console.error('Ошибка сохранения настроек Wi-Fi', error)
   }
-};
+}
 
-const setSSID = async () => {
+function showInfo() {
+  alert(`Информация о сети "${ssid.value}"\nWi-Fi включён: ${wifiEnabled.value}\nЗагруженность канала: ${channelLoad.value}%`)
+}
+
+function openEditModal() {
+  editSsid.value = ssid.value
+  editEnabled.value = wifiEnabled.value
+  isEditModalOpen.value = true
+}
+
+function closeEditModal() {
+  isEditModalOpen.value = false
+}
+
+async function saveEditSettings() {
   try {
-    await axios.post("/api/wifi/ssid/set", { ssid: newSSID.value });
-    await fetchWiFiStatus();
-  } catch (err) {
-    error.value = err.message;
+    await axios.post('/api/wifi', {
+      ssid: editSsid.value,
+      enabled: editEnabled.value,
+    })
+    ssid.value = editSsid.value
+    wifiEnabled.value = editEnabled.value
+    isEditModalOpen.value = false
+  } catch (error) {
+    console.error('Ошибка сохранения настроек Wi-Fi', error)
   }
-};
+}
 
-const setSSIDHidden = async () => {
-  try {
-    await axios.post("/api/wifi/ssid/hide", { hidden: hideSSID.value });
-    await fetchWiFiStatus();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const setPassword = async () => {
-  try {
-    await axios.post("/api/wifi/password/set", { password: newPassword.value });
-    await fetchWiFiStatus();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const setSecurity = async () => {
-  try {
-    await axios.post("/api/wifi/security/set", { type: securityType.value });
-    await fetchWiFiStatus();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const setChannel = async () => {
-  try {
-    await axios.post("/api/wifi/channel/set", { channel: Number(channel.value) });
-    await fetchWiFiStatus();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-onMounted(fetchWiFiStatus);
+onMounted(() => {
+  fetchWifiSettings()
+})
 </script>
+
+<style scoped>
+label.inline-flex {
+  position: relative;
+  user-select: none;
+}
+.dot {
+  top: 0.25rem;
+  left: 0.25rem;
+  position: absolute;
+  transition: transform 0.3s ease;
+}
+</style>

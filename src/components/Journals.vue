@@ -74,7 +74,7 @@
 
 <script setup>
 import { ref } from "vue";
-import Button from '../components/Button.vue'
+import Button from '../components/baseComponents/Button.vue'
 
 import {
   TransitionRoot,

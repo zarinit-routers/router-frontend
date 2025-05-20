@@ -19,7 +19,7 @@
 
 import { ref, onMounted } from "vue";
 import moment from "moment-timezone";
-import Select from "./Select.vue";
+import Select from "./baseComponents/Select.vue";
 
 const currentTimezone = ref("");
 const selectedTimezone = ref("");
