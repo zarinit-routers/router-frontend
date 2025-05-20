@@ -97,7 +97,7 @@ const wifi = ref({
 })
 
 const fetchWifiSettings = () => {
-  axios.get('/api/wifi')
+  axios.get('/api/wifi/status')
     .then(res => {
       Object.assign(wifi.value, res.data)
     })
