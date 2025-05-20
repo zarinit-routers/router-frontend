@@ -1,82 +1,82 @@
 <template>
-  <div class="max-w-md mx-auto p-4  rounded-lg shadow-md">
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="text-xl font-semibold">{{ ssid }}</h2>
-      <label class="inline-flex relative items-center cursor-pointer">
-        <input type="checkbox" v-model="wifiEnabled" class="sr-only" @change="saveSettings" />
-        <div
-          :class="[
-            'w-11 h-6 bg-gray-300 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300',
-            wifiEnabled ? 'bg-blue-600' : ''
-          ]"
-        ></div>
-        <div
-          :class="[
-            'dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform',
-            wifiEnabled ? 'translate-x-5' : ''
-          ]"
-        ></div>
-      </label>
-    </div>
+  <div class="p-6 space-y-6">
+    <h2 class="text-xl font-semibold">Настройки Wi-Fi</h2>
 
-    <div class="mb-4">
-      <label class="block mb-1 font-medium text-white-700">Загруженность канала</label>
-      <div class="w-full bg-gray-200 rounded-full h-4">
-        <div
-          class="bg-blue-600 h-4 rounded-full transition-all"
-          :style="{ width: channelLoad + '%' }"
-        ></div>
-      </div>
-      <p class="text-sm text-white-600 mt-1">{{ channelLoad }}%</p>
-    </div>
-
-    <div class="flex justify-end space-x-3">
-      <button
-        @click="showInfo"
-        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-700 font-medium"
-        type="button"
+    <div class="flex items-center justify-between">
+      <span class="text-sm font-medium">Wi-Fi</span>
+      <Switch
+        v-model="wifi.enabled"
+        :class="wifi.enabled ? 'bg-blue-600' : 'bg-gray-200'"
+        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+        @change="updateWifi"
       >
-        Информация
-      </button>
-      <button
-        @click="openEditModal"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium"
-        type="button"
-      >
-        Изменить
-      </button>
-    </div>
-
-    <!-- Модалка редактирования -->
-    <div v-if="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-80">
-        <h3 class="text-lg font-semibold mb-4">Редактировать Wi-Fi</h3>
-        <label class="block mb-2 font-medium text-gray-700">SSID</label>
-        <input
-          v-model="editSsid"
-          type="text"
-          class="w-full p-2 border border-gray-300 rounded mb-4"
+        <span
+          :class="wifi.enabled ? 'translate-x-6' : 'translate-x-1'"
+          class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
         />
-        <div class="flex items-center mb-4">
-          <label class="mr-3 font-medium text-gray-700">Включен</label>
-          <input type="checkbox" v-model="editEnabled" />
-        </div>
-        <div class="flex justify-end space-x-3">
-          <button
-            @click="closeEditModal"
-            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-700 font-medium"
-            type="button"
-          >
-            Отмена
-          </button>
-          <button
-            @click="saveEditSettings"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-medium"
-            type="button"
-          >
-            Сохранить
-          </button>
-        </div>
+      </Switch>
+    </div>
+
+    <div v-if="wifi.enabled" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium">SSID</label>
+        <input
+          v-model="wifi.ssid"
+          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
+          placeholder="Введите SSID"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Пароль</label>
+        <input
+          v-model="wifi.password"
+          type="password"
+          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
+          placeholder="Введите пароль"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Безопасность</label>
+        <select
+          v-model="wifi.security"
+          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
+        >
+          <option value="none">Открытая</option>
+          <option value="wpa2">WPA2</option>
+          <option value="wpa3">WPA3</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Канал</label>
+        <input
+          v-model.number="wifi.channel"
+          type="number"
+          min="1"
+          max="11"
+          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
+        />
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <input
+          id="hidden"
+          type="checkbox"
+          v-model="wifi.hidden"
+          class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
+        />
+        <label for="hidden" class="text-sm">Скрыть SSID</label>
+      </div>
+
+      <div class="pt-4">
+        <button
+          @click="updateWifi"
+          class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
+        >
+          Сохранить
+        </button>
       </div>
     </div>
   </div>
@@ -85,79 +85,30 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { Switch } from '@headlessui/vue'
 
-const ssid = ref('')
-const wifiEnabled = ref(false)
-const channelLoad = ref(0)
-
-const isEditModalOpen = ref(false)
-const editSsid = ref('')
-const editEnabled = ref(false)
-
-async function fetchWifiSettings() {
-  try {
-    const response = await axios.get('/api/wifi')
-    ssid.value = response.data.ssid
-    wifiEnabled.value = response.data.enabled
-    channelLoad.value = response.data.channelLoad
-  } catch (error) {
-    console.error('Ошибка загрузки настроек Wi-Fi', error)
-  }
-}
-
-async function saveSettings() {
-  try {
-    await axios.post('/api/wifi', {
-      ssid: ssid.value,
-      enabled: wifiEnabled.value,
-    })
-  } catch (error) {
-    console.error('Ошибка сохранения настроек Wi-Fi', error)
-  }
-}
-
-function showInfo() {
-  alert(`Информация о сети "${ssid.value}"\nWi-Fi включён: ${wifiEnabled.value}\nЗагруженность канала: ${channelLoad.value}%`)
-}
-
-function openEditModal() {
-  editSsid.value = ssid.value
-  editEnabled.value = wifiEnabled.value
-  isEditModalOpen.value = true
-}
-
-function closeEditModal() {
-  isEditModalOpen.value = false
-}
-
-async function saveEditSettings() {
-  try {
-    await axios.post('/api/wifi', {
-      ssid: editSsid.value,
-      enabled: editEnabled.value,
-    })
-    ssid.value = editSsid.value
-    wifiEnabled.value = editEnabled.value
-    isEditModalOpen.value = false
-  } catch (error) {
-    console.error('Ошибка сохранения настроек Wi-Fi', error)
-  }
-}
-
-onMounted(() => {
-  fetchWifiSettings()
+const wifi = ref({
+  enabled: false,
+  ssid: '',
+  password: '',
+  security: 'wpa2',
+  channel: 6,
+  hidden: false
 })
-</script>
 
-<style scoped>
-label.inline-flex {
-  position: relative;
-  user-select: none;
+const fetchWifiSettings = () => {
+  axios.get('/wifi')
+    .then(res => {
+      Object.assign(wifi.value, res.data)
+    })
 }
-.dot {
-  top: 0.25rem;
-  left: 0.25rem;
-  position: absolute;
-  transition: transform 0.3s ease;
+
+const updateWifi = () => {
+  axios.post('/wifi', wifi.value)
+    .then(() => {
+      // Можно добавить уведомление об успешном обновлении
+    })
 }
-</style>
+
+onMounted(fetchWifiSettings)
+</script>
