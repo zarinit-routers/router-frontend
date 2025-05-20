@@ -3,7 +3,9 @@
     <h2 class="text-lg text-white">Диапазоны IP-адресов</h2>
 
     <div v-if="range.start_ip && range.end_ip" class="text-gray-300">
-      <p>Текущий диапазон: <span class="font-mono">{{ range.start_ip }} - {{ range.end_ip }}</span></p>
+      <p>Текущий диапазон:
+        <span class="font-mono">{{ range.start_ip }} - {{ range.end_ip }}</span>
+      </p>
     </div>
     <div v-else class="text-gray-400">Диапазон не установлен</div>
 
@@ -12,13 +14,13 @@
         v-model="newRangeStart"
         type="text"
         placeholder="Начальный IP"
-        class="input"
+        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
         v-model="newRangeEnd"
         type="text"
         placeholder="Конечный IP"
-        class="input"
+        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <button
         @click="updateRange"
@@ -42,7 +44,6 @@ const range = ref({
   options_routers: '',
   options_broadcasts: ''
 })
-
 const newRangeStart = ref('')
 const newRangeEnd = ref('')
 
@@ -52,15 +53,7 @@ const ipPattern =
 const fetchRange = async () => {
   try {
     const { data } = await axios.get('/api/dhcp/ranges')
-    range.value = data.current_range || {
-      subnet: '',
-      netmask: '',
-      start_ip: '',
-      end_ip: '',
-      options_routers: '',
-      options_broadcasts: ''
-    }
-    // Заполняем поля ввода текущими значениями
+    range.value = data.current_range || {}
     newRangeStart.value = range.value.start_ip || ''
     newRangeEnd.value = range.value.end_ip || ''
   } catch (e) {
@@ -74,20 +67,24 @@ const updateRange = async () => {
     return
   }
 
+  if (!range.value.subnet || !range.value.netmask) {
+    alert('Отсутствуют subnet или netmask')
+    return
+  }
+
   try {
     await axios.post('/api/dhcp/ranges', {
       subnet: range.value.subnet,
       netmask: range.value.netmask,
       start_ip: newRangeStart.value,
       end_ip: newRangeEnd.value,
-      options_routers: range.value.options_routers,
-      options_broadcasts: range.value.options_broadcasts
+      options_routers: range.value.options_routers || '',
+      options_broadcasts: range.value.options_broadcasts || ''
     })
     alert('Диапазон обновлён')
     await fetchRange()
   } catch (e) {
     console.error('Ошибка при обновлении диапазона:', e)
-    alert('Ошибка при обновлении диапазона. Проверьте консоль.')
   }
 }
 
@@ -95,16 +92,4 @@ onMounted(fetchRange)
 </script>
 
 <style scoped>
-.input {
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
-  border: 1px solid #4b5563; /* Tailwind slate-600 */
-  background-color: #1f2937; /* Tailwind gray-800 */
-  color: white;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.input:focus {
-  border-color: #3b82f6; /* Tailwind blue-500 */
-}
 </style>
