@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="p-6 bg-[#222228] space-y-6 rounded-xl">
     <h2 class="text-xl font-semibold">Настройки Wi-Fi</h2>
 
     <div class="flex items-center justify-between">
@@ -8,8 +8,7 @@
         v-model="wifi.enabled"
         :class="wifi.enabled ? 'bg-blue-600' : 'bg-gray-200'"
         class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
-        @change="updateWifi"
-      >
+        @change="updateWifi" >
         <span
           :class="wifi.enabled ? 'translate-x-6' : 'translate-x-1'"
           class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
@@ -20,48 +19,47 @@
     <div v-if="wifi.enabled" class="space-y-4">
       <div>
         <label class="block text-sm font-medium">SSID</label>
-        <input
+        <Input
           v-model="wifi.ssid"
-          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
+          class="mt-1 block w-full rounded-md  border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
           placeholder="Введите SSID"
         />
       </div>
 
       <div>
         <label class="block text-sm font-medium">Пароль</label>
-        <input
+        <Input
           v-model="wifi.password"
           type="password"
-          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
+          class="mt-1 block w-full rounded-md  border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
           placeholder="Введите пароль"
         />
       </div>
 
       <div>
         <label class="block text-sm font-medium">Безопасность</label>
-        <select
+        <Select
           v-model="wifi.security"
-          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
+          class="mt-1 block w-full rounded-md border border-gray-500  p-2 shadow-sm focus:border-blue-500 focus:outline-none"
         >
-          <option value="none">Открытая</option>
-          <option value="wpa2">WPA2</option>
-          <option value="wpa3">WPA3</option>
-        </select>
+        
+          <option v-for="opt in securityLevels" class="bg-[#222228]" :value="opt.value">{{ opt.label }}</option>
+        </Select>
       </div>
 
       <div>
         <label class="block text-sm font-medium">Канал</label>
-        <input
+        <Input
           v-model.number="wifi.channel"
           type="number"
           min="1"
           max="11"
-          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
+          class="mt-1 block w-full rounded-md   p-2 shadow-sm focus:border-blue-500 focus:outline-none"
         />
       </div>
 
-      <div class="flex items-center space-x-2">
-        <input
+      <div class="block flex items-center  space-x-2">
+        <Input
           id="hidden"
           type="checkbox"
           v-model="wifi.hidden"
@@ -71,12 +69,12 @@
       </div>
 
       <div class="pt-4">
-        <button
+        <Button
           @click="updateWifi"
           class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
         >
           Сохранить
-        </button>
+        </Button>
       </div>
     </div>
   </div>
@@ -86,6 +84,14 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { Switch } from '@headlessui/vue'
+import Button from './baseComponents/Button.vue'
+import Input from './baseComponents/Input.vue'
+
+const securityLevels = [
+  {label: 'Открытая',value:'none'},
+  {label: 'WPA2',value:'wpa2'},
+  {label: 'WPA3',value:'wpa3'},
+]
 
 const wifi = ref({
   enabled: false,

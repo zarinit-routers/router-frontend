@@ -25,7 +25,7 @@ const components = [
 ];
 </script>
 <template>
-  <div class="mx-auto">
+  <div class="">
     <div class="grid grid-cols-1 gap-8">
       <div v-for="c in components" class="bg-grey p-4">
         <component :is="c" />

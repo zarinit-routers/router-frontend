@@ -13,15 +13,16 @@
       ><span>{{ lease.hostname }}</span>
         <span>{{ lease.mac }}</span>
         <span>{{ lease.ip }}</span>
+        <i class="fas fa-trash"></i>
         <font-awesome-icon :icon="['fas', 'trash-can']" ><span>{{ lease.removeStaticLease }}</span></font-awesome-icon> 
        
       </li>
     </ul>
     <div class="flex flex-col md:flex-row items-start md:items-center gap-2 justify-between">
       
-        <Input v-model="mac" placeholder="MAC-адрес" class="input" />
-      <Input v-model="ip" placeholder="IP-адрес" class="input" />
-      <Input v-model="hostname" placeholder="Имя хоста" class="input" />
+        <Input v-model="mac" placeholder="MAC-адрес" class="input grow" />
+      <Input v-model="ip" placeholder="IP-адрес" class="input grow" />
+      <Input v-model="hostname" placeholder="Имя хоста" class="input grow" />
       
       
      

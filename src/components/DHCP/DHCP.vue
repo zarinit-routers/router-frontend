@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-[#222228] p-5">
+    <div class="bg-[#222228] p-5 rounded-xl">
         <h1 class="mb-10 text-xl">
             DHCP
         </h1>
