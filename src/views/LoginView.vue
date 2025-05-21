@@ -29,7 +29,5 @@ const onSubmit = () => {
 <style>
 .welcomeAlert {
   position-area: center;
-  min-block-size: -webkit-fill-available;
-  min-inline-size: -webkit-fill-available;
 }
 </style>
