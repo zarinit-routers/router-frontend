@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 bg-[#222228] space-y-6 rounded-xl">
+  <div class="p-6 bg-[#222228] space-y-6 border-1 border-solid border-[#363E4B]">
     <h2 class="text-xl font-semibold">Настройки Wi-Fi</h2>
 
     <div class="flex items-center justify-between">

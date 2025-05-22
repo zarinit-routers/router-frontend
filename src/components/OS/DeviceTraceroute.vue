@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#222228] p-6 max-w-xl mx-auto rounded-xl space-y-4">
+  <div class="bg-[#222228] p-6 max-w-xl mx-auto border-1 border-solid border-[#363E4B] space-y-4">
     <h2 class="text-xl font-semibold">Traceroute</h2>
     <div>
       <label class="block font-medium mb-1">Адрес</label>

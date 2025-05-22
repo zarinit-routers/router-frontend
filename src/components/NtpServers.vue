@@ -1,5 +1,5 @@
 <template>
-  <div class="p-5 bg-[#222228] max-w-xl rounded-xl mx-auto">
+  <div class="p-5 bg-[#222228] max-w-xl border-1 border-solid border-[#363E4B] mx-auto">
     <div v-if="error" class="text-red-400 mb-3">{{ error }}</div>
     <div v-else>
       <div v-if="ntpData.active">
