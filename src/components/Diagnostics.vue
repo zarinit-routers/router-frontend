@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-xl mx-auto p-6 space-y-6 bg-[#222228] rounded-xl">
+    <div class="max-w-xl mx-auto p-6 space-y-6 bg-[#222228] border-1 border-solid border-[#363E4B]">
       <h2 class="text-xl font-semibold">Диагностика сети</h2>
   
       <div>
