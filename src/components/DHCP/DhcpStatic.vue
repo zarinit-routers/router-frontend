@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 rounded-xl shadow bg-gray-800 space-y-4">
+  <div class="p-4 rounded-xl shadow bg-[#222228]  space-y-4">
     <h2 class="text-lg text-white">Статические IP-аренды</h2>
 
     <div v-if="staticLeases.length === 0" class="text-gray-400">
@@ -10,43 +10,56 @@
         v-for="lease in staticLeases"
         :key="lease.mac"
         class="py-1 flex justify-between"
-      >
+      ><span>{{ lease.hostname }}</span>
+        <span>{{ lease.mac }}</span>
         <span>{{ lease.ip }}</span>
-        <span class="font-mono text-gray-400">{{ lease.mac }}</span>
+        <i class="fas fa-trash"></i>
+        <font-awesome-icon :icon="['fas', 'trash-can']" ><span>{{ lease.removeStaticLease }}</span></font-awesome-icon> 
+       
       </li>
     </ul>
-
-    <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
-      <input v-model="mac" placeholder="MAC-адрес" class="input" />
-      <input v-model="ip" placeholder="IP-адрес" class="input" />
-      <button
+    <div class="flex flex-col md:flex-row items-start md:items-center gap-2 justify-between">
+      
+        <Input v-model="mac" placeholder="MAC-адрес" class="input grow" />
+      <Input v-model="ip" placeholder="IP-адрес" class="input grow" />
+      <Input v-model="hostname" placeholder="Имя хоста" class="input grow" />
+      
+      
+     
+    </div>
+    <div class="flex flex-col md:flex-row items-start md:items-center gap-2 justify-between">
+        <Button
         @click="addStaticLease"
-        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+        class=""
       >
         Добавить
-      </button>
-      <button
+      </Button>
+      <Button
         @click="removeStaticLease"
-        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+        class=""
       >
         Удалить
-      </button>
-    </div>
+      </Button>
+      </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import Button from '../baseComponents/Button.vue'
+import Input from '../baseComponents/Input.vue'
+
 
 const staticLeases = ref([])
 const mac = ref('')
 const ip = ref('')
+const hostname = ref('') // ← новое поле
 
 const fetchStaticLeases = async () => {
   try {
     const { data } = await axios.get('/api/dhcp/static/list')
-    staticLeases.value = data.leases || []
+    staticLeases.value = data || []
   } catch (e) {
     console.error('Ошибка при загрузке статических аренд:', e)
   }
@@ -56,7 +69,11 @@ const addStaticLease = async () => {
   if (!validateInputs()) return
 
   try {
-    await axios.post('/api/dhcp/static/add', { mac: mac.value, ip: ip.value })
+    await axios.post('/api/dhcp/static/add', {
+      mac: mac.value,
+      ip: ip.value,
+      hostname: hostname.value || 'unknown', // ← значение по умолчанию
+    })
     alert('Статическая аренда добавлена')
     await fetchStaticLeases()
   } catch (e) {
@@ -68,7 +85,7 @@ const removeStaticLease = async () => {
   if (!validateInputs()) return
 
   try {
-    await axios.post('/api/dhcp/static/remove', { mac: mac.value, ip: ip.value })
+    await axios.post('/api/dhcp/static/remove', { mac: mac.value })
     alert('Статическая аренда удалена')
     await fetchStaticLeases()
   } catch (e) {
@@ -96,7 +113,3 @@ const validateInputs = () => {
 
 onMounted(fetchStaticLeases)
 </script>
-
-<style scoped>
-
-</style>

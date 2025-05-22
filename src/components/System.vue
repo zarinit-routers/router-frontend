@@ -112,8 +112,8 @@
 
 <script setup>
 import { ref } from "vue";
-import Input from "../components/Input.vue";
-import Button from "../components/Button.vue";
+import Input from "../components/baseComponents/Input.vue";
+import Button from "../components/baseComponents/Button.vue";
 
 const Manufacturer = ref("");
 const sn = ref("");

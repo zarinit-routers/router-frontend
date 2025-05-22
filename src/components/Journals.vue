@@ -1,4 +1,5 @@
 <template>
+  <div class="p-4 bg-[#222228] border-1 border-solid border-[#363E4B]">
     <div class="inset-0 flex items-center justify-center">
       <Button  @click="openModal"
         class="rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
@@ -69,12 +70,12 @@
         </div>
       </Dialog>
     </TransitionRoot>
-  
+  </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import Button from '../components/Button.vue'
+import Button from '../components/baseComponents/Button.vue'
 
 import {
   TransitionRoot,

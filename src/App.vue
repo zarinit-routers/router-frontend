@@ -14,7 +14,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <TheHeader></TheHeader>
+  <TheHeader class="sticky top-0 z-50 shadow-md shadow-gray-800"></TheHeader>
   <div class="container mx-auto">
     <RouterView />
   </div>
@@ -27,8 +27,7 @@ onMounted(() => {
 
 
 body {
-  background: #1b1b1f;
+  @apply bg-[#1b1b1f] text-white;
   font-family: Inter, "sans-serif";
-  @apply text-white;
 }
 </style>

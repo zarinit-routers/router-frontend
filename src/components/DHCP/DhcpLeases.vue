@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 rounded-xl shadow space-y-4 bg-gray-800">
+  <div class="p-4 rounded-xl shadow space-y-4 ">
     <h2 class="text-lg text-white">Текущие DHCP аренды</h2>
 
     <div v-if="loading" class="text-gray-400">Загрузка...</div>

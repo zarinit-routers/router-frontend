@@ -1,5 +1,5 @@
 <template>
-  <div class="p-5 bg-[#222228] mx-1">
+  <div class="p-5 max-w-xl mx-auto bg-[#222228] mx-1 rounded-xl">
     <div v-if="loading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else class="flex flex-col gap-2">
@@ -19,7 +19,7 @@
 
 import { ref, onMounted } from "vue";
 import moment from "moment-timezone";
-import Select from "./Select.vue";
+import Select from "./baseComponents/Select.vue";
 
 const currentTimezone = ref("");
 const selectedTimezone = ref("");
