@@ -3,7 +3,6 @@ import { computed, ref, watchEffect, defineEmits, watch } from "vue";
 import axios from "axios";
 import { Switch } from "@headlessui/vue";
 import SimInfo from "./SimInfo.vue";
-import { elements } from "chart.js";
 
 const emit = defineEmits(['modem-changed'])
 
@@ -21,8 +20,7 @@ const modemId = computed(() => {
   return dBusPath[dBusPath.length - 1]
 })
 
-watch(isEnable,  (newState) => {
-  console.log(newState)
+watch(isEnable, (newState) => {
   const action = newState ? 'enable' : 'disable' 
     axios.post(`/api/modems/${action}/${modemId.value}`).then(
       () => emit('modem-changed')    

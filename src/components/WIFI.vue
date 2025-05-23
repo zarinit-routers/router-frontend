@@ -5,18 +5,18 @@
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium">Wi-Fi</span>
       <Switch
-        v-model="wifi.enabled"
-        :class="wifi.enabled ? 'bg-blue-600' : 'bg-gray-200'"
+        v-model="wifiStore.isActive"
+        :class="wifiStore.isActive ? 'bg-blue-600' : 'bg-gray-200'"
         class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
         @change="updateWifi" >
         <span
-          :class="wifi.enabled ? 'translate-x-6' : 'translate-x-1'"
+          :class="wifiStore.isActive ? 'translate-x-6' : 'translate-x-1'"
           class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
         />
       </Switch>
     </div>
 
-    <div v-if="wifi.enabled" class="space-y-4">
+    <div v-if="wifiStore.isActive" class="space-y-4">
       <div>
         <label class="block text-sm font-medium">SSID</label>
         <Input
@@ -83,9 +83,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useWifiStore } from '../stores/wifiStore'
 import { Switch } from '@headlessui/vue'
 import Button from './baseComponents/Button.vue'
 import Input from './baseComponents/Input.vue'
+
+const wifiStore = useWifiStore()
 
 const securityLevels = [
   {label: 'Открытая',value:'none'},

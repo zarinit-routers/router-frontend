@@ -1,5 +1,4 @@
 <script setup>
-import { onMounted, reactive } from "vue";
 import DeviceNetworkSpeed from "../components/OS/DeviceNetworkSpeed.vue";
 import CPUsage from "../components/OS/CPUsage.vue";
 import RamUsage from "../components/OS/RamUsage.vue";
@@ -9,13 +8,6 @@ import ConnectedClients from "../components/network/ConnectedClients.vue";
 import ModemList from "../components/ModemList.vue";
 import OsInfo from "../components/OS/OsInfo.vue"
 import WifiListController from "../components/WifiListController.vue"
-import axios from 'axios'
-
-const miniStatisticsComponents = [
-  { component: DeviceNetworkSpeed, title: "ЗАГРУЗКА СЕТИ" },
-  { component: CPUsage, title: "CPU usage" },
-  { component: RamUsage, title: "RAM usage" },
-];
 </script>
 
 <template>

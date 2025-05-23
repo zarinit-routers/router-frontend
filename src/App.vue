@@ -1,14 +1,22 @@
 <script setup>
 import { useRouter, RouterView } from "vue-router";
-import { ref, onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import { isAuthenticated } from "./auth";
 import TheHeader from "./components/TheHeader.vue";
+import { useWifiStore } from "./stores/wifiStore";
+
+const wifiStore = useWifiStore();
+
+watch(() => wifiStore.isActive, (newValue) => {
+  const action = newValue ? 'enable' : 'disable'
+  wifiStore.togglePower(action)
+})
 
 const router = useRouter();
-// Проверка авторизации при монтировании компонента
 onMounted(() => {
+  wifiStore.wifiStatus()
   if (!isAuthenticated) {
-    router.push("/login"); // Если токена нет, перенаправляем на страницу логина
+    router.push("/login");
   }
 });
 </script>

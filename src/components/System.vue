@@ -128,12 +128,4 @@ const serverIp = ref("");
 const serverKey = ref("");
 const login = ref("root");
 const password = ref("afwawf");
-
-const applySettings = () => {
-  console.log("Применить настройки");
-};
-
-const cancelSettings = () => {
-  console.log("Отменить изменения");
-};
 </script>

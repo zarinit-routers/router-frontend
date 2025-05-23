@@ -64,13 +64,11 @@ const fetchOsInfo = async () => {
     if (!response.ok) throw new Error("Ошибка загрузки данных");
     const data = await response.json();
     disks.value = data.DiskStats;
-    osInfo.value = data; // Или { LoadAverage: data.LoadAverage } если у вас LoadAverage тоже в ответе
-    console.log(data); // Логируем данные, полученные с сервера
+    osInfo.value = data;
+    console.log(data);
   } catch (err) {
-    console.error(err); // Логируем ошибку
+    console.error(err);
   }
 };
-
-// Загружаем данные при монтировании компонента
 onMounted(fetchOsInfo);
 </script>

@@ -50,9 +50,6 @@ const changeTimezone = async () => {
   }
 
   try {
-    // Логируем данные, которые отправляются в запросе
-    console.log("Отправляется запрос с данными:", { timezone: selectedTimezone.value });
-
     const response = await fetch(`/api/timezone/set`, {
       method: "POST",
       headers: {
@@ -60,10 +57,8 @@ const changeTimezone = async () => {
       },
       body: JSON.stringify({ timezone: selectedTimezone.value }),
     });
-
     if (!response.ok) throw new Error("Ошибка при смене часового пояса");
-
-    currentTimezone.value = selectedTimezone.value; // Обновляем текущий часовой пояс
+    currentTimezone.value = selectedTimezone.value;
   } catch (err) {
     error.value = err.message;
   }
