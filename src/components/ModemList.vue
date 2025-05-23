@@ -1,90 +1,13 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot } from "@headlessui/vue";
 import ModemCard from "./ModemCard.vue";
-import Beeline from "../assets/oper/beeline.svg"
-import Mts from "../assets/oper/mts.svg"
-import Megafon from "../assets/oper/megafon.svg"
 import rowsDown from "../assets/rows/downWhite.svg"
 import rowsUp from "../assets/rows/upWhite.svg"
 
-const modemsList = ref([
-  {
-    id: 1,
-    name: 'Beeline',
-    colorFrom: 'E4B600',
-    colorTo: 'FEBB6C',
-    speed: {
-      download: '12.5 Мб/сек',
-      upload: '12.5 Мб/сек'
-    },
-    signal: 60,
-    network: 'LTE',
-    icon: {
-      src: Beeline,
-      color: 'FDDC67'
-    },
-    noSignal: false,
-    disabled: false,
-  },
-  {
-    id: 2,
-    name: 'Mtc',
-    colorFrom: 'EF313B',
-    colorTo: 'FF5280',
-    speed: {
-      download: '10.13 Мб/сек',
-      upload: '10.13 Мб/сек'
-    },
-    signal: 40,
-    network: '3G',
-    icon: {
-      src: Mts,
-      color: 'FD6767'
-    },
-    noSignal: false,
-    disabled: false,
-  },
-  {
-    id: 3,
-    name: 'Megafon',
-    colorFrom: '07B755',
-    colorTo: '23E390',
-    speed: {
-      download: '10.13 Мб/сек',
-      upload: '10.13 Мб/сек'
-    },
-    signal: 0,
-    network: '3G',
-    icon: {
-      src: Megafon,
-      color: 'FD6767'
-    },
-    noSignal: true,
-    disabled: false,
-  },
-  {
-    id: 4,
-    name: 'Megafon',
-    colorFrom: '07B755',
-    colorTo: '23E390',
-    signal: 4,
-    speed: {
-      download: '10.13 Мб/сек',
-      upload: '10.13 Мб/сек'
-    },
-    network: '3G',
-    icon: {
-      src: Megafon,
-      color: 'FD6767'
-    },
-    noSignal: true,
-    disabled: true,
-  }
-])
 
 const modems = ref([]);
-const loading = ref(false);
+const loading = ref(true);
 const error = ref(null);
 const isOpen = ref(false);
 const selectedModem = ref(null);
@@ -95,13 +18,12 @@ const openModal = (modem) => {
 };
 
 const operatorBgColor = (operator) => {
-  if (!operator) return 'bg-gray-700 hover:bg-gray-800';
   const op = operator.toLowerCase();
   if (op.includes('tele2')) return 'bg-gradient-to-r from-[#001f4d] to-[#99256B] hover:from-[#001b45] hover:to-[#7a1f56]';
   if (op.includes('mts')) return 'bg-gradient-to-r from-[#EF313B] to-[#FF5280] hover:from-[#d2272f] hover:to-[#e34e76]';
   if (op.includes('beeline')) return 'bg-gradient-to-r from-[#E4B600] to-[#FEBB6C] hover:from-[#c49c00] hover:to-[#db9f4d]';
   if (op.includes('megafon')) return 'bg-gradient-to-r from-[#07B755] to-[#23E390] hover:from-[#059c49] hover:to-[#1fd47e]';
-  return 'bg-gray-700 hover:bg-gray-800';
+  else return 'bg-[#37343D]'
 };
 
 const getOperatorIconUrl = (name = '') => {
@@ -110,7 +32,7 @@ const getOperatorIconUrl = (name = '') => {
   if (key.includes('megafon')) return new URL('../assets/oper/megafon.svg', import.meta.url).href;
   if (key.includes('beeline')) return new URL('../assets/oper/beeline.svg', import.meta.url).href;
   if (key.includes('tele2')) return new URL('../assets/oper/tele2.svg', import.meta.url).href;
-  return '';
+  else return new URL('../assets/oper/no-sim.svg', import.meta.url).href;;
 };
 
 const getSignalLevel = (signalQuality) => {
@@ -124,26 +46,13 @@ const getSignalLevel = (signalQuality) => {
   return 0;
 };
 
-const fetchNetLoad = async () => {
-  try {
-    const response = await fetch("/api/netload");
-    if (!response.ok) throw new Error("Ошибка при получении netload");
+const sortModems = computed(() => {
+  return modems.value.sort((a) => {
+    if (a["3gpp"]["operator-name"] !== "--") return -1
 
-    const netloadData = await response.json();
-
-    modems.value = modems.value.map((modem) => {
-      const device = modem.generic?.name || modem.device;
-      const load = netloadData.find((item) => item.device === device);
-      return {
-        ...modem,
-        rxSpeed: load?.rx ?? 0,
-        txSpeed: load?.tx ?? 0,
-      };
-    });
-  } catch (err) {
-    console.error("Ошибка загрузки netload:", err);
-  }
-};
+    return 0;
+  })
+})
 
 const fetchModems = async () => {
   try {
@@ -151,7 +60,6 @@ const fetchModems = async () => {
     if (!response.ok) throw new Error("Ошибка загрузки модемов");
     const data = await response.json();
     modems.value = data.modems;
-    await fetchNetLoad();
   } catch (err) {
     error.value = err.message;
   } finally {
@@ -159,9 +67,9 @@ const fetchModems = async () => {
   }
 };
 
-/*onMounted(async () => {
+onMounted(async () => {
   await fetchModems();
-});*/
+});
 </script>
 
 <template>
@@ -169,68 +77,44 @@ const fetchModems = async () => {
     <div v-if="loading" class="text-white">Загрузка...</div>
     <div v-else-if="error" class="text-red-500">{{ error }}</div>
 
-    <ul v-if="modems.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <li v-for="(modem, index) in modems" :key="index" @click="openModal(modem)" :class="[
-        'cursor-pointer rounded-md flex flex-col justify-between text-white font-semibold select-none transition duration-200',
-        operatorBgColor(modem['3gpp']?.['operator-name'])
-      ]" style="aspect-ratio: 1 / 1; min-width: 150px;">
-        <div class="flex items-center justify-between p-4">
-          <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" class="w-6 h-6 object-contain"
-            v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" />
-          <div class=" flex ">
-            <div class="mr-2">
-              <div class="flex items-end gap-[2px] h-5">
-                <div v-for="i in 4" :key="i" :class="[
-                  'w-1 rounded-sm transition-all duration-300',
-                  i <= getSignalLevel(modem.generic?.['signal-quality']?.value) ? 'bg-white' : 'bg-gray-500',
-                  ['h-2', 'h-3', 'h-4', 'h-5'][i - 1]
-                ]" />
-              </div>
-            </div>
-            <p class="font-bold">{{ modem.generic?.['access-technologies']?.[0] || 'нет данных' }}<br /></p>
-          </div>
-
-        </div>
-        <div class="px-4 pb-4 text-sm text-gray-200 truncate">
-          {{ modem['3gpp']?.['operator-name'] || 'Нет оператора' }}
-          <div class="mt-1 text-xs text-gray-300">
-
-            Уровень сигнала: {{ modem.generic?.['signal-quality']?.value || '0' }}<br />
-            ⬇ {{ modem.rxSpeed || 0 }} Кбит/с<br />
-            ⬆ {{ modem.txSpeed || 0 }} Кбит/с
-          </div>
-
-        </div>
-      </li>
-    </ul>
-    <ul v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <li v-for="modem in modemsList" :key="modem.id">
-        <div class="rounded-md bg-gradient-to-r p-3" :style="{
-          backgroundImage: `linear-gradient(to right, #${modem.colorFrom}, #${modem.colorTo})`
-        }">
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <li v-for="modem in sortModems" :key="modem['3gpp']?.['dbus-path']">
+        <div @click="openModal(modem)" v-if="modem['3gpp']?.['operator-name'] != '--'"
+          class="flex flex-col rounded-md bg-gradient-to-r p-3 min-w-[128px] min-h-[128px]" :class="[
+            'rounded-md bg-gradient-to-r p-3 cursor-pointer select-none transition duration-200',
+            operatorBgColor(modem['3gpp']?.['operator-name'])]">
           <div class="flex justify-between items-center">
-            <img :src="modem.icon.src" class="w-10 h-10 rounded-full">
-
+            <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" class="w-10 h-10 rounded-full"
+              v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])">
             <div class="flex gap-2">
               <div class="flex items-end gap-[2px] h-5">
                 <div v-for="i in 5" :key="i" :class="[
                   'w-1 rounded-sm transition-all duration-300',
-                  i <= getSignalLevel(modem.signal) ? 'bg-white' : 'bg-gray-500',
+                  i <= getSignalLevel(modem.generic?.['signal-quality']?.value) ? 'bg-white' : 'bg-gray-500',
                   ['h-1', 'h-2', 'h-3', 'h-4', 'h-5'][i - 1]
                 ]" />
               </div>
-              <span class="text-xs">{{ modem.network }}</span>
+              <span class="text-xs">{{ modem.generic?.['access-technologies']?.[0] }}</span>
             </div>
           </div>
-          <div class="flex flex-col gap-3 mt-4 pb-2">
+          <div class="flex flex-col gap-3 mt-auto pb-2">
             <div class="flex gap-1">
               <img :src="rowsUp" alt="">
-              <span class="text-xs">{{ modem.speed.download }}</span>
+              <span class="text-xs">{{ modem.rxSpeed || '0 Мб/сек' }}</span>
             </div>
             <div class="flex gap-1">
               <img :src="rowsDown" alt="">
-              <span class="text-xs">{{ modem.speed.upload }}</span>
+              <span class="text-xs">{{ modem.txSpeed || '0 Мб/сек' }}</span>
             </div>
+          </div>
+        </div>
+        <div v-else @click="openModal(modem)" class="flex flex-col rounded-md bg-gradient-to-r p-3 min-w-[128px] min-h-[128px]" :class="[
+          'rounded-md bg-gradient-to-r p-3 cursor-pointer select-none transition duration-200',
+          operatorBgColor(modem['3gpp']?.['operator-name'])]">
+          <div class="flex justify-between gap-2 items-center my-auto">
+            <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" class="w-10 h-10 rounded-full"
+              v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])">
+            <span class="text-[#8B8794] text-[10px]">Вставьте в слот сим-карту</span>
           </div>
         </div>
       </li>
@@ -243,7 +127,7 @@ const fetchModems = async () => {
           <div class="flex min-h-full items-center justify-center p-4">
             <DialogPanel class="w-full max-w-md rounded-xl bg-[#363E4B] p-6 shadow-xl">
               <DialogTitle class="text-xl font-semibold mb-4">Информация о модеме</DialogTitle>
-              <ModemCard :modem="selectedModem" />
+              <ModemCard @modemChanged="fetchModems" :modem="selectedModem" />
               <div class="mt-4 flex justify-end">
                 <button class="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700" @click="isOpen = false">
                   Закрыть

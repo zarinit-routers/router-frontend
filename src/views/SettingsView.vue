@@ -2,10 +2,8 @@
 import WIFI from "../components/WIFI.vue";
 import Diagnostics from "../components/Diagnostics.vue";
 import DHCP from "../components/DHCP/DHCP.vue";
-import LAN from "../components/LAN.vue";
 import Journals from "../components/Journals.vue";
 import DeviceTraceroute from "../components/OS/DeviceTraceroute.vue";
-import Timezone from "../components/Timezone.vue";
 import NtpServers from "../components/NtpServers.vue";
 import FirewallSelect from "../components/FirewallSelect.vue";
 </script>
@@ -17,7 +15,6 @@ import FirewallSelect from "../components/FirewallSelect.vue";
         <Diagnostics class="w-full"/>
         <DeviceTraceroute class="w-full"/>
         <NtpServers class="w-full"/>
-        <LAN class="w-full"/>
       </div>
     </div>
     <div class="flex-1">
