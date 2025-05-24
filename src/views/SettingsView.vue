@@ -1,27 +1,50 @@
 <script setup>
 import WIFI from "../components/WIFI.vue";
-import Diagnostics from "../components/Diagnostics.vue";
+import Diagnostics from "../components/diagnostics/Diagnostics.vue";
 import DHCP from "../components/DHCP/DHCP.vue";
 import Journals from "../components/Journals.vue";
-import DeviceTraceroute from "../components/OS/DeviceTraceroute.vue";
+import Traceroute from "../components/diagnostics/Traceroute.vue";
 import NtpServers from "../components/NtpServers.vue";
 import FirewallSelect from "../components/FirewallSelect.vue";
+import Timezone from "../components/Timezone.vue";
+import SSH from "../components/SSH.vue";
+
+const componentsCol1 = [
+  { component: WIFI, unstable: true },
+  { component: Diagnostics },
+  { component: Traceroute },
+  { component: NtpServers },
+  { component: Timezone },
+];
+const componentsCol2 = [
+  { component: DHCP, unstable: true },
+  { component: Journals },
+  { component: FirewallSelect, unstable: true },
+  { component: SSH, unstable: true },
+];
 </script>
 <template>
-  <div class="flex flex-col lg:flex-row justify-between gap-x-8">
-    <div class="flex-1">
-      <div class="flex flex-col gap-2">
-        <WIFI class="w-full"/>
-        <Diagnostics class="w-full"/>
-        <DeviceTraceroute class="w-full"/>
-        <NtpServers class="w-full"/>
-      </div>
-    </div>
-    <div class="flex-1">
-      <div class="flex flex-col gap-2">
-        <DHCP class="w-full"/>
-        <Journals class="w-full"/>
-        <FirewallSelect class="w-full"/>
+  <div class="flex flex-col lg:flex-row justify-between gap-2">
+    <div
+      v-for="column in [componentsCol1, componentsCol2]"
+      class="flex flex-col gap-2 lg:w-1/2"
+    >
+      <div
+        v-for="c in column"
+        class="w-full flex flex-col p-6 bg-[#222228] space-y-6 border-1 border-solid border-[#363E4B]"
+        :class="c.unstable ? 'border-orange-400' : ''"
+      >
+        <div
+          v-if="c.unstable"
+          class="p-4 bg-orange-500 flex items-center gap-4 border-2 border-orange-400"
+        >
+          <i class="fas fa-triangle-exclamation text-xl"></i>
+          <div>
+            Этот компонент помечен как нестабильный, не рекомендуется его
+            использовать.
+          </div>
+        </div>
+        <component :is="c.component" class="w-full" />
       </div>
     </div>
   </div>
