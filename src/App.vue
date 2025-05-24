@@ -35,7 +35,6 @@ onMounted(() => {
 
 
 body {
-  @apply bg-[#1b1b1f] text-white;
   font-family: Inter, "sans-serif";
 }
 </style>
