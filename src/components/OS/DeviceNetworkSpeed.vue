@@ -1,73 +1,12 @@
 <template>
   <div class="flex gap-2 mb-6">
-    <Listbox class="w-[270px]" v-model="selectedInterfaces" multiple>
-      <div class="relative">
-        <ListboxButton
-          class="relative w-full cursor-pointer rounded-lg bg-[#37343D] py-3 pl-4 pr-10 text-left text-white shadow-md">
-          <span class="block truncate">
-            {{ selectedInterfaces.length ? selectedInterfaces.join(', ') : 'Выберите интерфейсы' }}
-          </span>
-          <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <svg class="h-[5px] w-[10px] text-gray-400" height="4" viewBox="0 0 10 4" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 4L0.669872 0.250001L9.33013 0.25L5 4Z" fill="white" />
-            </svg>
-          </span>
-        </ListboxButton>
-        <TransitionRoot enter="transition ease-out duration-100" enter-from="transform opacity-0 scale-95"
-          enter-to="transform opacity-100 scale-100" leave="transition ease-in duration-75"
-          leave-from="transform opacity-100 scale-100" leave-to="transform opacity-0 scale-95">
-          <ListboxOptions
-            class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#37343D] py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            <ListboxOption v-for="iface in availableInterfaces" :key="iface" :value="iface"
-              class="relative cursor-pointer select-none py-2 pl-10 pr-4 text-white hover:bg-[#3b3b3b]">
-              <span class="block truncate"
-                :class="{ 'font-medium': selectedInterfaces.includes(iface), 'font-normal': !selectedInterfaces.includes(iface) }">
-                {{ iface }}
-              </span>
-              <span v-if="selectedInterfaces.includes(iface)"
-                class="absolute inset-y-0 left-0 flex items-center pl-3 text-white">
-                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-7.071 7.071a1 1 0 01-1.414 0l-3.536-3.535a1 1 0 111.414-1.415L9 11.586l6.293-6.293a1 1 0 011.414 0z"
-                    clip-rule="evenodd" />
-                </svg>
-              </span>
-            </ListboxOption>
-          </ListboxOptions>
-        </TransitionRoot>
-      </div>
-    </Listbox>
-    <Listbox class="w-[270px]" v-model="selectedMetric">
-      <div class="relative">
-        <ListboxButton
-          class="relative w-full cursor-pointer rounded-lg bg-[#37343D] py-3 pl-4 pr-10 text-left text-white shadow-md">
-          <span class="block truncate">{{ selectedMetric || 'Выберите метрику' }}</span>
-          <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <svg class="h-[5px] w-[10px] text-gray-400" height="4" viewBox="0 0 10 4" fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 4L0.669872 0.250001L9.33013 0.25L5 4Z" fill="white" />
-            </svg>
-          </span>
-        </ListboxButton>
-        <TransitionRoot>
-          <ListboxOptions
-            class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#37343D] py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            <ListboxOption v-for="metric in availableMetrics" :key="metric" :value="metric"
-              class="relative cursor-pointer select-none py-2 pl-10 pr-4 text-white hover:bg-[#3b3b3b]">
-              <span class="block truncate" :class="{ 'font-medium': selectedMetric === metric }">
-                {{ metric }}
-              </span>
-              <span v-if="selectedMetric === metric"
-                class="absolute inset-y-0 left-0 flex items-center pl-3 text-white">
+    <DropDown v-model="selectedInterfaces" :options="availableInterfaces" :multiple="true"
+      placeholder="Выберите интерфейсы" />
 
-              </span>
-            </ListboxOption>
-          </ListboxOptions>
-        </TransitionRoot>
-      </div>
-    </Listbox>
+    <DropDown v-model="selectedMetric" :options="availableMetrics" placeholder="Выберите метрику" />
+
   </div>
+
   <div class="bg-[#222228] rounded-lg pt-[17px] pr-[30px] pb-[12px] pl-[17px]">
     <canvas ref="chartCanvas" width="620" height="330"></canvas>
   </div>
@@ -84,6 +23,7 @@ import {
   ListboxOption,
   TransitionRoot
 } from '@headlessui/vue'
+import DropDown from '../baseComponents/DropDown.vue'
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Legend)
 
