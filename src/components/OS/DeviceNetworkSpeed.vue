@@ -2,7 +2,6 @@
   <div class="flex gap-2 mb-6">
     <DropDown v-model="selectedInterfaces" :options="availableInterfaces" :multiple="true"
       placeholder="Выберите интерфейсы" />
-
     <DropDown v-model="selectedMetric" :options="availableMetrics" placeholder="Выберите метрику" />
 
   </div>
@@ -37,9 +36,18 @@ const txHistory = {}
 const labels = {}
 
 const selectedInterfaces = ref(["eth0", "wwan0", "wwan1", "wwan2", "wwan3"])
-const availableInterfaces = ["eth0", "wwan0", "wwan1", "wwan2", "wwan3"]
+const availableInterfaces = [
+  { value: "eth0", label: "eth0" },
+  { value: "wwan0", label: "wwan0" },
+  { value: "wwan1", label: "wwan1" },
+  { value: "wwan2", label: "wwan2" },
+  { value: "wwan3", label: "wwan3" }
+]
 const selectedMetric = ref("Входящая скорость")
-const availableMetrics = ["Входящая скорость", "Исходящая скорость"]
+const availableMetrics = [
+  { value: "Входящая скорость", label: "Входящая скорость" },
+  { value: "Исходящая скорость", label: "Исходящая скорость" }
+]
 
 const fetchNetload = () => {
   axios.get('/api/os-info').then(res => {
