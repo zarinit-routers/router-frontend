@@ -1,57 +1,3 @@
-<template>
-  <div v-if="error" class="text-red-400 mb-3">{{ error }}</div>
-  <div v-else>
-    <div v-if="ntpData.active">
-      <p class="text-green-500 text-lg pb-2">Синхронизация времени активна</p>
-
-      <ul v-if="ntpData.servers" class="flex flex-col gap-2 mb-4">
-        <li
-          v-for="(server, index) in ntpData.servers"
-          :key="index"
-          class="flex justify-between items-center p-2 rounded-lg bg-[#37343D]"
-        >
-          <div>
-            <div>{{ server.address }}</div>
-            <div class="font-mono text-[#7b7b7b] text-sm">
-              {{
-                Array.isArray(server.options) ? server.options.join(", ") : ""
-              }}
-            </div>
-          </div>
-          <button
-            @click="removeServer(server)"
-            class="text-red-400 hover:text-red-600"
-          >
-            Удалить
-          </button>
-        </li>
-      </ul>
-
-      <form @submit.prevent="addServer" class="flex flex-col gap-2">
-        <Input
-          v-model="newServer"
-          type="text"
-          placeholder="Новый NTP сервер (например, time.google.com)"
-          class="p-2 rounded text-white"
-          :class="{ 'border-red-500': validationError }"
-        />
-        <p v-if="validationError" class="text-red-400 text-sm">
-          Введите корректный домен или IP-адрес
-        </p>
-        <Button
-          type="submit"
-          class="bg-green-600 hover:bg-green-700 text-white py-1 px-4 rounded self-start"
-        >
-          Добавить сервер
-        </Button>
-      </form>
-    </div>
-    <div v-else>
-      <p class="text-red-500">NTP не активно</p>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
@@ -118,3 +64,57 @@ const removeServer = async (server) => {
 
 onMounted(fetchNtpServers);
 </script>
+
+<template>
+  <div v-if="error" class="text-red-400 mb-3">{{ error }}</div>
+  <div v-else>
+    <div v-if="ntpData.active">
+      <p class="text-green-500 text-lg pb-2">Синхронизация времени активна</p>
+
+      <ul v-if="ntpData.servers" class="flex flex-col gap-2 mb-4">
+        <li
+          v-for="(server, index) in ntpData.servers"
+          :key="index"
+          class="flex justify-between items-center p-2 rounded-lg bg-[#37343D]"
+        >
+          <div>
+            <div>{{ server.address }}</div>
+            <div class="font-mono text-[#7b7b7b] text-sm">
+              {{
+                Array.isArray(server.options) ? server.options.join(", ") : ""
+              }}
+            </div>
+          </div>
+          <button
+            @click="removeServer(server)"
+            class="text-red-400 hover:text-red-600"
+          >
+            Удалить
+          </button>
+        </li>
+      </ul>
+
+      <form @submit.prevent="addServer" class="flex flex-col gap-2">
+        <Input
+          v-model="newServer"
+          type="text"
+          placeholder="Новый NTP сервер (например, time.google.com)"
+          class="p-2 rounded text-white"
+          :class="{ 'border-red-500': validationError }"
+        />
+        <p v-if="validationError" class="text-red-400 text-sm">
+          Введите корректный домен или IP-адрес
+        </p>
+        <Button
+          type="submit"
+          class="bg-green-600 hover:bg-green-700 text-white py-1 px-4 rounded self-start"
+        >
+          Добавить сервер
+        </Button>
+      </form>
+    </div>
+    <div v-else>
+      <p class="text-red-500">NTP не активно</p>
+    </div>
+  </div>
+</template>

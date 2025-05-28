@@ -1,38 +1,3 @@
-<template>
-  <h2 class="text-xl font-semibold">Traceroute</h2>
-  <div>
-    <label class="block font-medium mb-1">Адрес</label>
-    <Input
-      v-model="target"
-      placeholder="Введите адрес (например, 8.8.8.8)"
-      class="w-full p-2 rounded"
-      @input="validateAddress"
-    />
-  </div>
-
-  <div v-if="warning" class="text-yellow-600 text-sm font-medium">
-    ⚠ {{ warning }}
-  </div>
-
-  <div class="flex justify-center">
-    <Button
-      @click="runTraceroute"
-      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      :disabled="loading || !isValid"
-    >
-      {{ loading ? "Выполняется..." : "Пуск" }}
-    </Button>
-  </div>
-
-  <div v-if="output" class="mt-2">
-    <label class="block font-medium mb-1">Результат Traceroute</label>
-    <pre class="p-3 bg-black text-white rounded text-sm whitespace-pre-wrap"
-      >{{ output }}
-      </pre
-    >
-  </div>
-</template>
-
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
@@ -98,3 +63,38 @@ const runTraceroute = async () => {
   }
 };
 </script>
+
+<template>
+  <h2 class="text-xl font-semibold">Traceroute</h2>
+  <div>
+    <label class="block font-medium mb-1">Адрес</label>
+    <Input
+      v-model="target"
+      placeholder="Введите адрес (например, 8.8.8.8)"
+      class="w-full p-2 rounded"
+      @input="validateAddress"
+    />
+  </div>
+
+  <div v-if="warning" class="text-yellow-600 text-sm font-medium">
+    ⚠ {{ warning }}
+  </div>
+
+  <div class="flex justify-center">
+    <Button
+      @click="runTraceroute"
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      :disabled="loading || !isValid"
+    >
+      {{ loading ? "Выполняется..." : "Пуск" }}
+    </Button>
+  </div>
+
+  <div v-if="output" class="mt-2">
+    <label class="block font-medium mb-1">Результат Traceroute</label>
+    <pre class="p-3 bg-black text-white rounded text-sm whitespace-pre-wrap"
+      >{{ output }}
+      </pre
+    >
+  </div>
+</template>

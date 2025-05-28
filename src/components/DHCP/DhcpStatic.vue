@@ -1,31 +1,3 @@
-<template>
-  <div class="p-4 rounded-xl shadow bg-[#222228] space-y-4">
-    <h2 class="text-lg text-white">Статические IP-аренды</h2>
-
-    <div v-if="staticLeases.length === 0" class="text-gray-400">
-      Нет статических аренд.
-    </div>
-    <ul v-else class="divide-y divide-gray-700 text-sm text-gray-300">
-      <li v-for="lease in staticLeases" :key="lease.mac" class="py-1 flex justify-between items-center">
-        <span>{{ lease.hostname }}</span>
-        <span>{{ lease.mac }}</span>
-        <span>{{ lease.ip }}</span>
-        <button class="text-red-500 hover:text-red-700" @click="removeStaticLease"><i class="fa-solid fa-trash"></i>
-        </button>
-      </li>
-    </ul>
-    <div class="flex flex-col md:flex-row items-start md:items-center gap-2 justify-between">
-      <Input v-model="mac" placeholder="MAC-адрес" class="input grow" />
-      <Input v-model="ip" placeholder="IP-адрес" class="input grow" />
-      <Input v-model="hostname" placeholder="Имя хоста" class="input grow" />
-    </div>
-    <div class="flex flex-col md:flex-row items-start md:items-center gap-2 justify-between">
-      <Button @click="addStaticLease">Добавить</Button>
-      <Button @click="removeStaticLease">Удалить</Button>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
@@ -94,3 +66,31 @@ const validateInputs = () => {
 
 onMounted(fetchStaticLeases)
 </script>
+
+<template>
+  <div class="p-4 rounded-xl shadow bg-[#222228] space-y-4">
+    <h2 class="text-lg text-white">Статические IP-аренды</h2>
+
+    <div v-if="staticLeases.length === 0" class="text-gray-400">
+      Нет статических аренд.
+    </div>
+    <ul v-else class="divide-y divide-gray-700 text-sm text-gray-300">
+      <li v-for="lease in staticLeases" :key="lease.mac" class="py-1 flex justify-between items-center">
+        <span>{{ lease.hostname }}</span>
+        <span>{{ lease.mac }}</span>
+        <span>{{ lease.ip }}</span>
+        <button class="text-red-500 hover:text-red-700" @click="removeStaticLease"><i class="fa-solid fa-trash"></i>
+        </button>
+      </li>
+    </ul>
+    <div class="flex flex-col md:flex-row items-start md:items-center gap-2 justify-between">
+      <Input v-model="mac" placeholder="MAC-адрес" class="input grow" />
+      <Input v-model="ip" placeholder="IP-адрес" class="input grow" />
+      <Input v-model="hostname" placeholder="Имя хоста" class="input grow" />
+    </div>
+    <div class="flex flex-col md:flex-row items-start md:items-center gap-2 justify-between">
+      <Button @click="addStaticLease">Добавить</Button>
+      <Button @click="removeStaticLease">Удалить</Button>
+    </div>
+  </div>
+</template>

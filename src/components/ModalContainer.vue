@@ -1,3 +1,8 @@
+<script setup>
+import { Dialog, DialogPanel, TransitionRoot } from '@headlessui/vue'
+defineProps({ open: Boolean })
+</script>
+
 <template>
   <TransitionRoot :show="open" as="template">
     <Dialog as="div" class="relative z-50" @close="$emit('close')">
@@ -10,8 +15,3 @@
     </Dialog>
   </TransitionRoot>
 </template>
-
-<script setup>
-import { Dialog, DialogPanel, TransitionRoot } from '@headlessui/vue'
-defineProps({ open: Boolean })
-</script>

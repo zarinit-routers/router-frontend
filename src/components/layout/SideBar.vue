@@ -1,3 +1,7 @@
+<script setup>
+
+</script>
+
 <template>
     <div class="w-2xs p-5 pt-0">
         <div>
@@ -14,7 +18,3 @@
         </div>
     </div>
 </template>
-
-<script></script>
-
-<style scoped></style>
