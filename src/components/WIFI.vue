@@ -16,7 +16,7 @@
     </Switch>
   </div>
 
-  <div v-if="wifi.enabled" class="space-y-4">
+  <div v-if="wifi.enabled" class="space-y-4 mt-4">
     <div>
       <label class="block text-sm font-medium">SSID</label>
       <Input
@@ -38,18 +38,14 @@
 
     <div>
       <label class="block text-sm font-medium">Безопасность</label>
-      <Select
+      <DropDown
         v-model="wifi.security"
-        class="mt-1 block w-full rounded-md border border-gray-500 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
-      >
-        <option
-          v-for="opt in securityLevels"
-          class="bg-[#222228]"
-          :value="opt.value"
-        >
-          {{ opt.label }}
-        </option>
-      </Select>
+        :options="securityLevels"
+        option-label="label"
+        option-value="value"
+        :placeholder="'Выберите уровень безопасности'"
+        customClass="mt-1 w-full"
+      />
     </div>
 
     <div>
@@ -63,14 +59,20 @@
       />
     </div>
 
-    <div class="block flex items-center space-x-2">
-      <Input
-        id="hidden"
-        type="checkbox"
+    <div class="flex items-center space-x-2">
+      <Switch
         v-model="wifi.hidden"
-        class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
-      />
-      <label for="hidden" class="text-sm">Скрыть SSID</label>
+        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+        :class="wifi.hidden ? 'bg-green-600' : 'bg-gray-300'"
+      >
+        <span
+          class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+          :class="wifi.hidden ? 'translate-x-6' : 'translate-x-1'"
+        />
+      </Switch>
+      <span class="text-sm select-none">
+        Скрыть SSID {{ wifi.hidden ? 'включено' : 'выключено' }}
+      </span>
     </div>
 
     <div class="pt-4">
@@ -90,6 +92,7 @@ import axios from "axios";
 import { Switch } from "@headlessui/vue";
 import Button from "./baseComponents/Button.vue";
 import Input from "./baseComponents/Input.vue";
+import DropDown from "./baseComponents/DropDown.vue";
 
 const securityLevels = [
   { label: "Открытая", value: "none" },
