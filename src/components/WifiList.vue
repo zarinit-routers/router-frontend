@@ -23,10 +23,10 @@ const progressComp = computed(() => {
   <div class="flex flex-col gap-4">
     <div class="flex flex-row items-center gap-4">
       <img :src="wifi" alt="">
-      <span class="w-[120px] text-xs text-[#58636C] text-nowrap">{{ wifiStore.wifi24.ssid }}</span>
+      <span class="w-[120px] text-xs text-[#58636C] text-nowrap">{{ wifiStore.frequency24.ssid }}</span>
 
       <div class="">
-        <Switch v-model=" wifiStore.wifi24.isActive " as="template" v-slot="{ checked }">
+        <Switch v-model=" wifiStore.frequency24.isActive " as="template" v-slot="{ checked }">
           <button
             class="relative inline-flex h-[20px] w-[36px] items-center rounded-full border-1 border-solid border-black"
             :class="checked ? 'bg-[#470ABF]' : 'bg-gray-200'">
@@ -56,10 +56,10 @@ const progressComp = computed(() => {
     </div>
     <div class="flex flex-row items-center gap-4">
       <img :src="wifi" alt="">
-      <span class="w-[120px] text-xs text-[#58636C] text-nowrap">{{ wifiStore.wifi5.ssid }}</span>
+      <span class="w-[120px] text-xs text-[#58636C] text-nowrap">{{ wifiStore.frequency5.ssid }}</span>
 
       <div class="">
-        <Switch v-model="wifiStore.wifi5.isActive" as="template" v-slot="{ checked }">
+        <Switch v-model="wifiStore.frequency5.isActive" as="template" v-slot="{ checked }">
           <button
             class="relative inline-flex h-[20px] w-[36px] items-center rounded-full border-1 border-solid border-black"
             :class="checked ? 'bg-[#470ABF]' : 'bg-gray-200'">

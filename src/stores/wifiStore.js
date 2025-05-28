@@ -3,14 +3,14 @@ import { defineStore } from "pinia";
 
 export const useWifiStore = defineStore("wifi", {
   state: () => ({
-    wifi24: {
+    frequency24: {
       isActive: true,
       channel: null,
       hidden: false,
       ssid: "",
       password: "",
     },
-    wifi5: {
+    frequency5: {
       isActive: true,
       channel: null,
       hidden: false,
@@ -23,9 +23,9 @@ export const useWifiStore = defineStore("wifi", {
       try {
         await axios.post(`/api/wifi/${frequency}/${action}`).then((res) => {
           if (frequency === 2) {
-            this.wifi24.isActive = res.data.active;
+            this.frequency24.isActive = res.data.active;
           } else {
-            this.wifi5.isActive = res.data.active;
+            this.frequency5.isActive = res.data.active;
           }
         });
       } catch (error) {
@@ -36,18 +36,43 @@ export const useWifiStore = defineStore("wifi", {
       try {
         await axios.get(`/api/wifi/${frequency}/status`).then((res) => {
           if (frequency === 2) {
-            this.wifi24.isActive = res.data.active;
-            this.wifi24.channel = res.data.channel;
-            this.wifi24.hidden = res.data.hidden;
-            this.wifi24.ssid = res.data.ssid;
-            this.wifi24.password = res.data.password;
+            this.frequency24.isActive = res.data.active;
+            this.frequency24.channel = res.data.channel;
+            this.frequency24.hidden = res.data.hidden;
+            this.frequency24.ssid = res.data.ssid;
+            this.frequency24.password = res.data.password;
           } else {
-            this.wifi5.isActive = res.data.active;
-            this.wifi5.channel = res.data.channel;
-            this.wifi5.hidden = res.data.hidden;
-            this.wifi5.ssid = res.data.ssid;
-            this.wifi5.password = res.data.password;
+            this.frequency5.isActive = res.data.active;
+            this.frequency5.channel = res.data.channel;
+            this.frequency5.hidden = res.data.hidden;
+            this.frequency5.ssid = res.data.ssid;
+            this.frequency5.password = res.data.password;
           }
+        });
+      } catch (error) {
+        console.error("Ошиька при получении статуса Wi-Fi:", error);
+      }
+    },
+    async wifiUpdate(frequency) {
+      try {
+        let data = {}
+        if (frequency === 2) {
+          data = {
+            channel: this.frequency24.channel,
+            hide: this.frequency24.hidden,
+            ssid: this.frequency24.ssid,
+            password: this.frequency24.password,
+          }
+        } else {
+          data = {
+            channel: this.frequency5.channel,
+            hide: this.frequency5.hidden,
+            ssid: this.frequency5.ssid,
+            password: this.frequency5.password
+          }
+        }
+        await axios.post(`/api/wifi/${frequency}/update`, data).then((res) => {
+          this.wifiStatus(frequency)
         });
       } catch (error) {
         console.error("Ошиька при получении статуса Wi-Fi:", error);

@@ -6,7 +6,7 @@ import { useWifiStore } from "./stores/wifiStore";
 
 const wifiStore = useWifiStore();
 
-watch([() => wifiStore.wifi24.isActive, () => wifiStore.wifi5.isActive], ([new2, new5], [old2, old5]) => {
+watch([() => wifiStore.frequency24.isActive, () => wifiStore.frequency5.isActive], ([new2, new5], [old2, old5]) => {
   if (new2 != old2) {
     const action = new2 ? 'enable' : 'disable'
     wifiStore.togglePower(action, 2)
