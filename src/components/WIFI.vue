@@ -28,10 +28,21 @@
         <Input v-model.number="wifiStore.channel" type="number" min="1" max="11"
           class="mt-1 block w-full rounded-md p-2" :label="'Канал'" />
       </div>
-      <div>
-        <label class="block text-sm font-medium">Безопасность</label>
-        <DropDown v-model="wifi.security" :options="securityLevels" option-label="label" option-value="value"
+      <div class="flex flex-col gap-2 mt-1 block w-full rounded-md p-2">
+        <DropDown v-model="wifiSecurity" :options="securityLevels" option-label="label" option-value="value"
           :placeholder="'Выберите уровень безопасности'" customClass="mt-1 w-full" />
+      </div>
+      <div class="flex flex-col gap-2 mt-1 block w-full rounded-md p-2">
+        <span class="text-sm text-[#54505B]">Скрыть</span>
+        <Switch v-model="wifiStore.isActive" as="template" v-slot="{ checked }">
+          <button
+            class="relative inline-flex h-[20px] w-[36px] items-center rounded-full border-1 border-solid border-black"
+            :class="checked ? 'bg-[#470ABF]' : 'bg-gray-200'">
+            <span class="sr-only">Enable notifications</span>
+            <span :class="checked ? 'translate-x-[16px]' : 'translate-x-[1px]'"
+              class="inline-block h-[17px] w-[17px] transform rounded-full bg-white transition" />
+          </button>
+        </Switch>
       </div>
       <div class="pt-4">
         <Button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition">
@@ -39,7 +50,6 @@
         </Button>
       </div>
     </form>
-  </div>
   </div>
 </template>
 
@@ -49,6 +59,7 @@ import { Switch } from '@headlessui/vue'
 import Button from './baseComponents/Button.vue'
 import Input from './baseComponents/Input.vue'
 import DropDown from "./baseComponents/DropDown.vue";
+import { ref } from 'vue';
 
 const wifiStore = useWifiStore()
 
@@ -57,5 +68,7 @@ const securityLevels = [
   { label: "WPA2", value: "wpa2" },
   { label: "WPA3", value: "wpa3" },
 ];
+
+const wifiSecurity = ref('')
 
 </script>

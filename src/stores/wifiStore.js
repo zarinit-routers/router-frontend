@@ -1,56 +1,56 @@
 import axios from "axios";
 import { defineStore } from "pinia";
-import { watch } from "vue";
 
 export const useWifiStore = defineStore("wifi", {
   state: () => ({
-    isActive: true,
-    channel: null,
-    hidden: false,
-    ssid: "",
-    password: "",
+    wifi24: {
+      isActive: true,
+      channel: null,
+      hidden: false,
+      ssid: "",
+      password: "",
+    },
+    wifi5: {
+      isActive: true,
+      channel: null,
+      hidden: false,
+      ssid: "",
+      password: "",
+    },
   }),
   actions: {
-    async togglePower(action) {
+    async togglePower(action, frequency) {
       try {
-        await axios.post(`/api/wifi/${action}`).then((res) => {
-          this.isActive = res.data.active;
+        await axios.post(`/api/wifi/${frequency}/${action}`).then((res) => {
+          if (frequency === 2) {
+            this.wifi24.isActive = res.data.active;
+          } else {
+            this.wifi5.isActive = res.data.active;
+          }
         });
       } catch (error) {
         console.error("Ошибка при переключении Wi-Fi:", error);
       }
     },
-    async wifiStatus() {
+    async wifiStatus(frequency) {
       try {
-        await axios.get("/api/wifi/status").then((res) => {
-          this.isActive = res.data.active;
-          this.channel = res.data.channel;
-          this.hidden = res.data.hidden;
-          this.ssid = res.data.ssid;
-          this.password = res.data.password;
+        await axios.get(`/api/wifi/${frequency}/status`).then((res) => {
+          if (frequency === 2) {
+            this.wifi24.isActive = res.data.active;
+            this.wifi24.channel = res.data.channel;
+            this.wifi24.hidden = res.data.hidden;
+            this.wifi24.ssid = res.data.ssid;
+            this.wifi24.password = res.data.password;
+          } else {
+            this.wifi5.isActive = res.data.active;
+            this.wifi5.channel = res.data.channel;
+            this.wifi5.hidden = res.data.hidden;
+            this.wifi5.ssid = res.data.ssid;
+            this.wifi5.password = res.data.password;
+          }
         });
       } catch (error) {
         console.error("Ошиька при получении статуса Wi-Fi:", error);
-      }
-    },
-    async wifiUpdateData() {
-      try {
-        /*axios.post('/api/wifi/channel/set', {
-            "channel": this.channel
-        });*/
-        await axios.post('/api/wifi/ssid/set', {
-            "ssid": this.ssid
-        });
-        await axios.post('/api/wifi/password/set', {
-            "password": this.password
-        });
-        /*const hidden = this.hidden === "true" ? true : false
-        await axios.post('/api/wifi/ssid/hide', {
-            "hidden": hidden
-        });*/
-        this.wifiStatus()
-      } catch (error) {
-        console.error("Ошибка при изменении данных Wi-Fi:", error);
       }
     },
   },
