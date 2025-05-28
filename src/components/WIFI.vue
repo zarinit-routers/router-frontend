@@ -3,60 +3,38 @@
 
   <div class="flex items-center justify-between">
     <span class="text-sm font-medium">Wi-Fi</span>
-    <Switch
-      v-model="wifi.enabled"
-      :class="wifi.enabled ? 'bg-blue-600' : 'bg-gray-200'"
-      class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
-      @change="updateWifi"
-    >
-      <span
-        :class="wifi.enabled ? 'translate-x-6' : 'translate-x-1'"
-        class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
-      />
+    <Switch v-model="wifi.enabled" :class="wifi.enabled ? 'bg-blue-600' : 'bg-gray-200'"
+      class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors" @change="updateWifi">
+      <span :class="wifi.enabled ? 'translate-x-6' : 'translate-x-1'"
+        class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform" />
     </Switch>
   </div>
 
   <div v-if="wifi.enabled" class="space-y-4 mt-4">
     <div>
       <label class="block text-sm font-medium">SSID</label>
-      <Input
-        v-model="wifi.ssid"
+      <Input v-model="wifi.ssid"
         class="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
-        placeholder="Введите SSID"
-      />
+        placeholder="Введите SSID" />
     </div>
 
     <div>
       <label class="block text-sm font-medium">Пароль</label>
-      <Input
-        v-model="wifi.password"
-        type="password"
+      <Input v-model="wifi.password" type="password"
         class="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none"
-        placeholder="Введите пароль"
-      />
+        placeholder="Введите пароль" />
     </div>
 
     <div>
       <label class="block text-sm font-medium">Безопасность</label>
-      <DropDown
-        v-model="wifi.security"
-        :options="securityLevels"
-        option-label="label"
-        option-value="value"
-        :placeholder="'Выберите уровень безопасности'"
-        customClass="mt-1 w-full"
-      />
+      <DropDown v-model="wifi.security" :options="securityLevels" option-label="label" option-value="value"
+        :placeholder="'Выберите уровень безопасности'" customClass="mt-1 w-full" />
     </div>
 
     <div>
       <label class="block text-sm font-medium">Канал</label>
-      <Input
-        v-model.number="wifi.channel"
-        type="number"
-        min="1"
-        max="11"
-        class="mt-1 block w-full rounded-md p-2 shadow-sm focus:border-blue-500 focus:outline-none"
-      />
+      <Input v-model.number="wifi.channel" type="number" min="1" max="11"
+        class="mt-1 block w-full rounded-md p-2 shadow-sm focus:border-blue-500 focus:outline-none" />
     </div>
 
     <div class="flex items-center space-x-2">
@@ -76,10 +54,7 @@
     </div>
 
     <div class="pt-4">
-      <Button
-        @click="updateWifi"
-        class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
-      >
+      <Button @click="updateWifi" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition">
         Сохранить
       </Button>
     </div>
