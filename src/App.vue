@@ -1,14 +1,29 @@
 <script setup>
 import { useRouter, RouterView } from "vue-router";
-import { ref, onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import { isAuthenticated } from "./auth";
+import { useWifiStore } from "./stores/wifiStore";
+
+const wifiStore = useWifiStore();
+
+watch([() => wifiStore.frequency24.isActive, () => wifiStore.frequency5.isActive], ([new2, new5], [old2, old5]) => {
+  if (new2 != old2) {
+    const action = new2 ? 'enable' : 'disable'
+    wifiStore.togglePower(action, 2)
+  }
+  if (new5 != old5) {
+    const action = new5 ? 'enable' : 'disable'
+    wifiStore.togglePower(action, 5)
+  }
+})
 import TheHeader from "./components/layout/TheHeader.vue";
 
 const router = useRouter();
-// Проверка авторизации при монтировании компонента
 onMounted(() => {
+  wifiStore.wifiStatus(2)
+  wifiStore.wifiStatus(5)
   if (!isAuthenticated) {
-    router.push("/login"); // Если токена нет, перенаправляем на страницу логина
+    router.push("/login");
   }
 });
 </script>
@@ -26,7 +41,6 @@ onMounted(() => {
 @import "./style.css";
 
 body {
-  @apply bg-[#1b1b1f] text-white;
   font-family: Inter, "sans-serif";
 }
 </style>
