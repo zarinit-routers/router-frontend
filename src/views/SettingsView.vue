@@ -12,7 +12,6 @@ import SSH from "../components/SSH.vue";
 const componentsCol1 = [
   { component: WIFI, unstable: true },
   { component: Diagnostics },
-  { component: Traceroute },
   { component: NtpServers },
   { component: Timezone },
 ];
