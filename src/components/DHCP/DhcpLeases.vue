@@ -1,31 +1,3 @@
-<template>
-  <div class="p-4 rounded-xl shadow space-y-4 ">
-    <h2 class="text-lg text-white">Текущие DHCP аренды</h2>
-
-    <div v-if="loading" class="text-gray-400">Загрузка...</div>
-    <div v-else-if="leases.length === 0" class="text-gray-400">Нет активных аренд.</div>
-
-    <ul v-else class="divide-y divide-gray-700">
-      <li
-        v-for="lease in leases"
-        :key="lease.mac + lease.ip"
-        class="py-2 text-sm text-gray-100 flex justify-between"
-      >
-        <div>
-          <div><span class="text-gray-400">IP:</span> {{ lease.ip }}</div>
-          <div><span class="text-gray-400">MAC:</span> {{ lease.mac }}</div>
-          <div v-if="lease.hostname">
-            <span class="text-gray-400">Host:</span> {{ lease.hostname }}
-          </div>
-        </div>
-        <div class="text-right text-gray-400">
-          <div>До: {{ formatTime(lease.expiry) }}</div>
-        </div>
-      </li>
-    </ul>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
@@ -53,3 +25,31 @@ const formatTime = (timestamp) => {
 
 onMounted(fetchLeases)
 </script>
+
+<template>
+  <div class="p-4 rounded-xl shadow space-y-4 ">
+    <h2 class="text-lg text-white">Текущие DHCP аренды</h2>
+
+    <div v-if="loading" class="text-gray-400">Загрузка...</div>
+    <div v-else-if="leases.length === 0" class="text-gray-400">Нет активных аренд.</div>
+
+    <ul v-else class="divide-y divide-gray-700">
+      <li
+        v-for="lease in leases"
+        :key="lease.mac + lease.ip"
+        class="py-2 text-sm text-gray-100 flex justify-between"
+      >
+        <div>
+          <div><span class="text-gray-400">IP:</span> {{ lease.ip }}</div>
+          <div><span class="text-gray-400">MAC:</span> {{ lease.mac }}</div>
+          <div v-if="lease.hostname">
+            <span class="text-gray-400">Host:</span> {{ lease.hostname }}
+          </div>
+        </div>
+        <div class="text-right text-gray-400">
+          <div>До: {{ formatTime(lease.expiry) }}</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</template>

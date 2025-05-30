@@ -1,34 +1,3 @@
-<template>
-  <div class="p-4 rounded-xl shadow  space-y-4">
-    <div class=" md:flex-row items-start md:items-center gap-2">
-      <div class="flex items-center mb-5">
-        <p class="w-[170px] mr-2">Начальный IP-адрес:</p>
-        <Input v-model="newRangeStart" type="text" placeholder="Начальный IP"
-         />
-      </div>
-
-      <div class="flex items-center ">
-        <p class="w-[170px] mr-2">
-          Конечный IP-адрес:
-        </p>
-        <Input v-model="newRangeEnd" type="text" placeholder="Конечный IP"/>
-      </div>
-
-    </div>
-<!-- 
-    <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
-      <input v-model="optionsRouters" type="text" placeholder="IP шлюза (router)"
-        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <input v-model="optionsBroadcasts" type="text" placeholder="Broadcast-адрес"
-        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
- -->
-    <Button @click="updateRange" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
-      Обновить диапазон
-    </Button>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
@@ -100,4 +69,33 @@ const updateRange = async () => {
 onMounted(fetchRange)
 </script>
 
-<style scoped></style>
+<template>
+  <div class="p-4 rounded-xl shadow  space-y-4">
+    <div class=" md:flex-row items-start md:items-center gap-2">
+      <div class="flex items-center mb-5">
+        <p class="w-[170px] mr-2">Начальный IP-адрес:</p>
+        <Input v-model="newRangeStart" type="text" placeholder="Начальный IP"
+         />
+      </div>
+
+      <div class="flex items-center ">
+        <p class="w-[170px] mr-2">
+          Конечный IP-адрес:
+        </p>
+        <Input v-model="newRangeEnd" type="text" placeholder="Конечный IP"/>
+      </div>
+
+    </div>
+<!-- 
+    <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
+      <input v-model="optionsRouters" type="text" placeholder="IP шлюза (router)"
+        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <input v-model="optionsBroadcasts" type="text" placeholder="Broadcast-адрес"
+        class="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+ -->
+    <Button @click="updateRange" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
+      Обновить диапазон
+    </Button>
+  </div>
+</template>
