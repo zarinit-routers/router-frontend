@@ -8,7 +8,7 @@ const props = defineProps({
   label: String,
   autocomplete: String,
   modelValue: String,
-  type: String,
+  type: {type:String, default:"text"},
   placeholder: String,
   disabled: Boolean,
   classInput: Object
