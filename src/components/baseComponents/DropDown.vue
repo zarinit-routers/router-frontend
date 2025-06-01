@@ -79,7 +79,6 @@
     options: {
       type: Array,
       required: true,
-      // ожидаем формат: [{ value: 'none', label: 'Без защиты' }, ...]
     },
     multiple: {
       type: Boolean,

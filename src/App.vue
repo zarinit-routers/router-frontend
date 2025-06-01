@@ -6,7 +6,11 @@ import { useWifiStore } from "./stores/wifiStore";
 
 const wifiStore = useWifiStore();
 
+import TheHeader from "./components/layout/TheHeader.vue";
+
 watch([() => wifiStore.frequency24.isActive, () => wifiStore.frequency5.isActive], ([new2, new5], [old2, old5]) => {
+  if(!wifiStore.isInitialize) return
+
   if (new2 != old2) {
     const action = new2 ? 'enable' : 'disable'
     wifiStore.togglePower(action, 2)
@@ -16,15 +20,14 @@ watch([() => wifiStore.frequency24.isActive, () => wifiStore.frequency5.isActive
     wifiStore.togglePower(action, 5)
   }
 })
-import TheHeader from "./components/layout/TheHeader.vue";
 
 const router = useRouter();
-onMounted(() => {
-  wifiStore.wifiStatus(2)
-  wifiStore.wifiStatus(5)
+onMounted(async () => {
   if (!isAuthenticated) {
     router.push("/login");
   }
+
+  await wifiStore.initWifi()
 });
 </script>
 
