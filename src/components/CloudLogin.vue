@@ -1,3 +1,7 @@
+<script setup>
+import logo from "../assets/logo.svg";
+</script>
+
 <template>
     <img id="" :src="logo" />
     <form method="POST">
@@ -12,9 +16,3 @@
         <h3><a href="">Восстановить</a></h3>
     </form>
 </template>
-
-<style></style>
-
-<script setup>
-import logo from "../assets/logo.svg";
-</script>

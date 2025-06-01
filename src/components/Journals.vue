@@ -1,3 +1,54 @@
+<script setup>
+import { ref } from "vue";
+import Button from "../components/baseComponents/Button.vue";
+
+import {
+  TransitionRoot,
+  TransitionChild,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  TabGroup,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+} from "@headlessui/vue";
+
+const journalTypes = ["system", "core", "connections", "port-forwarding"];
+const journalType = ref("system");
+const journalData = ref("");
+const error = ref(null);
+const isOpen = ref(false);
+
+// Загрузка журнала при смене таба
+const handleTabChange = async (index) => {
+  journalType.value = journalTypes[index];
+  await fetchJournal();
+};
+
+const fetchJournal = async () => {
+  try {
+    const response = await fetch(`/api/journal/${journalType.value}`);
+    if (!response.ok) throw new Error("Ошибка загрузки журнала");
+
+    const data = await response.json();
+    journalData.value = data.journal || "Нет данных";
+  } catch (err) {
+    error.value = err.message;
+  }
+};
+
+function closeModal() {
+  isOpen.value = false;
+}
+function openModal() {
+  isOpen.value = true;
+  fetchJournal();
+}
+</script>
+
+
 <template>
   <div class="inset-0 flex items-center justify-center">
     <Button
@@ -9,7 +60,7 @@
   </div>
 
   <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" @close="closeModal" class="relative z-10">
+    <Dialog as="div" @close="closeModal" class="relative z-100">
       <TransitionChild
         as="template"
         enter="duration-300 ease-out"
@@ -109,53 +160,3 @@
     </Dialog>
   </TransitionRoot>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import Button from "../components/baseComponents/Button.vue";
-
-import {
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TabGroup,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-} from "@headlessui/vue";
-
-const journalTypes = ["system", "core", "connections", "port-forwarding"];
-const journalType = ref("system");
-const journalData = ref("");
-const error = ref(null);
-const isOpen = ref(false);
-
-// Загрузка журнала при смене таба
-const handleTabChange = async (index) => {
-  journalType.value = journalTypes[index];
-  await fetchJournal();
-};
-
-const fetchJournal = async () => {
-  try {
-    const response = await fetch(`/api/journal/${journalType.value}`);
-    if (!response.ok) throw new Error("Ошибка загрузки журнала");
-
-    const data = await response.json();
-    journalData.value = data.journal || "Нет данных";
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-function closeModal() {
-  isOpen.value = false;
-}
-function openModal() {
-  isOpen.value = true;
-  fetchJournal();
-}
-</script>

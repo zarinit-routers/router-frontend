@@ -1,3 +1,23 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import axios from "axios";
+
+const ports = ref([]);
+const CONNECTED_CLASS = "fill-[#0066FF]";
+const DISCONNECTED_CLASS = "fill-[#B0B0B0]";
+
+onMounted(() => {
+  axios
+    .get("/api/ethernet/status")
+    .then((res) => {
+      ports.value = res.data;
+    })
+    .catch((err) => {
+      console.error("Ошибка при получении LAN портов:", err);
+    });
+});
+</script>
+
 <template>
   <div class="flex flex-col gap-4">
     <div
@@ -20,23 +40,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
-
-const ports = ref([]);
-const CONNECTED_CLASS = "fill-[#0066FF]";
-const DISCONNECTED_CLASS = "fill-[#B0B0B0]";
-
-onMounted(() => {
-  axios
-    .get("/api/ethernet/status")
-    .then((res) => {
-      ports.value = res.data;
-    })
-    .catch((err) => {
-      console.error("Ошибка при получении LAN портов:", err);
-    });
-});
-</script>

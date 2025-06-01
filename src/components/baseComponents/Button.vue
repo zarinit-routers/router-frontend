@@ -1,3 +1,9 @@
+<script setup>
+const props = defineProps({
+  customClass: String,
+});
+</script>
+
 <template>
   <button
     :class="[
@@ -12,9 +18,3 @@
     <slot></slot>
   </button>
 </template>
-
-<script setup>
-const props = defineProps({
-  customClass: String,
-});
-</script>

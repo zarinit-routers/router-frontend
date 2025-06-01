@@ -1,3 +1,23 @@
+<script setup>
+import { ref } from "vue";
+import Input from "../components/baseComponents/Input.vue";
+import Button from "../components/baseComponents/Button.vue";
+
+const Manufacturer = ref("");
+const sn = ref("");
+const Model = ref("");
+const Model_version = ref("");
+const Firmware_version = ref("");
+const uptime = ref("");
+const procload = ref("");
+const mem = ref("");
+const date = ref("");
+const serverIp = ref("");
+const serverKey = ref("");
+const login = ref("root");
+const password = ref("afwawf");
+</script>
+
 <template>
   <div>
     <h1>Система</h1>
@@ -109,23 +129,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import Input from "../components/baseComponents/Input.vue";
-import Button from "../components/baseComponents/Button.vue";
-
-const Manufacturer = ref("");
-const sn = ref("");
-const Model = ref("");
-const Model_version = ref("");
-const Firmware_version = ref("");
-const uptime = ref("");
-const procload = ref("");
-const mem = ref("");
-const date = ref("");
-const serverIp = ref("");
-const serverKey = ref("");
-const login = ref("root");
-const password = ref("afwawf");
-</script>

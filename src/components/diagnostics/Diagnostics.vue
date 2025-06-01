@@ -3,13 +3,8 @@
 
   <div>
     <label class="block font-medium mb-1">Адрес</label>
-    <Input
-      v-model="address"
-      type="text"
-      class="w-full p-2 rounded"
-      placeholder="Введите адрес (например, 8.8.8.8)"
-      @input="validateAddress"
-    />
+    <Input v-model="address" type="text" class="w-full p-2 rounded" placeholder="Введите адрес (например, 8.8.8.8)"
+      @input="validateAddress" />
   </div>
 
   <!-- Отображение предупреждений -->
@@ -21,49 +16,38 @@
     <!-- Ping -->
     <div class="">
       <div class="flex flex-col items-center">
-        <Button
-          @click="run('ping')"
-          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          :disabled="loadingPing || !isValidAddress"
-        >
+        <Button @click="run('ping')" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          :disabled="loadingPing || !isValidAddress">
           {{ loadingPing ? "Пинг..." : "Пинг" }}
         </Button>
       </div>
 
       <div v-if="pingResult" class="mt-2">
         <label class="block font-medium mb-1">Результат Ping</label>
-        <pre
-          class="p-3 bg-black text-white rounded text-sm whitespace-pre-wrap"
-        >
+        <pre class="p-3 bg-black text-white rounded text-sm whitespace-pre-wrap">
   {{ pingResult }}
-            </pre
-        >
+            </pre>
       </div>
     </div>
 
     <!-- Nslookup -->
     <div>
       <div class="flex flex-col items-center">
-        <Button
-          @click="run('nslookup')"
-          class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          :disabled="loadingNs || !isValidAddress"
-        >
+        <Button @click="run('nslookup')" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          :disabled="loadingNs || !isValidAddress">
           {{ loadingNs ? "Nslookup..." : "Nslookup" }}
         </Button>
       </div>
 
       <div v-if="nslookupResult" class="mt-2">
         <label class="block font-medium mb-1">Результат Nslookup</label>
-        <pre
-          class="p-3 bg-black text-white rounded text-sm whitespace-pre-wrap"
-        >
+        <pre class="p-3 bg-black text-white rounded text-sm whitespace-pre-wrap">
   {{ nslookupResult }}
-            </pre
-        >
+            </pre>
       </div>
     </div>
   </div>
+  <Traceroute />
 </template>
 
 <script setup>
@@ -71,6 +55,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import Button from "../baseComponents/Button.vue";
 import Input from "../baseComponents/Input.vue";
+import Traceroute from "./Traceroute.vue"
 
 const address = ref("");
 const pingResult = ref("");
