@@ -9,6 +9,9 @@ import { useConnectedClientsStore } from "../../stores/connectedClientsStore";
 const connectedClientsStore = useConnectedClientsStore();
 </script>
 <template>
+  <div class="text-red-700" v-if="connectedClientsStore.error">
+    {{ connectedClientsStore.error }}
+  </div>
   <div class="flex flex-col gap-2">
     <div v-for="(client, index) in connectedClientsStore.clients"
       class="bg-[#37343D] rounded-lg flex flex-row px-6 py-4 gap-2 justify-between">
