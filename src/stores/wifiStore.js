@@ -17,18 +17,28 @@ export const useWifiStore = defineStore("wifi", {
       ssid: "",
       password: "",
     },
+    loading: false,
+    error: '',
+    isInitialize: false
   }),
   actions: {
+    async initWifi() {
+      await this.wifiStatus(2)
+      await this.wifiStatus(5)
+      this.isInitialize = true
+    },
     async togglePower(action, frequency) {
       try {
-        await axios.post(`/api/wifi/${frequency}/${action}`).then((res) => {
-          if (frequency === 2) {
-            this.frequency24.isActive = res.data.active;
-          } else {
-            this.frequency5.isActive = res.data.active;
-          }
+        this.loading = true
+        await axios.post(`/api/wifi/${frequency}/${action}`).then(() => {
+          this.loading = false
+          this.wifiStatus(2)
+          this.wifiStatus(5)
+          this.error = ''
         });
       } catch (error) {
+        this.loading = false
+        this.error = `Произошла ошибка: ${error.response.data.error}`
         console.error("Ошибка при переключении Wi-Fi:", error);
       }
     },
@@ -50,11 +60,12 @@ export const useWifiStore = defineStore("wifi", {
           }
         });
       } catch (error) {
-        console.error("Ошиька при получении статуса Wi-Fi:", error);
+        console.error("Ошибка при получении статуса Wi-Fi:", error);
       }
     },
     async wifiUpdate(frequency) {
       try {
+        this.loading = true
         let data = {}
         if (frequency === 2) {
           data = {
@@ -72,10 +83,15 @@ export const useWifiStore = defineStore("wifi", {
           }
         }
         await axios.post(`/api/wifi/${frequency}/update`, data).then((res) => {
-          this.wifiStatus(frequency)
+          this.loading = false
+          this.wifiStatus(2)
+          this.wifiStatus(5)
         });
+        this.error = ''
       } catch (error) {
-        console.error("Ошиька при получении статуса Wi-Fi:", error);
+        this.loading = false
+        this.error = `Произошла ошибка: ${error.response.data.error}`
+        console.error("Ошибка при получении статуса Wi-Fi:", error);
       }
     },
   },
