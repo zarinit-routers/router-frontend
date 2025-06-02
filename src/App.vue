@@ -3,7 +3,9 @@ import { useRouter, RouterView } from "vue-router";
 import { onMounted, watch } from "vue";
 import { isAuthenticated } from "./auth";
 import { useWifiStore } from "./stores/wifiStore";
+import { useConnectedClientsStore } from "./stores/connectedClientsStore";
 
+const connectedClientsStore = useConnectedClientsStore();
 const wifiStore = useWifiStore();
 
 watch([() => wifiStore.frequency24.isActive, () => wifiStore.frequency5.isActive], ([new2, new5], [old2, old5]) => {
@@ -19,9 +21,12 @@ watch([() => wifiStore.frequency24.isActive, () => wifiStore.frequency5.isActive
 import TheHeader from "./components/layout/TheHeader.vue";
 
 const router = useRouter();
-onMounted(() => {
+onMounted(async () => {
+  await connectedClientsStore.getClients();
+
   wifiStore.wifiStatus(2)
   wifiStore.wifiStatus(5)
+
   if (!isAuthenticated) {
     router.push("/login");
   }
