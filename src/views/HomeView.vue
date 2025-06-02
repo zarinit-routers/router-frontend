@@ -8,6 +8,26 @@ import ConnectedClients from "../components/network/ConnectedClients.vue";
 import ModemList from "../components/ModemList.vue";
 import OsInfo from "../components/OS/OsInfo.vue"
 import WifiList from "../components/WifiList.vue"
+
+import { useSystemStatsStore } from "../stores/systemStatsStore";
+
+import { onUnmounted } from "vue";
+import { onMounted } from "vue";
+
+const systemStatsStore = useSystemStatsStore();
+
+let systemStatsInteval = null;
+
+onMounted(() => {
+  systemStatsStore.getSystemUsage();
+  systemStatsInteval = setInterval(() => {
+    systemStatsStore.getSystemUsage();
+  }, 5000);
+});
+
+onUnmounted(() => {
+  clearInterval(systemStatsInteval);
+});
 </script>
 
 <template>
