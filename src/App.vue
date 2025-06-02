@@ -29,6 +29,7 @@ onMounted(async () => {
     router.push("/login");
   }
 
+  await connectedClientsStore.getClients();
   await wifiStore.initWifi()
 });
 </script>
