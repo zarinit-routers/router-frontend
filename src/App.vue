@@ -5,10 +5,10 @@ import { isAuthenticated } from "./auth";
 import { useWifiStore } from "./stores/wifiStore";
 import { useConnectedClientsStore } from "./stores/connectedClientsStore";
 
-const connectedClientsStore = useConnectedClientsStore();
-const wifiStore = useWifiStore();
-
 import TheHeader from "./components/layout/TheHeader.vue";
+
+const wifiStore = useWifiStore();
+const connectedClientsStore = useConnectedClientsStore();
 
 watch([() => wifiStore.frequency24.isActive, () => wifiStore.frequency5.isActive], ([new2, new5], [old2, old5]) => {
   if(!wifiStore.isInitialize) return

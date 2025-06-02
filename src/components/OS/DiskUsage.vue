@@ -1,39 +1,9 @@
-<template>
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-2 my-5">
-    <div v-for="disk in disks" :key="disk.name" class="bg-[#2e2c35] p-1 rounded-lg flex flex-col items-center gap-2">
-      <svg class="w-30 h-30">
-        <path d="M10,90 A40,40 0 0,1 90,90" fill="none" stroke="#444" stroke-width="10" stroke-linecap="round" />
-        <path :d="getArcPath(getPercent(disk))" fill="none" stroke="#0066FF" stroke-width="10" stroke-linecap="round" />
-        <text x="50" y="90" text-anchor="middle" font-size="16" fill="#fff">
-          {{ getPercent(disk).toFixed(0) }}%
-        </text>
-      </svg>
-      <div class="text-sm text-white text-center">
-        <div class="font-mono">{{ disk.name }}</div>
-        <div>
-          Использовано
-          {{ formatMb(disk.used) }} из {{ formatMb(disk.size) }} GB
-        </div>
-      </div>
-    </div>
-  
-  </div>
-  <div class="my-5 mx-5">
-    <p v-if="osInfo">
-      <strong>Нагрузка:</strong> {{ osInfo.LoadAverage?.Loadavg1 }} (1 минута)
-    </p>
-    <p v-else>
-      Загрузка информации о нагрузке...
-    </p>
-  </div>
-
-</template>
-
 <script setup>
-import { ref, onMounted } from "vue";
+import Loader from "../baseComponents/Loader.vue";
 
-const disks = ref([]);
-const osInfo = ref(null); // Инициализируем osInfo
+import { useSystemStatsStore } from "../../stores/systemStatsStore";
+
+const systemStatsStore = useSystemStatsStore();
 
 const getPercent = (disk) => {
   const used = parseInt(disk.used);
@@ -57,18 +27,30 @@ const getArcPath = (percent) => {
 const formatMb = (bytes) => {
   return (parseInt(bytes) / 1024 / 1024).toFixed(0);
 };
-
-const fetchOsInfo = async () => {
-  try {
-    const response = await fetch(`/api/os-info`);
-    if (!response.ok) throw new Error("Ошибка загрузки данных");
-    const data = await response.json();
-    disks.value = data.DiskStats;
-    osInfo.value = data;
-    console.log(data);
-  } catch (err) {
-    console.error(err);
-  }
-};
-onMounted(fetchOsInfo);
 </script>
+
+<template>
+  <Loader v-if="systemStatsStore.loading" />
+  <div v-else-if="systemStatsStore.error" class="text-red-700">
+    {{ systemStatsStore.error }}
+  </div>
+  <div v-else class="grid grid-cols-2 md:grid-cols-3 gap-2 my-5">
+    <div v-for="disk in systemStatsStore.diskUsage" :key="disk.name" class="bg-[#2e2c35] p-1 rounded-lg flex flex-col items-center gap-2">
+      <svg class="w-30 h-30">
+        <path d="M10,90 A40,40 0 0,1 90,90" fill="none" stroke="#444" stroke-width="10" stroke-linecap="round" />
+        <path :d="getArcPath(getPercent(disk))" fill="none" stroke="#0066FF" stroke-width="10" stroke-linecap="round" />
+        <text x="50" y="90" text-anchor="middle" font-size="16" fill="#fff">
+          {{ getPercent(disk).toFixed(0) }}%
+        </text>
+      </svg>
+      <div class="text-sm text-white text-center">
+        <div class="font-mono">{{ disk.name }}</div>
+        <div>
+          Использовано
+          {{ formatMb(disk.used) }} из {{ formatMb(disk.size) }} GB
+        </div>
+      </div>
+    </div>
+  
+  </div>
+</template>

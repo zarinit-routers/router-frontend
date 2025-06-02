@@ -1,10 +1,40 @@
+<script setup>
+import { ref, computed } from "vue";
+
+import Loader from "../baseComponents/Loader.vue";
+
+import { useSystemStatsStore } from "../../stores/systemStatsStore";
+
+const systemStatsStore = useSystemStatsStore();
+
+const percent = computed(() =>
+  systemStatsStore.memoryUsage.Used ? (systemStatsStore.memoryUsage.Used / systemStatsStore.memoryUsage.Total) * 100 : 0,
+);
+
+const arcPath = computed(() => {
+  const angle = (percent.value / 100) * 180;
+  const r = 40;
+  const cx = 50;
+  const cy = 90;
+  const rad = (Math.PI * angle) / 180;
+  const x = cx + r * Math.cos(Math.PI - rad);
+  const y = cy - r * Math.sin(rad);
+  const largeArcFlag = angle > 180 ? 1 : 0;
+  return `M${cx - r},${cy} A${r},${r} 0 ${largeArcFlag},1 ${x},${y}`;
+});
+</script>
+
 <template>
-  <div class="flex flex-col">
+  <Loader v-if="systemStatsStore.loading" />
+  <div v-else-if="systemStatsStore.error" class="text-red-700">
+    {{ systemStatsStore.error }}
+  </div>
+  <div v-else class="flex flex-col">
     <h4>RAM</h4>
     <div class="text-sm text-white">
       Память: 
-      <span class="font-mono">{{ (used / 1024 / 1024).toFixed(0) }}</span> из
-      <span class="font-mono">{{ (total / 1024 / 1024).toFixed(0) }}</span> МБ
+      <span class="font-mono">{{ (systemStatsStore.memoryUsage.Used / 1024 / 1024).toFixed(0) }}</span> из
+      <span class="font-mono">{{ (systemStatsStore.memoryUsage.Total / 1024 / 1024).toFixed(0) }}</span> МБ
     </div>
     <div class="p-5 mx-1">
       <svg width="100" height="70" viewBox="0 50 100 50">
@@ -26,56 +56,9 @@
         {{ percent.toFixed(0) }}%
       </text>
     </svg>
-   
     </div>
-    
   </div>
 </template>
-
-<script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
-
-const used = ref(0);
-const total = ref(1); // защита от деления на 0
-let intervalId = null;
-
-const fetchRamInfo = async () => {
-  try {
-    const response = await fetch("/api/os-info");
-    if (!response.ok) throw new Error("Ошибка загрузки данных");
-    const data = await response.json();
-    used.value = data.Memory?.Used || 0;
-    total.value = data.Memory?.Total || 1;
-  } catch (err) {
-    console.error("Ошибка при получении RAM info:", err.message);
-  }
-};
-
-const percent = computed(() =>
-  total.value ? (used.value / total.value) * 100 : 0,
-);
-
-const arcPath = computed(() => {
-  const angle = (percent.value / 100) * 180;
-  const r = 40;
-  const cx = 50;
-  const cy = 90;
-  const rad = (Math.PI * angle) / 180;
-  const x = cx + r * Math.cos(Math.PI - rad);
-  const y = cy - r * Math.sin(rad);
-  const largeArcFlag = angle > 180 ? 1 : 0;
-  return `M${cx - r},${cy} A${r},${r} 0 ${largeArcFlag},1 ${x},${y}`;
-});
-
-onMounted(() => {
-  fetchRamInfo(); // первая загрузка
-  intervalId = setInterval(fetchRamInfo, 5000); // автообновление
-});
-
-onUnmounted(() => {
-  clearInterval(intervalId);
-});
-</script>
 
 <style scoped>
 text {
