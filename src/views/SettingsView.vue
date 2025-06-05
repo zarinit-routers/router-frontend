@@ -8,6 +8,7 @@ import NtpServers from "../components/NtpServers.vue";
 import FirewallSelect from "../components/FirewallSelect.vue";
 import Timezone from "../components/Timezone.vue";
 import SSH from "../components/SSH.vue";
+import ChangePassword from "../components/ChangePassword.vue";
 
 const componentsCol1 = [
   { component: WIFI, unstable: true },
@@ -20,6 +21,7 @@ const componentsCol2 = [
   { component: Journals },
   { component: FirewallSelect, unstable: true },
   { component: SSH, unstable: true },
+  { component: ChangePassword }, 
 ];
 </script>
 <template>
