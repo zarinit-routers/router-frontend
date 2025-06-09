@@ -19,9 +19,10 @@ const rxHistory = {}
 const txHistory = {}
 const labels = {}
 
-const selectedInterfaces = ref(["eth0", "wwan0", "wwan1", "wwan2", "wwan3"])
+const selectedInterfaces = ref(["eth0"])
 const availableInterfaces = [
   { value: "eth0", label: "eth0" },
+  { value: "wlan0", label: "wlan0" },
   { value: "wwan0", label: "wwan0" },
   { value: "wwan1", label: "wwan1" },
   { value: "wwan2", label: "wwan2" },
@@ -133,6 +134,7 @@ const updateChart = () => {
   chartInstance.data.datasets = []
   const colors = {
     eth0: { rx: '#0066FF', tx: '#0066FF' },
+    wlan0: { rx: '#810051', tx: '#810051' },
     wwan0: { rx: '#07B755', tx: '#07B755' },
     wwan1: { rx: '#FF1D8D', tx: '#FF1D8D' },
     wwan2: { rx: '#C70039', tx: '#C70039' },
@@ -168,7 +170,7 @@ watchEffect(() => {
   systemStatsStore.networkUsage.forEach(iface => {
     const { Name, RxBytes, TxBytes } = iface
 
-    if (Name === "eth0" || Name === "wwan0" || Name === "wwan1" || Name === "wwan2" || Name === "wwan3") {
+    if (Name === "eth0" || Name === "wlan0" || Name === "wwan0" || Name === "wwan1" || Name === "wwan2" || Name === "wwan3") {
       if (!(Name in lastRx)) {
         lastRx[Name] = RxBytes
         lastTx[Name] = TxBytes
