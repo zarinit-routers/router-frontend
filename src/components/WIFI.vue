@@ -1,10 +1,12 @@
 <script setup>
 import { useWifiStore } from '../stores/wifiStore'
 import { Switch } from '@headlessui/vue'
+
 import Button from './baseComponents/Button.vue'
 import Input from './baseComponents/Input.vue'
 import DropDown from "./baseComponents/DropDown.vue";
 import Loader from "./baseComponents/Loader.vue";
+
 import { ref } from 'vue';
 import { TabGroup, TabList, Tab, TabPanels, TabPanel, Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
 
