@@ -3,7 +3,6 @@ import WIFI from "../components/WIFI.vue";
 import Diagnostics from "../components/diagnostics/Diagnostics.vue";
 import DHCP from "../components/DHCP/DHCP.vue";
 import Journals from "../components/Journals.vue";
-import Traceroute from "../components/diagnostics/Traceroute.vue";
 import NtpServers from "../components/NtpServers.vue";
 import FirewallSelect from "../components/FirewallSelect.vue";
 import Timezone from "../components/Timezone.vue";
@@ -11,7 +10,7 @@ import SSH from "../components/SSH.vue";
 import ChangePassword from "../components/ChangePassword.vue";
 
 const componentsCol1 = [
-  { component: WIFI, unstable: true },
+  { component: WIFI, unstable: false },
   { component: Diagnostics },
   { component: NtpServers },
   { component: Timezone },
