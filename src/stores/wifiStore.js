@@ -18,31 +18,31 @@ export const useWifiStore = defineStore("wifi", {
       password: "",
     },
     loading: false,
-    error: '',
-    isInitialize: false
+    error: "",
+    isInitialize: false,
   }),
   actions: {
-    async initWifi() {
-      await this.wifiStatus(2)
-      await this.wifiStatus(5)
-      this.isInitialize = true
+    async init() {
+      await this.status(2);
+      await this.status(5);
+      this.isInitialize = true;
     },
     async togglePower(action, frequency) {
       try {
-        this.loading = true
+        this.loading = true;
         await axios.post(`/api/wifi/${frequency}/${action}`).then(() => {
-          this.loading = false
-          this.wifiStatus(2)
-          this.wifiStatus(5)
-          this.error = ''
+          this.loading = false;
+          this.status(2);
+          this.status(5);
+          this.error = "";
         });
       } catch (error) {
-        this.loading = false
-        this.error = `Произошла ошибка: ${error.response.data.error}`
+        this.loading = false;
+        this.error = `Произошла ошибка: ${error.response.data.error}`;
         console.error("Ошибка при переключении Wi-Fi:", error);
       }
     },
-    async wifiStatus(frequency) {
+    async status(frequency) {
       try {
         await axios.get(`/api/wifi/${frequency}/status`).then((res) => {
           if (frequency === 2) {
@@ -63,34 +63,34 @@ export const useWifiStore = defineStore("wifi", {
         console.error("Ошибка при получении статуса Wi-Fi:", error);
       }
     },
-    async wifiUpdate(frequency) {
+    async update(frequency) {
       try {
-        this.loading = true
-        let data = {}
+        this.loading = true;
+        let data = {};
         if (frequency === 2) {
           data = {
             channel: this.frequency24.channel,
             hide: this.frequency24.hidden,
             ssid: this.frequency24.ssid,
             password: this.frequency24.password,
-          }
+          };
         } else {
           data = {
             channel: this.frequency5.channel,
             hide: this.frequency5.hidden,
             ssid: this.frequency5.ssid,
-            password: this.frequency5.password
-          }
+            password: this.frequency5.password,
+          };
         }
         await axios.post(`/api/wifi/${frequency}/update`, data).then((res) => {
-          this.loading = false
-          this.wifiStatus(2)
-          this.wifiStatus(5)
+          this.loading = false;
+          this.status(2);
+          this.status(5);
         });
-        this.error = ''
+        this.error = "";
       } catch (error) {
-        this.loading = false
-        this.error = `Произошла ошибка: ${error.response.data.error}`
+        this.loading = false;
+        this.error = `Произошла ошибка: ${error.response.data.error}`;
         console.error("Ошибка при получении статуса Wi-Fi:", error);
       }
     },
