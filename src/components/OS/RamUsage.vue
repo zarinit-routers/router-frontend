@@ -3,12 +3,15 @@ import { ref, computed } from "vue";
 
 import Loader from "../baseComponents/Loader.vue";
 
-import { useSystemStatsStore } from "../../stores/systemStatsStore";
+import { useSystemStatsStore } from "../../stores/systemStats";
 
 const systemStatsStore = useSystemStatsStore();
 
 const percent = computed(() =>
-  systemStatsStore.memoryUsage.Used ? (systemStatsStore.memoryUsage.Used / systemStatsStore.memoryUsage.Total) * 100 : 0,
+  systemStatsStore.memoryUsage.Used
+    ? (systemStatsStore.memoryUsage.Used / systemStatsStore.memoryUsage.Total) *
+      100
+    : 0,
 );
 
 const arcPath = computed(() => {
@@ -32,30 +35,36 @@ const arcPath = computed(() => {
   <div v-else class="flex flex-col">
     <h4>RAM</h4>
     <div class="text-sm text-white">
-      Память: 
-      <span class="font-mono">{{ (systemStatsStore.memoryUsage.Used / 1024 / 1024).toFixed(0) }}</span> из
-      <span class="font-mono">{{ (systemStatsStore.memoryUsage.Total / 1024 / 1024).toFixed(0) }}</span> МБ
+      Память:
+      <span class="font-mono">{{
+        (systemStatsStore.memoryUsage.Used / 1024 / 1024).toFixed(0)
+      }}</span>
+      из
+      <span class="font-mono">{{
+        (systemStatsStore.memoryUsage.Total / 1024 / 1024).toFixed(0)
+      }}</span>
+      МБ
     </div>
     <div class="p-5 mx-1">
       <svg width="100" height="70" viewBox="0 50 100 50">
-      <path
-        d="M10,90 A40,40 0 0,1 90,90"
-        fill="none"
-        stroke="#444"
-        stroke-width="10"
-        stroke-linecap="round"
-      />
-      <path
-        :d="arcPath"
-        fill="none"
-        stroke="#0066FF"
-        stroke-width="10"
-        stroke-linecap="round"
-      />
-      <text x="50" y="90" text-anchor="middle" font-size="16" fill="#fff">
-        {{ percent.toFixed(0) }}%
-      </text>
-    </svg>
+        <path
+          d="M10,90 A40,40 0 0,1 90,90"
+          fill="none"
+          stroke="#444"
+          stroke-width="10"
+          stroke-linecap="round"
+        />
+        <path
+          :d="arcPath"
+          fill="none"
+          stroke="#0066FF"
+          stroke-width="10"
+          stroke-linecap="round"
+        />
+        <text x="50" y="90" text-anchor="middle" font-size="16" fill="#fff">
+          {{ percent.toFixed(0) }}%
+        </text>
+      </svg>
     </div>
   </div>
 </template>

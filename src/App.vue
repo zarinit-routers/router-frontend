@@ -2,7 +2,7 @@
 import { useRouter, RouterView } from "vue-router";
 import { onMounted, watch } from "vue";
 import { isAuthenticated } from "./auth";
-import { useWifiStore } from "./stores/wifiStore";
+import { useWifiStore } from "./stores/wifi";
 import { useConnectedClientsStore } from "./stores/connectedClientsStore";
 
 import TheHeader from "./components/layout/TheHeader.vue";

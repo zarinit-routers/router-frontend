@@ -1,5 +1,5 @@
 <script setup>
-import { useWifiStore } from "../stores/wifiStore";
+import { useWifiStore } from "../stores/wifi";
 import { Switch } from "@headlessui/vue";
 
 import Button from "./baseComponents/Button.vue";

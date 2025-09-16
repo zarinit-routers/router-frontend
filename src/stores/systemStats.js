@@ -9,22 +9,22 @@ export const useSystemStatsStore = defineStore("system-stats", {
     networkUsage: [],
     loadAverage: [],
     loading: true,
-    error: '',
+    error: "",
   }),
   actions: {
     async getSystemUsage() {
       try {
         await axios.get("/api/os-info").then((response) => {
-            this.cpuUsage = response.data.CpuStats;
-            this.memoryUsage = response.data.Memory;
-            this.diskUsage = response.data.DiskStats;
-            this.networkUsage = response.data.NetworkStats;
-            this.loadAverage = response.data.LoadAverage;
+          this.cpuUsage = response.data.CpuStats;
+          this.memoryUsage = response.data.Memory;
+          this.diskUsage = response.data.DiskStats;
+          this.networkUsage = response.data.NetworkStats;
+          this.loadAverage = response.data.LoadAverage;
         });
         this.loading = false;
-        this.error = '';
+        this.error = "";
       } catch (err) {
-        this.error = `Ошибка получения системных статистик: ${error.response.data.error}` ;
+        this.error = `Ошибка получения системных статистик: ${error.response.data.error}`;
         console.error("Ошибка получения системных статистик:", err);
       }
     },

@@ -3,7 +3,7 @@ import Loader from "../baseComponents/Loader.vue";
 
 import { computed } from "vue";
 
-import { useSystemStatsStore } from "../../stores/systemStatsStore";
+import { useSystemStatsStore } from "../../stores/systemStats";
 
 const systemStatsStore = useSystemStatsStore();
 
@@ -46,13 +46,24 @@ const arcPath = computed(() => {
       </div>
       <div class="flex flex-col p-5 mx-1">
         <svg width="100" height="70" viewBox="0 50 100 50">
-          <path d="M10,90 A40,40 0 0,1 90,90" fill="none" stroke="#444" stroke-width="10" stroke-linecap="round" />
-          <path :d="arcPath" fill="none" stroke="#0066FF" stroke-width="10" stroke-linecap="round" />
+          <path
+            d="M10,90 A40,40 0 0,1 90,90"
+            fill="none"
+            stroke="#444"
+            stroke-width="10"
+            stroke-linecap="round"
+          />
+          <path
+            :d="arcPath"
+            fill="none"
+            stroke="#0066FF"
+            stroke-width="10"
+            stroke-linecap="round"
+          />
           <text x="50" y="90" text-anchor="middle" font-size="16" fill="#fff">
             {{ cpuLoad.toFixed(0) }}%
           </text>
         </svg>
-
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <script setup>
 import Loader from "../baseComponents/Loader.vue";
 
-import { useSystemStatsStore } from "../../stores/systemStatsStore";
+import { useSystemStatsStore } from "../../stores/systemStats";
 
 const systemStatsStore = useSystemStatsStore();
 
@@ -35,10 +35,26 @@ const formatMb = (bytes) => {
     {{ systemStatsStore.error }}
   </div>
   <div v-else class="grid grid-cols-2 md:grid-cols-3 gap-2 my-5">
-    <div v-for="disk in systemStatsStore.diskUsage" :key="disk.name" class="bg-[#2e2c35] p-1 rounded-lg flex flex-col items-center gap-2">
+    <div
+      v-for="disk in systemStatsStore.diskUsage"
+      :key="disk.name"
+      class="bg-[#2e2c35] p-1 rounded-lg flex flex-col items-center gap-2"
+    >
       <svg class="w-30 h-30">
-        <path d="M10,90 A40,40 0 0,1 90,90" fill="none" stroke="#444" stroke-width="10" stroke-linecap="round" />
-        <path :d="getArcPath(getPercent(disk))" fill="none" stroke="#0066FF" stroke-width="10" stroke-linecap="round" />
+        <path
+          d="M10,90 A40,40 0 0,1 90,90"
+          fill="none"
+          stroke="#444"
+          stroke-width="10"
+          stroke-linecap="round"
+        />
+        <path
+          :d="getArcPath(getPercent(disk))"
+          fill="none"
+          stroke="#0066FF"
+          stroke-width="10"
+          stroke-linecap="round"
+        />
         <text x="50" y="90" text-anchor="middle" font-size="16" fill="#fff">
           {{ getPercent(disk).toFixed(0) }}%
         </text>
@@ -51,6 +67,5 @@ const formatMb = (bytes) => {
         </div>
       </div>
     </div>
-  
   </div>
 </template>

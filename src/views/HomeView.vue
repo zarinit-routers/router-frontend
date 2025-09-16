@@ -6,10 +6,10 @@ import DiskUsage from "../components/OS/DiskUsage.vue";
 import LAN from "../components/LAN.vue";
 import ConnectedClients from "../components/network/ConnectedClients.vue";
 import ModemList from "../components/ModemList.vue";
-import OsInfo from "../components/OS/OsInfo.vue"
-import WifiList from "../components/WifiList.vue"
+import OsInfo from "../components/OS/OsInfo.vue";
+import WifiList from "../components/WifiList.vue";
 
-import { useSystemStatsStore } from "../stores/systemStatsStore";
+import { useSystemStatsStore } from "../stores/systemStats";
 
 import { onUnmounted } from "vue";
 import { onMounted } from "vue";
@@ -40,9 +40,7 @@ onUnmounted(() => {
       <div class="bg-[#222228] border-1 border-solid border-[#363E4B] p-5">
         <h2 class="text-lg font-bold mb-2">О СИСТЕМЕ</h2>
         <div>
-          <h3>
-            Система
-          </h3>
+          <h3>Система</h3>
         </div>
         <RamUsage />
         <CPUsage />
@@ -52,12 +50,11 @@ onUnmounted(() => {
         </div>
         <h3>Диски</h3>
         <DiskUsage />
-
       </div>
     </div>
 
     <!-- Правая колонка -->
-    <div class="w-full flex flex-1 flex-col gap-2" style="width: auto;">
+    <div class="w-full flex flex-1 flex-col gap-2" style="width: auto">
       <div class="bg-[#222228] border-1 border-solid border-[#363E4B] p-5">
         <h4 class="text-lg font-bold mb-2">СИМ-КАРТЫ</h4>
         <ModemList />
@@ -75,11 +72,8 @@ onUnmounted(() => {
         <ConnectedClients />
       </div>
     </div>
-
   </div>
 </template>
-
-
 
 <style>
 @import "../style.css";
