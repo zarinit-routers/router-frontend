@@ -23,7 +23,7 @@ const getToken = () => {
  */
 const login = (password, redirect, router) => {
     axios
-      .post("/api/auth/signin", { password: password })
+      .post("/api/auth/login", { password: password })
       .then((response) => {
         saveToken(response.data.token);
         window.dispatchEvent(new Event("authChanged"));

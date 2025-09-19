@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { Switch } from '@headlessui/vue'
-import { useDhcpStore } from '../../stores/dhcpStore'
+import { useDhcpStore } from '../../stores/dhcp'
 
 const store = useDhcpStore()
 
