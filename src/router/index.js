@@ -8,7 +8,7 @@ import { isAuthenticated } from "../auth"; // импортируем функц�
 const routes = [
   { path: "/", redirect: "/login" },
   { path: "/login", component: Login },
-  { path: "/Home", component: Home },
+  { path: "/home", component: Home },
   { path: "/settings", component: Settings },
   { path: "/graphics", component: Graphics },
 ];
@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
     next("/login");
   } else if (to.path.toLowerCase() === "/login" && auth) {
     // Если авторизован и пытается зайти на /login — редирект на /home
-    next("/Home");
+    next("/home");
   } else {
     next(); // разрешить навигацию
   }
