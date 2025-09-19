@@ -1,40 +1,61 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { Switch } from '@headlessui/vue'
-import axios from 'axios'
+import { ref, onMounted } from "vue";
+import { Switch } from "@headlessui/vue";
+import axios from "axios";
+import { getToken } from "@/auth";
 
-const enabled = ref(false)
-const loading = ref(true)
+const enabled = ref(false);
+const loading = ref(true);
 
 const fetchStatus = () => {
-  axios.get('/api/ssh/status')
-    .then(res => {
-      enabled.value = res.data.enabled
+  axios
+    .post(
+      "/api/cmd",
+      { command: "v1/ssh/get-status" },
+      {
+        headers: {
+          Authorization: getToken(),
+        },
+      },
+    )
+    .then((res) => {
+      enabled.value = res.data.enabled;
     })
-    .catch(err => {
-      console.error('Ошибка получения статуса SSH:', err)
+    .catch((err) => {
+      console.error("Ошибка получения статуса SSH:", err);
     })
     .finally(() => {
-      loading.value = false
-    })
-}
+      loading.value = false;
+    });
+};
 
 const toggleSSH = () => {
-  loading.value = true
-  const url = enabled.value ? '/api/ssh/disable' : '/api/ssh/enable'
-  axios.post(url)
+  loading.value = true;
+
+  const command = enabled.value ? "v1/ssh/disable" : "v1/ssh/enable";
+
+  axios
+    .post(
+      "/api/cmd",
+      { command: command },
+      {
+        headers: {
+          Authorization: getToken(),
+        },
+      },
+    )
     .then(() => {
-      enabled.value = !enabled.value
+      enabled.value = !enabled.value;
     })
-    .catch(err => {
-      console.error('Ошибка переключения SSH:', err)
+    .catch((err) => {
+      console.error("Ошибка переключения SSH:", err);
     })
     .finally(() => {
-      loading.value = false
-    })
-}
+      loading.value = false;
+    });
+};
 
-onMounted(fetchStatus)
+onMounted(fetchStatus);
 </script>
 
 <template>
@@ -51,9 +72,7 @@ onMounted(fetchStatus)
         :class="enabled ? 'translate-x-6' : 'translate-x-1'"
       />
     </Switch>
-    <span class="text-sm">
-      SSH {{ enabled ? 'включен' : 'выключен' }}
-    </span>
+    <span class="text-sm"> SSH {{ enabled ? "включен" : "выключен" }} </span>
   </div>
 </template>
 
