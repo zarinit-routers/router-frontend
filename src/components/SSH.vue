@@ -19,7 +19,7 @@ const fetchStatus = () => {
       },
     )
     .then((res) => {
-      enabled.value = res.data.enabled;
+      enabled.value = res.data.data.enabled;
     })
     .catch((err) => {
       console.error("Ошибка получения статуса SSH:", err);
