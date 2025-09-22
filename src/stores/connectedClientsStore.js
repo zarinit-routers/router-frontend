@@ -11,11 +11,17 @@ export const useConnectedClientsStore = defineStore("connected-clients", {
     async getClients() {
       try {
         this.loading = true
-        await axios.get(`/api/wifi/connected-clients`).then((res) => {
-          this.clients = res.data.clients
-          this.loading = false
-          this.error = ''
+        const response = await axios.post("/api/cmd/", {
+          command: "v1/wifi/get-connected-clients"
+        }, {
+          headers: {
+            Authorization: getToken(),
+          },
         });
+        this.loading = false
+        this.clients = response.data.clients
+
+
       } catch (error) {
         this.loading = false
         this.error = `Произошла ошибка: ${error.response.data.error}`

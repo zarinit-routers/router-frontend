@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { getToken } from "../auth";
 
 export const useSystemStatsStore = defineStore("system-stats", {
   state: () => ({
@@ -12,14 +13,20 @@ export const useSystemStatsStore = defineStore("system-stats", {
     loading: true,
     error: "",
   }),
+
   actions: {
     async getSystemUsage() {
       try {
         // Отправляем команду без nodeId (на устройстве он не нужен)
         const response = await axios.post("/api/cmd/", {
           command: "v1/system/get-os-info"
+        }, {
+          headers: {
+            Authorization: getToken(),
+          },
         });
-        
+
+        console.log(response.data);
         // Данные приходят напрямую, а не в поле data
         this.cpuUsage = response.data.CpuStats || {};
         this.memoryUsage = response.data.Memory || {};

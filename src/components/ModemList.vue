@@ -1,10 +1,11 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot } from "@headlessui/vue";
+import axios from "axios";
+import { getToken } from "@/auth";
 import ModemCard from "./ModemCard.vue";
 import rowsDown from "../assets/rows/downWhite.svg"
 import rowsUp from "../assets/rows/upWhite.svg"
-
 
 const modems = ref([]);
 const loading = ref(true);
@@ -18,7 +19,7 @@ const openModal = (modem) => {
 };
 
 const operatorBgColor = (operator) => {
-  const op = operator.toLowerCase();
+  const op = operator?.toLowerCase() || '';
   if (op.includes('tele2')) return 'bg-gradient-to-r from-[#001f4d] to-[#99256B] hover:from-[#001b45] hover:to-[#7a1f56]';
   if (op.includes('mts')) return 'bg-gradient-to-r from-[#EF313B] to-[#FF5280] hover:from-[#d2272f] hover:to-[#e34e76]';
   if (op.includes('beeline')) return 'bg-gradient-to-r from-[#E4B600] to-[#FEBB6C] hover:from-[#c49c00] hover:to-[#db9f4d]';
@@ -46,25 +47,43 @@ const getSignalLevel = (signalQuality) => {
   return 0;
 };
 
-const sortModems = computed(() => {
-  return modems.value.sort((a) => {
-    if (a["3gpp"]["operator-name"] !== "--") return -1
-
+// ФИКС: Используем метод для сортировки вместо computed свойства
+const getSortedModems = () => {
+  return [...modems.value].sort((a, b) => {
+    const aHasOperator = a["3gpp"]?.["operator-name"] && a["3gpp"]?.["operator-name"] !== "--";
+    const bHasOperator = b["3gpp"]?.["operator-name"] && b["3gpp"]?.["operator-name"] !== "--";
+    
+    if (aHasOperator && !bHasOperator) return -1;
+    if (!aHasOperator && bHasOperator) return 1;
     return 0;
-  })
-})
+  });
+};
 
 const fetchModems = async () => {
   try {
-    const response = await fetch("/api/modems/list");
-    if (!response.ok) throw new Error("Ошибка загрузки модемов");
-    const data = await response.json();
-    modems.value = data.modems;
+    const response = await axios.post(
+      "/api/cmd",
+      { command: "v1/modems/list" },
+      {
+        headers: {
+          Authorization: getToken(),
+        },
+      }
+    );
+    
+    // Предполагаем, что данные модемов находятся в response.data.data
+    modems.value = response.data.data.modems || response.data.data || [];
   } catch (err) {
     error.value = err.message;
+    console.error("Ошибка загрузки модемов:", err);
   } finally {
     loading.value = false;
   }
+};
+
+const handleModemChanged = () => {
+  fetchModems(); // Перезагружаем список модемов при изменении
+  isOpen.value = false; // Закрываем модальное окно
 };
 
 onMounted(async () => {
@@ -74,47 +93,52 @@ onMounted(async () => {
 
 <template>
   <div class="p-6 rounded-md space-y-4">
-    <div v-if="loading" class="text-white">Загрузка...</div>
-    <div v-else-if="error" class="text-red-500">{{ error }}</div>
+    <div v-if="loading" class="text-white">Загрузка модемов...</div>
+    <div v-else-if="error" class="text-red-500">Ошибка: {{ error }}</div>
 
-    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <li v-for="modem in sortModems" :key="modem['3gpp']?.['dbus-path']">
-        <div @click="openModal(modem)" v-if="modem['3gpp']?.['operator-name'] != '--'"
-          class="flex flex-col rounded-md bg-gradient-to-r p-3 min-w-[128px] min-h-[128px]" :class="[
-            'rounded-md bg-gradient-to-r p-3 cursor-pointer select-none transition duration-200',
-            operatorBgColor(modem['3gpp']?.['operator-name'])]">
-          <div class="flex justify-between items-center">
-            <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" class="w-10 h-10 rounded-full"
-              v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])">
-            <div class="flex gap-2">
-              <div class="flex items-end gap-[2px] h-5">
-                <div v-for="i in 5" :key="i" :class="[
-                  'w-1 rounded-sm transition-all duration-300',
-                  i <= getSignalLevel(modem.generic?.['signal-quality']?.value) ? 'bg-white' : 'bg-gray-500',
-                  ['h-1', 'h-2', 'h-3', 'h-4', 'h-5'][i - 1]
-                ]" />
+    <ul v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- ФИКС: Используем метод вместо computed свойства -->
+      <li v-for="modem in getSortedModems()" :key="modem['3gpp']?.['dbus-path'] || modem.id">
+        <div @click="openModal(modem)" 
+          class="flex flex-col rounded-md p-3 min-w-[128px] min-h-[128px] cursor-pointer select-none transition duration-200"
+          :class="operatorBgColor(modem['3gpp']?.['operator-name'])">
+          
+          <div v-if="modem['3gpp']?.['operator-name'] && modem['3gpp']?.['operator-name'] !== '--'" class="h-full flex flex-col">
+            <div class="flex justify-between items-center">
+              <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" 
+                   class="w-10 h-10 rounded-full"
+                   v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])">
+              <div class="flex gap-2">
+                <div class="flex items-end gap-[2px] h-5">
+                  <div v-for="i in 5" :key="i" 
+                    :class="[
+                      'w-1 rounded-sm transition-all duration-300',
+                      i <= getSignalLevel(modem.generic?.['signal-quality']?.value || modem.signalQuality) ? 'bg-white' : 'bg-gray-500',
+                      ['h-1', 'h-2', 'h-3', 'h-4', 'h-5'][i - 1]
+                    ]" />
+                </div>
+                <span class="text-xs">{{ modem.generic?.['access-technologies']?.[0] || 'Нет данных' }}</span>
               </div>
-              <span class="text-xs">{{ modem.generic?.['access-technologies']?.[0] }}</span>
+            </div>
+            <div class="flex flex-col gap-3 mt-auto pb-2">
+              <div class="flex gap-1">
+                <img :src="rowsUp" alt="">
+                <span class="text-xs">{{ modem.rxSpeed || '0 Мб/сек' }}</span>
+              </div>
+              <div class="flex gap-1">
+                <img :src="rowsDown" alt="">
+                <span class="text-xs">{{ modem.txSpeed || '0 Мб/сек' }}</span>
+              </div>
             </div>
           </div>
-          <div class="flex flex-col gap-3 mt-auto pb-2">
-            <div class="flex gap-1">
-              <img :src="rowsUp" alt="">
-              <span class="text-xs">{{ modem.rxSpeed || '0 Мб/сек' }}</span>
+
+          <div v-else class="h-full flex flex-col justify-center">
+            <div class="flex justify-between gap-2 items-center">
+              <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" 
+                   class="w-10 h-10 rounded-full"
+                   v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])">
+              <span class="text-[#8B8794] text-[10px]">Вставьте в слот сим-карту</span>
             </div>
-            <div class="flex gap-1">
-              <img :src="rowsDown" alt="">
-              <span class="text-xs">{{ modem.txSpeed || '0 Мб/сек' }}</span>
-            </div>
-          </div>
-        </div>
-        <div v-else @click="openModal(modem)" class="flex flex-col rounded-md bg-gradient-to-r p-3 min-w-[128px] min-h-[128px]" :class="[
-          'rounded-md bg-gradient-to-r p-3 cursor-pointer select-none transition duration-200',
-          operatorBgColor(modem['3gpp']?.['operator-name'])]">
-          <div class="flex justify-between gap-2 items-center my-auto">
-            <img :src="getOperatorIconUrl(modem['3gpp']?.['operator-name'])" class="w-10 h-10 rounded-full"
-              v-if="getOperatorIconUrl(modem['3gpp']?.['operator-name'])">
-            <span class="text-[#8B8794] text-[10px]">Вставьте в слот сим-карту</span>
           </div>
         </div>
       </li>
@@ -127,7 +151,7 @@ onMounted(async () => {
           <div class="flex min-h-full items-center justify-center p-4">
             <DialogPanel class="w-full max-w-md rounded-xl bg-[#363E4B] p-6 shadow-xl">
               <DialogTitle class="text-xl font-semibold mb-4">Информация о модеме</DialogTitle>
-              <ModemCard @modemChanged="fetchModems" :modem="selectedModem" />
+              <ModemCard v-if="selectedModem" @modem-changed="handleModemChanged" :modem="selectedModem" />
               <div class="mt-4 flex justify-end">
                 <button class="px-4 py-2 rounded bg-gray-800 text-white hover:bg-gray-700" @click="isOpen = false">
                   Закрыть

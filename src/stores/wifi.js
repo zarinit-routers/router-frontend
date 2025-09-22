@@ -30,7 +30,7 @@ export const useWifiStore = defineStore("wifi", {
     async togglePower(action, frequency) {
       try {
         this.loading = true;
-        await axios.post(`/api/wifi/${frequency}/${action}`).then(() => {
+        await axios.post(`/cmd/api/wifi/${frequency}/${action}`).then(() => {
           this.loading = false;
           this.status(2);
           this.status(5);
@@ -44,7 +44,7 @@ export const useWifiStore = defineStore("wifi", {
     },
     async status(frequency) {
       try {
-        await axios.get(`/api/wifi/${frequency}/status`).then((res) => {
+        await axios.get(`/cmd/api/wifi/${frequency}/status`).then((res) => {
           if (frequency === 2) {
             this.frequency24.isActive = res.data.active;
             this.frequency24.channel = res.data.channel;
@@ -82,7 +82,7 @@ export const useWifiStore = defineStore("wifi", {
             password: this.frequency5.password,
           };
         }
-        await axios.post(`/api/wifi/${frequency}/update`, data).then((res) => {
+        await axios.post(`/cmd/api/wifi/${frequency}/update`, data).then((res) => {
           this.loading = false;
           this.status(2);
           this.status(5);

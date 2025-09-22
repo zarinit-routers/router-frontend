@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { getToken } from "../auth";
 
 export const useDhcpStore = defineStore("dhcp", {
   state: () => ({
@@ -9,7 +10,13 @@ export const useDhcpStore = defineStore("dhcp", {
   actions: {
     async fetchStatus() {
       try {
-        const res = await axios.get("/api/dhcp/status");
+        const res = await axios.post("/api/cmd/", {
+          command: "v1/dhcp"
+        }, {
+          headers: {
+            Authorization: getToken(),
+          },
+        });
         console.log("Получен статус DHCP:", res.data); // Логирование полученного статуса
         this.enabled = res.data.enabled;
       } catch (err) {

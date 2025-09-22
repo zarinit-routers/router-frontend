@@ -4,7 +4,6 @@ import Loader from "../baseComponents/Loader.vue";
 import { computed } from "vue";
 
 import { useSystemStatsStore } from "../../stores/systemStats";
-
 const systemStatsStore = useSystemStatsStore();
 
 const cpuLoad = computed(() => {

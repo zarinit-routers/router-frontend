@@ -5,6 +5,8 @@ import { useSystemStatsStore } from "../../stores/systemStats";
 
 const systemStatsStore = useSystemStatsStore();
 
+await systemStatsStore.getSystemUsage();
+
 const getPercent = (disk) => {
   const used = parseInt(disk.used);
   const size = parseInt(disk.size);

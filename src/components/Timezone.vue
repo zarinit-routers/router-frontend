@@ -2,6 +2,8 @@
 import { ref, onMounted } from "vue";
 import moment from "moment-timezone";
 import Select from "./baseComponents/Select.vue";
+import axios from "axios";
+import { getToken } from "@/auth";
 
 const currentTimezone = ref("");
 const selectedTimezone = ref("");
@@ -12,11 +14,17 @@ const timezones = moment.tz.names();
 
 const fetchTimezone = async () => {
   try {
-    const response = await fetch(`/api/timezone`);
-    if (!response.ok) throw new Error("Ошибка загрузки данных");
-    const data = await response.json();
-    currentTimezone.value = data.timezone;
-    selectedTimezone.value = data.timezone; 
+    const response = await axios.post(
+      "/api/cmd",
+      { command: "v1/timezone/get" },
+      {
+        headers: {
+          Authorization: getToken(),
+        },
+      }
+    );
+    currentTimezone.value = response.data.data.timezone;
+    selectedTimezone.value = response.data.data.timezone;
   } catch (err) {
     error.value = err.message;
   } finally {
@@ -31,15 +39,21 @@ const changeTimezone = async () => {
   }
 
   try {
-    const response = await fetch(`/api/timezone/set`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await axios.post(
+      "/api/cmd",
+      { 
+        command: "v1/timezone/set",
+        args:{ timezone: selectedTimezone.value }
+
       },
-      body: JSON.stringify({ timezone: selectedTimezone.value }),
-    });
-    if (!response.ok) throw new Error("Ошибка при смене часового пояса");
-    currentTimezone.value = selectedTimezone.value;
+      {
+        headers: {
+          Authorization: getToken(),
+        },
+      }
+    );
+    currentTimezone.value = response.data.data.timezone;
+    selectedTimezone.value = response.data.data.timezone;
   } catch (err) {
     error.value = err.message;
   }
