@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from "vue";
+import axios from "axios";
+import { getToken } from "@/auth";
 import Button from "../components/baseComponents/Button.vue";
 
 import {
@@ -20,6 +22,7 @@ const journalType = ref("system");
 const journalData = ref("");
 const error = ref(null);
 const isOpen = ref(false);
+const loading = ref(false);
 
 // Загрузка журнала при смене таба
 const handleTabChange = async (index) => {
@@ -28,20 +31,38 @@ const handleTabChange = async (index) => {
 };
 
 const fetchJournal = async () => {
+  loading.value = true;
+  error.value = null;
+  
   try {
-    const response = await fetch(`/api/journal/${journalType.value}`);
-    if (!response.ok) throw new Error("Ошибка загрузки журнала");
-
-    const data = await response.json();
-    journalData.value = data.journal || "Нет данных";
+    const response = await axios.post(
+      "/api/cmd",
+      { 
+        command: "v1/journals/get",
+        args : {
+          journal: journalType.value,
+        },
+      },
+      {
+        headers: {
+          Authorization: getToken(),
+        },
+      }
+    );
+    
+    journalData.value = response.data.data.journal || "Нет данных";
   } catch (err) {
     error.value = err.message;
+    console.error("Ошибка загрузки журнала:", err);
+  } finally {
+    loading.value = false;
   }
 };
 
 function closeModal() {
   isOpen.value = false;
 }
+
 function openModal() {
   isOpen.value = true;
   fetchJournal();
@@ -140,13 +161,21 @@ function openModal() {
                       <div
                         class="bg-[#37343D] text-white p-3 rounded-md overflow-auto w-[1000px] h-[600px] flex flex-col justify-between"
                       >
+                        <div v-if="loading" class="text-center py-4">
+                          Загрузка журнала...
+                        </div>
+                        <div v-else-if="error" class="text-red-500 p-2">
+                          Ошибка: {{ error }}
+                        </div>
                         <pre
+                          v-else
                           class="whitespace-pre-wrap break-words overflow-auto flex-1 p-2"
-                          >{{ journalData }}</pre
-                        >
+                        >{{ journalData }}</pre>
                       </div>
                       <div class="mt-4 flex justify-center">
-                        <Button @click="fetchJournal">Обновить</Button>
+                        <Button @click="fetchJournal" :disabled="loading">
+                          {{ loading ? 'Загрузка...' : 'Обновить' }}
+                        </Button>
                       </div>
                     </TabPanel>
                   </TabPanels>
