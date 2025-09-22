@@ -8,6 +8,11 @@ import FirewallSelect from "../components/FirewallSelect.vue";
 import Timezone from "../components/Timezone.vue";
 import SSH from "../components/SSH.vue";
 import ChangePassword from "../components/ChangePassword.vue";
+import CloudLogin from "../components/CloudLogin.vue";
+
+
+
+
 
 const componentsCol1 = [
   { component: WIFI, unstable: false },
@@ -21,6 +26,7 @@ const componentsCol2 = [
   { component: FirewallSelect, unstable: true },
   { component: SSH, unstable: true },
   { component: ChangePassword }, 
+  { component: CloudLogin },
 ];
 </script>
 <template>

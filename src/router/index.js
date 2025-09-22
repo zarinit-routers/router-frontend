@@ -3,6 +3,7 @@ import Home from "../views/HomeView.vue";
 import Login from "../views/LoginView.vue";
 import Settings from "../views/SettingsView.vue";
 import Graphics from "../views/GraphicsView.vue";
+
 import { isAuthenticated } from "../auth"; // импортируем функцию проверки
 
 const routes = [
@@ -11,6 +12,7 @@ const routes = [
   { path: "/home", component: Home },
   { path: "/settings", component: Settings },
   { path: "/graphics", component: Graphics },
+
 ];
 
 const router = createRouter({
