@@ -29,7 +29,8 @@ const getCloudConfig = () => {
       },
     })
     .then((response) => {
-      result.value = response.data;
+      result.value = response.data.config;
+      console.log("Config", response.data.config);
     })
     .catch((error) => {
       console.log("Failed get status of cloud connection", error);
