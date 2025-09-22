@@ -53,6 +53,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import axios from "axios";
+import { getToken } from "@/auth";
 import Input from "../baseComponents/Input.vue";
 import Button from "../baseComponents/Button.vue";
 
@@ -90,12 +91,25 @@ const runLookup = async () => {
   loading.value = true;
   dnsResult.value = "";
   try {
-    const res = await axios.post(
-      `/api/diagnostics/nslookup/${encodeURIComponent(domain.value.trim())}`,
+    const response = await axios.post(
+      "/api/cmd",
+      { 
+        command: "v1/diagnostics/run-nslookup",
+        args:{address: domain.value.trim()} 
+      },
+      {
+        headers: {
+          Authorization: getToken(),
+          "Content-Type": "application/json"
+        },
+      }
     );
-    dnsResult.value = res.data.output || "Нет результата";
+    
+    // Предполагаем, что результат находится в response.data.data
+    dnsResult.value = response.data.data?.output || response.data.data || "Нет результата";
   } catch (err) {
-    dnsResult.value = `Ошибка: ${err.response?.data?.error || err.message}`;
+    dnsResult.value = `Ошибка: ${err.response?.data?.message || err.message}`;
+    console.error("Ошибка DNS lookup:", err);
   } finally {
     loading.value = false;
   }

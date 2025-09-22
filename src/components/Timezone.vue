@@ -33,10 +33,14 @@ const fetchTimezone = async () => {
 };
 
 const changeTimezone = async () => {
+
+  
+
   if (!selectedTimezone.value) {
     error.value = "Выберите часовой пояс";
     return;
   }
+
 
   try {
     const response = await axios.post(
@@ -54,12 +58,17 @@ const changeTimezone = async () => {
     );
     currentTimezone.value = response.data.data.timezone;
     selectedTimezone.value = response.data.data.timezone;
+
+    alert("Часовой пояс успешно изменен");
   } catch (err) {
     error.value = err.message;
+    alert("Ошибка при изменении часового пояса");
   }
+
 };
 
 onMounted(fetchTimezone);
+
 </script>
 
 <template>
@@ -75,6 +84,7 @@ onMounted(fetchTimezone);
       <button class="button form-item" @click="changeTimezone">
         Сменить часовой пояс
       </button>
+      
     </div>
   </div>
 </template>

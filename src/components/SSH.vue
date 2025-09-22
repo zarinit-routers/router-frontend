@@ -30,6 +30,11 @@ const fetchStatus = () => {
 };
 
 const toggleSSH = () => {
+
+  const message = enabled.value ? "Вы уверены, что хотите выключить SSH?" : "Вы уверены, что хотите включить SSH?";
+  if (!confirm(message)) {
+        return;
+    }
   loading.value = true;
 
   const command = enabled.value ? "v1/ssh/disable" : "v1/ssh/enable";

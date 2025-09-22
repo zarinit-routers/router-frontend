@@ -51,11 +51,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import axios from "axios";
+import { getToken } from "@/auth";
 import Input from "../baseComponents/Input.vue";
 import Button from "../baseComponents/Button.vue";
-import { onMounted, onBeforeUnmount } from 'vue'
 
 onMounted(() => {
   document.body.classList.add('overflow-hidden')
@@ -64,7 +64,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.body.classList.remove('overflow-hidden')
 })
-
 
 const target = ref("");
 const tracerouteResult = ref("");
@@ -88,12 +87,25 @@ const runTraceroute = async () => {
   loading.value = true;
   tracerouteResult.value = "";
   try {
-    const res = await axios.post(
-      `/api/diagnostics/traceroute/${encodeURIComponent(target.value.trim())}`,
+    const response = await axios.post(
+      "/api/cmd",
+      { 
+        command: "v1/diagnostics/run-traceroute",
+        args:{ address: target.value.trim()}
+      },
+      {
+        headers: {
+          Authorization: getToken(),
+          "Content-Type": "application/json"
+        },
+      }
     );
-    tracerouteResult.value = res.data.output || "Нет результата";
+    
+    // Предполагаем, что результат находится в response.data.data
+    tracerouteResult.value = response.data.data?.output || response.data.data || "Нет результата";
   } catch (err) {
-    tracerouteResult.value = `Ошибка: ${err.response?.data?.error || err.message}`;
+    tracerouteResult.value = `Ошибка: ${err.response?.data?.message || err.message}`;
+    console.error("Ошибка traceroute:", err);
   } finally {
     loading.value = false;
   }

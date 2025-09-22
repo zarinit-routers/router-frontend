@@ -49,6 +49,8 @@
   const error = ref('');
   
   const changePassword = () => {
+    if(!confirm('Вы уверены, что хотите сменить пароль?'))
+      return;
     success.value = false;
     error.value = '';
   
