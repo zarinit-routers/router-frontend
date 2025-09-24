@@ -1,424 +1,294 @@
 <script setup>
-import { useWifiStore } from "../stores/wifi";
+import { ref, onMounted } from "vue";
 import { Switch } from "@headlessui/vue";
-
+import axios from "axios";
+import { getToken } from "@/auth";
 import Button from "./baseComponents/Button.vue";
 import Input from "./baseComponents/Input.vue";
 import DropDown from "./baseComponents/DropDown.vue";
 import Loader from "./baseComponents/Loader.vue";
 
-import { ref } from "vue";
-import {
-  TabGroup,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-} from "@headlessui/vue";
+const hotspotSettings = ref({
+  enabled: false,
+  ssid: "",
+  password: "",
+  channel: "",
+  hidden: false
+});
 
-const wifiStore = useWifiStore();
+const loading = ref(true);
+const saving = ref(false);
+const error = ref("");
+
+const availableChannels = ref([
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+]);
 
 const securityLevels = [
-  { label: "Открытая", value: "none" },
   { label: "WPA2", value: "wpa2" },
   { label: "WPA3", value: "wpa3" },
 ];
 
-const availableChanels24 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+const selectedSecurity = ref("wpa2");
 
-const availableChanels5 = [
-  36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132,
-  136, 140,
-];
+// Загрузка текущих настроек
+const fetchHotspotSettings = async () => {
+  try {
+    const response = await axios.post(
+      "/api/cmd",
+      { command: "v1/wifi-hotspot/get-status" },
+      {
+        headers: {
+          Authorization: getToken(),
+        },
+      }
+    );
+    hotspotSettings.value = response.data.data;
+  } catch (err) {
+    console.error("Ошибка получения настроек:", err);
+    error.value = "Ошибка загрузки настроек";
+  } finally {
+    loading.value = false;
+  }
+};
 
-const wifiSecurity = ref("");
+// Обновление отдельных настроек
+const updateSetting = async (endpoint, data) => {
+  try {
+    await axios.post(
+      "/api/cmd",
+      { 
+        command: endpoint,
+        ...data
+      },
+      {
+        headers: {
+          Authorization: getToken(),
+        },
+      }
+    );
+    error.value = "";
+  } catch (err) {
+    console.error(`Ошибка обновления настройки ${endpoint}:`, err);
+    error.value = `Ошибка сохранения: ${err.response?.data?.message || err.message}`;
+    throw err;
+  }
+};
+
+// Сохранение всех настроек
+const saveSettings = async () => {
+  saving.value = true;
+  error.value = "";
+
+  try {
+    // Обновляем настройки по отдельности
+    if (hotspotSettings.value.ssid) {
+      await updateSetting("v1/wifi-hotspot/set-ssid", {
+        ssid: hotspotSettings.value.ssid
+      });
+    }
+
+    if (hotspotSettings.value.password) {
+      await updateSetting("v1/wifi-hotspot/set-password", {
+        password: hotspotSettings.value.password
+      });
+    }
+
+    if (hotspotSettings.value.channel) {
+      await updateSetting("v1/wifi-hotspot/set-channel", {
+        channel: parseInt(hotspotSettings.value.channel)
+      });
+    }
+
+    await updateSetting("v1/wifi-hotspot/set-ssid-visibility", {
+      hidden: hotspotSettings.value.hidden
+    });
+
+    // Перезагружаем настройки для подтверждения
+    await fetchHotspotSettings();
+    
+    alert("Настройки успешно сохранены!");
+  } catch (err) {
+    // Ошибка уже обработана в updateSetting
+  } finally {
+    saving.value = false;
+  }
+};
+
+// Переключение Hotspot
+const toggleHotspot = async () => {
+  const message = hotspotSettings.value.enabled 
+    ? "Вы уверены, что хотите выключить Wi-Fi?" 
+    : "Вы уверены, что хотите включить Wi-Fi?";
+  
+  if (!confirm(message)) {
+    return;
+  }
+
+  loading.value = true;
+  const command = hotspotSettings.value.enabled 
+    ? "v1/wifi-hotspot/disable" 
+    : "v1/wifi-hotspot/enable";
+
+  try {
+    await axios.post(
+      "/api/cmd",
+      { command: command },
+      {
+        headers: {
+          Authorization: getToken(),
+        },
+      }
+    );
+    await fetchHotspotSettings();
+  } catch (err) {
+    console.error("Ошибка переключения:", err);
+    error.value = "Ошибка переключения";
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(fetchHotspotSettings);
 </script>
 
 <template>
-  <h2 class="text-xl font-semibold">Настройки Wi-Fi</h2>
-  <TabGroup>
-    <TabList
-      :class="[
-        'flex rounded-t-lg overflow-hidden border border-[#363E4B] bg-[#2C2F36]',
-      ]"
-    >
-      <Tab as="template" v-slot="{ selected }">
+  <div class="space-y-6">
+    <h2 class="text-xl font-semibold">Настройки Wi-Fi</h2>
+    
+    <!-- Статус Hotspot -->
+    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+      <span class="text-sm font-medium">Wi-Fi</span>
+      <Switch
+        :checked="hotspotSettings.enabled"
+        @click="toggleHotspot"
+        :disabled="loading"
+        as="template"
+        v-slot="{ checked }"
+      >
         <button
-          class="flex-1 h-10 px-4 text-sm font-semibold transition-colors duration-300 outline-none"
-          :class="[
-            selected
-              ? 'bg-[#470ABF] text-white shadow-inner'
-              : 'text-gray-300 hover:bg-[#3A3F4B]',
-          ]"
+          class="relative inline-flex h-[20px] w-[36px] items-center rounded-full border-1 border-solid border-black"
+          :class="checked ? 'bg-[#470ABF]' : 'bg-gray-200'"
+          :disabled="loading"
         >
-          2.4 GHz
+          <span class="sr-only">Enable Wi-Fi</span>
+          <span
+            :class="checked ? 'translate-x-[16px]' : 'translate-x-[1px]'"
+            class="inline-block h-[17px] w-[17px] transform rounded-full bg-white transition"
+          />
         </button>
-      </Tab>
-      <Tab as="template" v-slot="{ selected }">
-        <button
-          class="flex-1 h-10 px-4 text-sm font-semibold transition-colors duration-300 outline-none"
-          :class="[
-            selected
-              ? 'bg-[#470ABF] text-white shadow-inner'
-              : 'text-gray-300 hover:bg-[#3A3F4B]',
-          ]"
-        >
-          5 GHz
-        </button>
-      </Tab>
-    </TabList>
-    <TabPanels>
-      <TabPanel>
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium">Wi-Fi Enable</span>
-          <Switch
-            v-model="wifiStore.frequency24.isActive"
-            as="template"
-            v-slot="{ checked }"
-          >
-            <button
-              class="relative inline-flex h-[20px] w-[36px] items-center rounded-full border-1 border-solid border-black"
-              :class="checked ? 'bg-[#470ABF]' : 'bg-gray-200'"
-            >
-              <span class="sr-only">Enable notifications</span>
-              <span
-                :class="checked ? 'translate-x-[16px]' : 'translate-x-[1px]'"
-                class="inline-block h-[17px] w-[17px] transform rounded-full bg-white transition"
-              />
-            </button>
-          </Switch>
-        </div>
+      </Switch>
+    </div>
 
-        <div v-if="wifiStore.frequency24.isActive" class="space-y-4">
-          <form @submit.prevent="wifiStore.update(2)" class="relative">
-            <fieldset
-              :disabled="wifiStore.loading"
-              :class="{ 'opacity-50 pointer-events-none': wifiStore.loading }"
+    <!-- Настройки (только если Hotspot включен) -->
+    <div v-if="hotspotSettings.enabled" class="space-y-4">
+      <form @submit.prevent="saveSettings" class="relative">
+        <fieldset
+          :disabled="saving"
+          :class="{ 'opacity-50 pointer-events-none': saving }"
+        >
+          <!-- SSID -->
+          <div class="mb-4">
+            <Input
+              v-model="hotspotSettings.ssid"
+              class="mt-1 block w-full rounded-md border-gray-300 p-2"
+              placeholder="Введите имя сети (SSID)"
+              :label="'Имя сети (SSID)'"
+              type="text"
+            />
+          </div>
+
+          <!-- Пароль -->
+          <div class="mb-4">
+            <Input
+              v-model="hotspotSettings.password"
+              type="password"
+              class="mt-1 block w-full rounded-md border-gray-300 p-2"
+              placeholder="Введите пароль"
+              :label="'Пароль'"
+            />
+          </div>
+
+          <!-- Канал -->
+          <div class="mb-4">
+            <span class="text-sm text-[#54505B] block mb-2">Канал</span>
+            <select
+              v-model="hotspotSettings.channel"
+              class="w-full rounded-lg bg-[#37343D] py-3 px-4 text-white border-none focus:ring-2 focus:ring-[#470ABF]"
             >
-              <div>
-                <Input
-                  v-model="wifiStore.frequency24.ssid"
-                  class="mt-1 block w-full rounded-md border-gray p-2"
-                  placeholder="Введите SSID"
-                  :label="'SSID'"
-                  type="text"
-                />
-              </div>
-              <div>
-                <Input
-                  v-model="wifiStore.frequency24.password"
-                  type="password"
-                  class="mt-1 block w-full rounded-md border-gray-300 p-2"
-                  placeholder="Введите пароль"
-                  :label="'Пароль'"
-                />
-              </div>
-              <div class="flex flex-col gap-2 mt-1 block w-full rounded-md p-2">
-                <span class="text-sm text-[#54505B]">Канал</span>
-                <Listbox
-                  v-model="wifiStore.frequency24.channel"
-                  class="mt-1 w-full"
-                >
-                  <div class="relative">
-                    <ListboxButton
-                      class="relative w-full cursor-pointer rounded-lg bg-[#37343D] py-3 pl-4 pr-10 text-left text-white shadow-md"
-                    >
-                      <span class="block truncate">
-                        {{ wifiStore.frequency24.channel }}
-                      </span>
-                      <span
-                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                      >
-                        <svg
-                          class="h-[5px] w-[10px] text-gray-400"
-                          height="4"
-                          viewBox="0 0 10 4"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M5 4L0.669872 0.250001L9.33013 0.25L5 4Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </span>
-                    </ListboxButton>
-                    <TransitionRoot
-                      enter="transition ease-out duration-100"
-                      enter-from="transform opacity-0 scale-95"
-                      enter-to="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leave-from="transform opacity-100 scale-100"
-                      leave-to="transform opacity-0 scale-95"
-                    >
-                      <ListboxOptions
-                        class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#37343D] py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                      >
-                        <ListboxOption
-                          v-for="channel in availableChanels24"
-                          :value="channel"
-                          class="relative cursor-pointer select-none py-2 pl-10 pr-4 text-white hover:bg-[#3b3b3b]"
-                          v-slot="{ selected }"
-                        >
-                          <span
-                            class="block truncate"
-                            :class="selected ? 'font-medium' : 'font-normal'"
-                          >
-                            {{ channel }}
-                          </span>
-                          <span
-                            v-if="selected"
-                            class="absolute inset-y-0 left-0 flex items-center pl-3 text-white"
-                          >
-                            <svg
-                              class="h-5 w-5"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-7.071 7.071a1 1 0 01-1.414 0l-3.536-3.535a1 1 0 111.414-1.415L9 11.586l6.293-6.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
-                          </span>
-                        </ListboxOption>
-                      </ListboxOptions>
-                    </TransitionRoot>
-                  </div>
-                </Listbox>
-              </div>
-              <div class="flex flex-col gap-2 mt-1 block w-full rounded-md p-2">
-                <span class="text-sm text-[#54505B]">WPS</span>
-                <DropDown
-                  v-model="wifiSecurity"
-                  :options="securityLevels"
-                  option-label="label"
-                  option-value="value"
-                  :placeholder="'Выберите уровень безопасности'"
-                  customClass="mt-1 w-full"
-                />
-              </div>
-              <div class="flex flex-col gap-2 mt-1 block w-full rounded-md p-2">
-                <span class="text-sm text-[#54505B]">Скрыть</span>
-                <Switch
-                  v-model="wifiStore.frequency24.hidden"
-                  as="template"
-                  v-slot="{ checked }"
-                >
-                  <button
-                    class="relative inline-flex h-[20px] w-[36px] items-center rounded-full border-1 border-solid border-black"
-                    :class="checked ? 'bg-[#470ABF]' : 'bg-gray-200'"
-                  >
-                    <span class="sr-only">Enable notifications</span>
-                    <span
-                      :class="
-                        checked ? 'translate-x-[16px]' : 'translate-x-[1px]'
-                      "
-                      class="inline-block h-[17px] w-[17px] transform rounded-full bg-white transition"
-                    />
-                  </button>
-                </Switch>
-              </div>
-              <div
-                class="flex flex-col gap-2 mt-1 block w-full rounded-md p-2 text-red-700"
-                v-if="wifiStore.error"
+              <option value="">Автоматически</option>
+              <option v-for="channel in availableChannels" :key="channel" :value="channel">
+                {{ channel }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Уровень безопасности -->
+          <div class="mb-4">
+            <span class="text-sm text-[#54505B] block mb-2">Безопасность</span>
+            <DropDown
+              v-model="selectedSecurity"
+              :options="securityLevels"
+              option-label="label"
+              option-value="value"
+              :placeholder="'Выберите уровень безопасности'"
+              customClass="w-full"
+            />
+          </div>
+
+          <!-- Скрытая сеть -->
+          <div class="mb-4 flex items-center justify-between">
+            <span class="text-sm text-[#54505B]">Скрытая сеть</span>
+            <Switch
+              v-model="hotspotSettings.hidden"
+              as="template"
+              v-slot="{ checked }"
+            >
+              <button
+                class="relative inline-flex h-[20px] w-[36px] items-center rounded-full border-1 border-solid border-black"
+                :class="checked ? 'bg-[#470ABF]' : 'bg-gray-200'"
               >
-                {{ wifiStore.error }}
-              </div>
-              <div class="pt-4 flex">
-                <Button
-                  type="submit"
-                  class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 mx-auto transition"
-                >
-                  Сохранить
-                </Button>
-              </div>
-            </fieldset>
-            <Loader
-              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              v-if="wifiStore.loading"
-            />
-          </form>
-        </div>
-      </TabPanel>
-      <TabPanel>
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium">Wi-Fi Enable</span>
-          <Switch
-            v-model="wifiStore.frequency5.isActive"
-            as="template"
-            v-slot="{ checked }"
-          >
-            <button
-              class="relative inline-flex h-[20px] w-[36px] items-center rounded-full border-1 border-solid border-black"
-              :class="checked ? 'bg-[#470ABF]' : 'bg-gray-200'"
-            >
-              <span class="sr-only">Enable notifications</span>
-              <span
-                :class="checked ? 'translate-x-[16px]' : 'translate-x-[1px]'"
-                class="inline-block h-[17px] w-[17px] transform rounded-full bg-white transition"
-              />
-            </button>
-          </Switch>
-        </div>
+                <span class="sr-only">Скрыть сеть</span>
+                <span
+                  :class="checked ? 'translate-x-[16px]' : 'translate-x-[1px]'"
+                  class="inline-block h-[17px] w-[17px] transform rounded-full bg-white transition"
+                />
+              </button>
+            </Switch>
+          </div>
 
-        <div v-if="wifiStore.frequency5.isActive" class="space-y-4">
-          <form @submit.prevent="wifiStore.update(5)" class="relative">
-            <fieldset
-              :disabled="wifiStore.loading"
-              :class="wifiStore.loading ? 'opacity-50 pointer-events-none' : ''"
+          <!-- Ошибка -->
+          <div
+            v-if="error"
+            class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"
+          >
+            {{ error }}
+          </div>
+
+          <!-- Кнопка сохранения -->
+          <div class="pt-4 flex">
+            <Button
+              type="submit"
+              :disabled="saving"
+              class="rounded bg-blue-600 px-6 py-2 text-white hover:bg-blue-700 mx-auto transition disabled:opacity-50"
             >
-              <div>
-                <Input
-                  v-model="wifiStore.frequency5.ssid"
-                  class="mt-1 block w-full rounded-md border-gray p-2"
-                  placeholder="Введите SSID"
-                  :label="'SSID'"
-                  type="text"
-                />
-              </div>
-              <div>
-                <Input
-                  v-model="wifiStore.frequency5.password"
-                  type="password"
-                  class="mt-1 block w-full rounded-md border-gray-300 p-2"
-                  placeholder="Введите пароль"
-                  :label="'Пароль'"
-                />
-              </div>
-              <div class="flex flex-col gap-2 mt-1 block w-full rounded-md p-2">
-                <span class="text-sm text-[#54505B]">Канал</span>
-                <Listbox
-                  v-model="wifiStore.frequency5.channel"
-                  class="mt-1 w-full"
-                >
-                  <div class="relative">
-                    <ListboxButton
-                      class="relative w-full cursor-pointer rounded-lg bg-[#37343D] py-3 pl-4 pr-10 text-left text-white shadow-md"
-                    >
-                      <span class="block truncate">
-                        {{ wifiStore.frequency5.channel }}
-                      </span>
-                      <span
-                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                      >
-                        <svg
-                          class="h-[5px] w-[10px] text-gray-400"
-                          height="4"
-                          viewBox="0 0 10 4"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M5 4L0.669872 0.250001L9.33013 0.25L5 4Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </span>
-                    </ListboxButton>
-                    <TransitionRoot
-                      enter="transition ease-out duration-100"
-                      enter-from="transform opacity-0 scale-95"
-                      enter-to="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leave-from="transform opacity-100 scale-100"
-                      leave-to="transform opacity-0 scale-95"
-                    >
-                      <ListboxOptions
-                        class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#37343D] py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                      >
-                        <ListboxOption
-                          v-for="channel in availableChanels5"
-                          :value="channel"
-                          class="relative cursor-pointer select-none py-2 pl-10 pr-4 text-white hover:bg-[#3b3b3b]"
-                          v-slot="{ selected }"
-                        >
-                          <span
-                            class="block truncate"
-                            :class="selected ? 'font-medium' : 'font-normal'"
-                          >
-                            {{ channel }}
-                          </span>
-                          <span
-                            v-if="selected"
-                            class="absolute inset-y-0 left-0 flex items-center pl-3 text-white"
-                          >
-                            <svg
-                              class="h-5 w-5"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-7.071 7.071a1 1 0 01-1.414 0l-3.536-3.535a1 1 0 111.414-1.415L9 11.586l6.293-6.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
-                          </span>
-                        </ListboxOption>
-                      </ListboxOptions>
-                    </TransitionRoot>
-                  </div>
-                </Listbox>
-              </div>
-              <div class="flex flex-col gap-2 mt-1 block w-full rounded-md p-2">
-                <span class="text-sm text-[#54505B]">WPS</span>
-                <DropDown
-                  v-model="wifiSecurity"
-                  :options="securityLevels"
-                  option-label="label"
-                  option-value="value"
-                  :placeholder="'Выберите уровень безопасности'"
-                  customClass="mt-1 w-full"
-                />
-              </div>
-              <div class="flex flex-col gap-2 mt-1 block w-full rounded-md p-2">
-                <span class="text-sm text-[#54505B]">Скрыть</span>
-                <Switch
-                  v-model="wifiStore.frequency5.hidden"
-                  as="template"
-                  v-slot="{ checked }"
-                >
-                  <button
-                    class="relative inline-flex h-[20px] w-[36px] items-center rounded-full border-1 border-solid border-black"
-                    :class="checked ? 'bg-[#470ABF]' : 'bg-gray-200'"
-                  >
-                    <span class="sr-only">Enable notifications</span>
-                    <span
-                      :class="
-                        checked ? 'translate-x-[16px]' : 'translate-x-[1px]'
-                      "
-                      class="inline-block h-[17px] w-[17px] transform rounded-full bg-white transition"
-                    />
-                  </button>
-                </Switch>
-              </div>
-              <div class="text-red-700">
-                {{ wifiStore.error }}
-              </div>
-              <div class="pt-4">
-                <Button
-                  type="submit"
-                  class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 mx-auto transition"
-                >
-                  Сохранить
-                </Button>
-              </div>
-            </fieldset>
-            <Loader
-              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              v-if="wifiStore.loading"
-            />
-          </form>
-        </div>
-      </TabPanel>
-    </TabPanels>
-  </TabGroup>
+              {{ saving ? 'Сохранение...' : 'Сохранить настройки' }}
+            </Button>
+          </div>
+        </fieldset>
+        
+        <Loader
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          v-if="saving"
+        />
+      </form>
+    </div>
+
+    <!-- Сообщение когда Hotspot выключен -->
+    <div v-else class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <p class="text-yellow-800 text-sm">
+        Включите Wi-Fi для настройки параметров сети.
+      </p>
+    </div>
+  </div>
 </template>

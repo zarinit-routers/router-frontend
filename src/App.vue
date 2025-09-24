@@ -2,28 +2,22 @@
 import { useRouter, RouterView } from "vue-router";
 import { onMounted, watch } from "vue";
 import { isAuthenticated } from "./auth";
-import { useWifiStore } from "./stores/wifi";
+import { useWifiHotspotStore } from "./stores/wifi"; 
 import { useConnectedClientsStore } from "./stores/connectedClientsStore";
 
 import TheHeader from "./components/layout/TheHeader.vue";
 
-const wifiStore = useWifiStore();
+const wifiHotspotStore = useWifiHotspotStore(); 
 const connectedClientsStore = useConnectedClientsStore();
 
-watch(
-  [() => wifiStore.frequency24.isActive, () => wifiStore.frequency5.isActive],
-  ([new2, new5], [old2, old5]) => {
-    if (!wifiStore.isInitialize) return;
 
-    if (new2 != old2) {
-      const action = new2 ? "enable" : "disable";
-      wifiStore.togglePower(action, 2);
+watch(
+  () => wifiHotspotStore.enabled,
+  async (newEnabled, oldEnabled) => {
+    if (newEnabled !== oldEnabled) {
+      await wifiHotspotStore.toggleEnabled(); 
     }
-    if (new5 != old5) {
-      const action = new5 ? "enable" : "disable";
-      wifiStore.togglePower(action, 5);
-    }
-  },
+  }
 );
 
 const router = useRouter();
@@ -33,7 +27,7 @@ onMounted(async () => {
   }
 
   await connectedClientsStore.getClients();
-  await wifiStore.init();
+  await wifiHotspotStore.fetchStatus(); 
 });
 </script>
 

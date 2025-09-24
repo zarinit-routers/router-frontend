@@ -1,98 +1,64 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 
-export const useWifiStore = defineStore("wifi", {
+export const useWifiHotspotStore = defineStore("wifiHotspot", {
   state: () => ({
-    frequency24: {
-      isActive: true,
-      channel: null,
-      hidden: false,
-      ssid: "",
-      password: "",
-    },
-    frequency5: {
-      isActive: true,
-      channel: null,
-      hidden: false,
-      ssid: "",
-      password: "",
-    },
+    enabled: false,
+    ssid: "",
+    password: "",
+    channel: "",
+    hidden: false,
     loading: false,
     error: "",
-    isInitialize: false,
   }),
   actions: {
-    async init() {
-      await this.status(2);
-      await this.status(5);
-      this.isInitialize = true;
-    },
-    async togglePower(action, frequency) {
+    async fetchStatus() {
       try {
         this.loading = true;
-        await axios.post(`/cmd/api/wifi/${frequency}/${action}`).then(() => {
-          this.loading = false;
-          this.status(2);
-          this.status(5);
-          this.error = "";
+        const response = await axios.post("/api/cmd", {
+          command: "v1/wifi-hotspot/get-status"
         });
-      } catch (error) {
-        this.loading = false;
-        this.error = `Произошла ошибка: ${error.response.data.error}`;
-        console.error("Ошибка при переключении Wi-Fi:", error);
-      }
-    },
-    async status(frequency) {
-      try {
-        await axios.get(`/cmd/api/wifi/${frequency}/status`).then((res) => {
-          if (frequency === 2) {
-            this.frequency24.isActive = res.data.active;
-            this.frequency24.channel = res.data.channel;
-            this.frequency24.hidden = res.data.hidden;
-            this.frequency24.ssid = res.data.ssid;
-            this.frequency24.password = res.data.password;
-          } else {
-            this.frequency5.isActive = res.data.active;
-            this.frequency5.channel = res.data.channel;
-            this.frequency5.hidden = res.data.hidden;
-            this.frequency5.ssid = res.data.ssid;
-            this.frequency5.password = res.data.password;
-          }
-        });
-      } catch (error) {
-        console.error("Ошибка при получении статуса Wi-Fi:", error);
-      }
-    },
-    async update(frequency) {
-      try {
-        this.loading = true;
-        let data = {};
-        if (frequency === 2) {
-          data = {
-            channel: this.frequency24.channel,
-            hide: this.frequency24.hidden,
-            ssid: this.frequency24.ssid,
-            password: this.frequency24.password,
-          };
-        } else {
-          data = {
-            channel: this.frequency5.channel,
-            hide: this.frequency5.hidden,
-            ssid: this.frequency5.ssid,
-            password: this.frequency5.password,
-          };
-        }
-        await axios.post(`/cmd/api/wifi/${frequency}/update`, data).then((res) => {
-          this.loading = false;
-          this.status(2);
-          this.status(5);
-        });
+        Object.assign(this, response.data.data);
         this.error = "";
       } catch (error) {
+        this.error = "Ошибка загрузки статуса";
+        console.error("Ошибка при получении статуса:", error);
+      } finally {
         this.loading = false;
-        this.error = `Произошла ошибка: ${error.response.data.error}`;
-        console.error("Ошибка при получении статуса Wi-Fi:", error);
       }
     },
+
+    async toggleEnabled() {
+      try {
+        this.loading = true;
+        const command = this.enabled ? "v1/wifi-hotspot/disable" : "v1/wifi-hotspot/enable";
+        
+        await axios.post("/api/cmd", { command });
+        await this.fetchStatus(); // Обновляем статус после изменения
+      } catch (error) {
+        this.error = "Ошибка переключения";
+        console.error("Ошибка при переключении:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async updateSetting(endpoint, data) {
+      try {
+        this.loading = true;
+        await axios.post("/api/cmd", {
+          command: endpoint,
+          ...data
+        });
+        this.error = "";
+        return true;
+      } catch (error) {
+        this.error = `Ошибка обновления: ${error.response?.data?.message || error.message}`;
+        console.error("Ошибка при обновлении настроек:", error);
+        return false;
+      } finally {
+        this.loading = false;
+      }
+    }
   },
 });

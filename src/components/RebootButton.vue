@@ -2,6 +2,8 @@
 import axios from "axios";
 
 const reboot = () => {
+  if(!confirm("Вы уверены, что хотите перезагрузить устройство?")) 
+    return;
   axios
     .post("/api/reboot")
     .then(() => {})
